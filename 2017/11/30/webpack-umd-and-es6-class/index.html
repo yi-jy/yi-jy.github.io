@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="webpack处理UMD及ES6的类 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="webpack UMD libraryTarget library">
+  
+
+  
+
+  <title>webpack处理UMD及ES6的类 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">webpack处理UMD及ES6的类</h1>
+
+  <time class="post-time">2017-11-30</time>
+
+  <div class="post-content">
+    <p>我们在开发一个插件时，通常希望它既可以被服务端引用，也能被客户端浏览器使用，即适用多个平台。于是，在模块加载的处理上，我们通常会采用 UMD（Universal Module Definition）的写法。</p>
+<p>所谓的 <a href="https://github.com/umdjs/umd" target="_blank" rel="noopener">UMD</a>，主要是针对 CommonJS 或 AMD 规范加载模块的差异，而特意封装的一种通用引入模块的解决方案。</p>
+<a id="more"></a>
+<p>UMD 的基本代码如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">;(<span class="function"><span class="keyword">function</span> (<span class="params">context, name, definition</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">module</span> != <span class="string">'undefined'</span> &amp;&amp; <span class="built_in">module</span>.exports) &#123;</span><br><span class="line">    <span class="comment">// CommonJS</span></span><br><span class="line">    <span class="built_in">module</span>.exports = definition();</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> define === <span class="string">'function'</span> &amp;&amp; define.amd) &#123;</span><br><span class="line">    <span class="comment">// AMD</span></span><br><span class="line">    define(definition);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// Browser</span></span><br><span class="line">    context[name] = definition();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;(<span class="keyword">this</span>, <span class="string">'Countdown'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 插件主代码</span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">Countdown</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> Countdown;</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+<p>上面的代码，也是我前段时间写的一个倒计时插件（<code>Countdown</code>）最前面的部分代码。当插件在本地开发完成，要开启定时器，只需要在页面里实例化 Countdown 构造函数即可，如:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> Countdown();</span><br></pre></td></tr></table></figure>
+<p>一切都进行的很顺利，但当我用webpack编译打包准备发布时，发现编译出错了，提示 <code>Countdown is not defined</code>。怎么回事？经过排查，发现原因出在模块加载上。我们来细看下 UMD：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">module</span> != <span class="string">'undefined'</span> &amp;&amp; <span class="built_in">module</span>.exports) &#123;</span><br><span class="line">  <span class="comment">// CommonJS</span></span><br><span class="line">  <span class="built_in">module</span>.exports = definition();</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> define === <span class="string">'function'</span> &amp;&amp; define.amd) &#123;</span><br><span class="line">  <span class="comment">// AMD</span></span><br><span class="line">  define(definition);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// Browser</span></span><br><span class="line">  context[name] = definition();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先，判断是否处于node服务器环境，如果是，则把 插件 挂载到 module.exports。</p>
+<p>如果不是，再判断当前环境有没有使用 AMD 规范，如果有，则将 插件 传入到第三方模块加载器（如RequireJS）定义方法中。</p>
+<p>如果也没检测到使用 AMD 规范来加载模块，则直接将 插件 挂载到当前环境的全局变量（浏览器为 window），<code>context[name]</code> 中的 <code>context</code> 为 window，而 <code>name</code> 为插件名称，这个名称是包裹 umd 匿名函数调用时传入的参数（倒计时插件为 <code>Countdown</code>）。</p>
+<p>而 webpack 编译时，可能是运行在node环境的原因，<code>typeof module != &#39;undefined&#39; &amp;&amp; module.exports</code> 的值竟然为 <code>true</code>，这就导致本该挂载在浏览器 window 对象的 插件，却挂载到了 module.exports。如此一来，浏览器自然获取不到 Countdown 这个构造函数。报 <code>Countdown is not defined</code> 也合乎情理。</p>
+<p>那么，如何既保证代码以 UMD 形式输出，又可以让webpack编译通过呢？</p>
+<h2 id="一、webpack-处理-UMD"><a href="#一、webpack-处理-UMD" class="headerlink" title="一、webpack 处理 UMD"></a>一、webpack 处理 UMD</h2><p>经翻阅文档发现，webpack 在 <code>ouput</code>输出选项上，提供了 <code>libraryTarget</code> 设置，如果用户添加了该选项，并把它的值设置为 <code>umd</code>，像这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">output: &#123;</span><br><span class="line">  ...</span><br><span class="line">  libraryTarget: <span class="string">'umd'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么，打包后输出的模块，外部会套一层 umd 代码。</p>
+<p>于是，我们需要删除原来插件里 umd 代码，并使用如下方式输出模块：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = Countdown;</span><br></pre></td></tr></table></figure>
+<p>再设置 <code>libraryTarget</code> 选项后，再用 webpack 编译打包一次。果然，打包后的代码前面被 umd 处理了，如下图：</p>
+<img src="/2017/11/30/webpack-umd-and-es6-class/webpack-umd.jpg" title="webpack生成umd代码">
+<p>与之类似的，还有一个 <code>umdNamedDefine</code> 选项，可参见<a href="https://webpack.js.org/configuration/output/#output-umdnameddefine" target="_blank" rel="noopener">这里</a>。</p>
+<p>虽然解决了 umd 的输出问题，但控制台还是报 <code>Countdown is not defined</code>。</p>
+<p>前面说到，针对浏览器环境，我们可以会直接将 插件 挂载到当前环境的全局变量（浏览器为 window）上，即 <code>context[name] = definition()</code>。 而这里的 <code>name</code> 需要你手动指定，比如文章开头代码里的 <code>&#39;Countdown&#39;</code>。</p>
+<p>类似的，在webpack这里，光指定模块的输出形式是不够的，还需要指定模块的名称，同样的，webpack提供了 <code>library</code> 选项，它的值为模块名称。所以，将配置修改为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">output: &#123;</span><br><span class="line">  ...</span><br><span class="line">  libraryTarget: <span class="string">'umd'</span>,</span><br><span class="line">  library: <span class="string">'Countdown'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>设置完成后，再webpack编译打包一次，倒计时正常运行了。</p>
+<h2 id="二、处理-ES6-的类"><a href="#二、处理-ES6-的类" class="headerlink" title="二、处理 ES6 的类"></a>二、处理 ES6 的类</h2><p>在前面处理中，通过 <code>module.exports = Countdown</code> 这种方式来输出模块。我们尝试改为 ES6 的语法，即：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Countdown</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当webpack再次编译运行时，又报错了 <code>Countdown is not a constructor</code>。 </p>
+<p>Countdown 不是一个构造函数？</p>
+<p>在控制台打印 Countdown，发现它是一个包含 default 属性的对象，而 default 的值是一个函数，该函数正是我们所定义的构造函数。</p>
+<p>于是，我们得先在页面存储 default 属性，再进行实例化才能正常运行倒计时：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> Countdown = Countdown.default;</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Countdown();</span><br></pre></td></tr></table></figure>
+<p>之所以会出现这种情况，是因为我在 webpack 中使用了 Babel 来编译 ES6模块，而 Babel 会将模块编译成一个对象，并把模块指定在该对象的 <code>default</code> 属性。</p>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>webpack可通过配置 <code>libraryTarget: &#39;umd&#39;</code> 选项来输出 umd 形式的模块，同时，你需要使用 <code>library</code> 属性来指定模块名称，这种配置一般出现在通用模块或插件中。</p>
+<p>使用 Babel 编译的 ES6模块，输出的内容并非模块本身，它被包含在同名对象的 <code>default</code> 属性中。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

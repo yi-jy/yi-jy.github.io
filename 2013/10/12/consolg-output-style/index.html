@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="console.log输出图片和样式文本 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="console.log 控制台输出图片 控制台输出样式">
+  
+
+  
+
+  <title>console.log输出图片和样式文本 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">console.log输出图片和样式文本</h1>
+
+  <time class="post-time">2013-10-12</time>
+
+  <div class="post-content">
+    <p>对于前端开发，console.log控制台调试输出必不可少。</p>
+<p>愈加发现现在的公司喜欢在控制台输入做文章了，一些公司网站在控制台运行简单的游戏，而另一些公司则是在他们网站的控制台发布招聘消息，如百度：</p>
+<a id="more"></a>
+<img src="/2013/10/12/consolg-output-style/baidu_job.jpg" title="百度控制台招聘">
+<p>难道这是考验前端开发的观察，或者鉴于他们职业习惯性的去F12。</p>
+<p>通常，我们都是用console.log来调试js，即运行一段js来测试程序是否正常运行，或者输出一些基础文本。今天在此说点新玩意，之前我只是认为console.log在输入方便只是普通的文本，可是后来看console.log官方文档却并非如此，它是支持输出有样式的文本，图片等。</p>
+<img src="/2013/10/12/consolg-output-style/wiki_console_log.jpg" title="console.log文档">
+<p>翻译如下：</p>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>%s</td>
+<td>字符串</td>
+</tr>
+<tr>
+<td>%d, %i</td>
+<td>整数（目前还不支持数字格式）</td>
+</tr>
+<tr>
+<td>%f/%.xf</td>
+<td>浮点数x表示小数位数的数量应四舍五入到（如果省略的话，这个数字将不进行四舍五入）</td>
+</tr>
+<tr>
+<td>%o</td>
+<td>对象的超链接</td>
+</tr>
+<tr>
+<td>%c</td>
+<td>样式格式</td>
+</tr>
+</tbody>
+</table>
+<p>针对图表介绍，我们知道console.log可以以各种形式输出文字，下面就逐个列出它们的用法。</p>
+<p><strong>1. %s ，在控制台将变量以字符串的形式输出：</strong></p>
+<p>代码和效果图：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> animal=<span class="string">"cat"</span>; <span class="built_in">console</span>.log(<span class="string">"The is a %s"</span>, animal);</span><br></pre></td></tr></table></figure>
+<img src="/2013/10/12/consolg-output-style/console_str.jpg" title="控制台输出整数">
+<p><strong>2. %d, %i，在控制台将变量以整数数字的形式输出：</strong></p>
+<p>代码和效果图：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> animal=<span class="string">"cat"</span>,</span><br><span class="line">  count1=<span class="number">2</span>; </span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"The %s jumped over %d tall buildings"</span>, animal, count1);</span><br></pre></td></tr></table></figure>
+<img src="/2013/10/12/consolg-output-style/console_int.jpg" title="控制台输出整数">
+<p><strong>3 . %f/%.xf，在控制台将变量以浮点数的形式输出：</strong></p>
+<p>代码和效果图：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> animal=<span class="string">"cat"</span>,</span><br><span class="line">  count2=<span class="number">2.5</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"The %s jumped over %f tall buildings"</span>, animal, count2);</span><br></pre></td></tr></table></figure>
+<img src="/2013/10/12/consolg-output-style/console_float.jpg" title="控制台输出浮点数">
+<p><strong>4. %o ，在控制台将变量以对象的形式输出：</strong></p>
+<p>代码和效果图：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> oDiv=<span class="built_in">document</span>.createElement(<span class="string">"div"</span>);</span><br><span class="line"></span><br><span class="line">oDiv.style.width=<span class="string">"100px"</span>; </span><br><span class="line">oDiv.style.height=<span class="string">"100px"</span>; </span><br><span class="line">oDiv.style.backgroundColor=<span class="string">"red"</span>; </span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"The %o"</span>, oDiv);</span><br></pre></td></tr></table></figure>
+<img src="/2013/10/12/consolg-output-style/console_obj.jpg" title="控制台输出对象">
+<p><strong>5. %c ，在控制台将文本添加样式输出：</strong></p>
+<p>代码和效果图：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> animal=<span class="string">"cat"</span>,</span><br><span class="line">  count1=<span class="number">2</span>; </span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"The %c %s jumped over %f tall buildings"</span>,<span class="string">"font-size:30px;</span></span><br><span class="line"><span class="string">text-shadow:10px 10px 12px #000;"</span>, animal, count1);</span><br></pre></td></tr></table></figure>
+<img src="/2013/10/12/consolg-output-style/console_style.jpg" title="控制台输出样式">
+<p>另外除了输出文本外，在控制台样式处理方面，我们还可以做图片输出，不过这里不是用img 标签，而且给文本设置背景，这里文字空格的长度控制背景图所显示的长度，而font-size则控制背景图显示的高度，另外背景src必须是绝对路径。</p>
+<p>代码和效果图：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">"%c    "</span>,<span class="string">"font-size:50px;font-family:'宋体';background:url</span></span><br><span class="line"><span class="string">(http://www.yi-jy.com/images/console_pic.jpg) no-repeat;"</span>);</span><br></pre></td></tr></table></figure>
+<img src="/2013/10/12/consolg-output-style/console_style_pic.jpg" title="控制台输出图片">
+<p>然后，没有了。</p>
+<p>夜深了，一首歌：</p>
+<object width="257" height="33" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"><param name="src" value="http://www.xiami.com/widget/0_3075078/singlePlayer.swf"><param name="wmode" value="transparent"><embed width="257" height="33" type="application/x-shockwave-flash" src="http://www.xiami.com/widget/0_3075078/singlePlayer.swf" wmode="transparent"></object>
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

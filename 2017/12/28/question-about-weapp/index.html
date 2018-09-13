@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="微信小程序开发的相关问题 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="微信小程序 相关问题">
+  
+
+  
+
+  <title>微信小程序开发的相关问题 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">微信小程序开发的相关问题</h1>
+
+  <time class="post-time">2017-12-28</time>
+
+  <div class="post-content">
+    <p>最近开发了一款<a href="https://github.com/joy-yi0905/weapp-movie" target="_blank" rel="noopener">小程序</a>，主要是展示近期的一些最新、最火的电影以及相关信息，该小程序由首页、列表、详情、评论、视频这几个页面构成。虽说开发过程还算顺畅，但在其中，也遇到一些难搞的问题，为方便日后参考，因此把部分问题列举于此：</p>
+<a id="more"></a>
+<h3 id="一、请求不在以下-request-合法域名列表中"><a href="#一、请求不在以下-request-合法域名列表中" class="headerlink" title="一、请求不在以下 request 合法域名列表中"></a>一、请求不在以下 request 合法域名列表中</h3><p>如果你的小程序使用了服务端接口，当你在本地开发时，可能会遇到如下错误：</p>
+<img src="/2017/12/28/question-about-weapp/api-uri-invalid.jpg" title="接口报错">
+<p>出现这种情况，是因为没在后台设置request合法域名。如果你只是本地开发，用于某些测试，你可以在 微信web开发者工具 中的 设置 -&gt; 项目设置 里作如下设置：</p>
+<img src="/2017/12/28/question-about-weapp/tool-api-setting.jpg" title="工具接口设置">
+<p>但倘若你要发布到线上，那你得登录微信公众平台的后台，设置相关服务器域名。如果你的小程序需要调用多个接口，你也可进行设置多个。</p>
+<img src="/2017/12/28/question-about-weapp/wx-admin-api-setting.jpg" title="后台设置域名">
+<h3 id="二、网络接口必须是https"><a href="#二、网络接口必须是https" class="headerlink" title="二、网络接口必须是https"></a>二、网络接口必须是https</h3><p>对于小程序接口，要是在从前，你可以使用 http 协议，也可以用 https 协议。但现在，你的网络请求接口协议必须是https。</p>
+<p>详见 <a href="https://developers.weixin.qq.com/blogdetail?action=get_post_info&amp;docid=a513ba27d9eb74dbb5d720e10b8a4794&amp;highline=https&amp;token=1943648996&amp;lang=zh_CN" target="_blank" rel="noopener">关于公众平台接口不再支持HTTP方式调用的公告</a></p>
+<p>但要注意，服务器域名修改后，一定要在 微信web开发者工具-清缓存、重新编译。</p>
+<p>或许有的时候这样做并不管用，那么，你得重启 微信web开发者工具。</p>
+<h3 id="三、配置文件不生效"><a href="#三、配置文件不生效" class="headerlink" title="三、配置文件不生效"></a>三、配置文件不生效</h3><p>我们知道，每个小程序的根目录都有一个 <code>app.json</code> 文件，它用于对该程序的全局配置（标题栏文字、界面风格、底部tab）。但为了保证某个页面能够单独设置相关属性，小程序规定，可以给每个页面目录都配置了一个 <code>*.json</code> 文件。</p>
+<p>但要注意的是，每个目录下的 <code>*.json</code> 文件，一定要与当前目录文件同名。比如，<code>pages/comment</code> 目录里，必须是 <code>comment.json</code>。否者，json文件配置不会生效。</p>
+<h3 id="四、video元素无法播放"><a href="#四、video元素无法播放" class="headerlink" title="四、video元素无法播放"></a>四、video元素无法播放</h3><p>因为是电影相关的小程序，所以少不了视频界面。其中，使用了小程序提供的 <code>video</code> 元素用于播放电影预告片。</p>
+<p>当在微信开发者工具预览效果时，却在控制台出现了如下错误：</p>
+<img src="/2017/12/28/question-about-weapp/video-error.jpg" title="视频出错">
+<p>因为是引用的是第三方视频资源，最初我以为是该远程视频服务器加了防盗链。于是，我上传了一段视频到我的服务器，再在小程序里引用它，嗯，视频可以正常播放了。接着，再扫码真机测试，但却出现如下界面：</p>
+<img src="/2017/12/28/question-about-weapp/video-screenshot2.jpg" title="视频截图2">
+<p>视频区域一片漆黑，没有播放按钮，没有加载，什么情况？</p>
+<p>搜索了各方资料，有说是基础库问题，有说是手机系统问题，还有说是视频格式问题，时间一分一秒过去，最后还是无果。</p>
+<p>通过上面的截图，我一开始是把视频内容放在页面底部（页面超过一屏，即视频内容在第一屏之外），后来我又在页面顶部放一个相同的视频区，再真机扫码测试。</p>
+<p>结果，页面顶部的视频可以播放，但底部却还是一片漆黑。难道跟布局有关？于是，在公共样式里看到这么一行代码：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* app.wxss */</span></span><br><span class="line"></span><br><span class="line"><span class="selector-tag">page</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">overflow</span>: hidden;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>尝试把它删除，在扫码测试，结果底部视频也能正常播放了。因此，如果设置了以上样式，解决方法就要把视频区放在第一屏中，或者，直接删除该样式。解决后截图如下：</p>
+<img src="/2017/12/28/question-about-weapp/video-screenshot3.jpg" title="视频截图3">
+<h3 id="五、iOS页面滑动卡顿"><a href="#五、iOS页面滑动卡顿" class="headerlink" title="五、iOS页面滑动卡顿"></a>五、iOS页面滑动卡顿</h3><p>本以为小程序在 iOS 和 android 系统上表现一致，但当用iOS扫码测试时，发现在滑动页面时很不流畅，即手机滑动一段距离，页面只是移动一段距离，有时甚至不会移动。</p>
+<p>一开始以为是列表页没有使用 <code>scroll-view</code> 组件原因所致，但很快发现详情页也出现滑动卡顿，要知道详情页并不适用 <code>scroll-view</code> 组件。所以，应该不是组件的问题。</p>
+<p>由于iOS测试的是我线上的版本，当我再用iOS测试本地开发版本（该版本新增并修改了一些内容）时，列表页和详情页，都能顺畅滚动。</p>
+<p>对比这两版代码，在样式上发现线上（旧）版本多了这些样式：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* app.wxss */</span></span><br><span class="line"></span><br><span class="line"><span class="selector-tag">page</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">overflow</span>: hidden;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">overflow-y</span>: auto;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>尝试在本地开发版本加入上面的样式，再iOS扫码测试，结果滑动页面都变的卡顿起来了。解决方案，还是把类似样式删除。</p>
+<h3 id="六、wx-pageScrollTo-不生效"><a href="#六、wx-pageScrollTo-不生效" class="headerlink" title="六、wx.pageScrollTo 不生效"></a>六、wx.pageScrollTo 不生效</h3><p>微信小程序提供了 <code>wx.pageScrollTo(OBJECT)</code> 方法，它可以将页面滚动到指定位置。</p>
+<p>当进入到一个列表页，并且你希望页面滚动到某个位置时，你可以用到该方法。但当列表页面涉及到ajax请求数据列表时，即便你把该方法放在请求回调中，页面也不会滚动到指定位置。如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">wx.request(&#123;</span><br><span class="line">  url,</span><br><span class="line">  data,</span><br><span class="line">  success: <span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    wx.pageScrollTo(&#123;<span class="attr">scrollTop</span>: <span class="number">1000</span>&#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>猜测可能与页面渲染速度有关，于是设置一个延时执行页面滚动方法，问题便得到解决。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;wx.pageScrollTo(&#123;<span class="attr">scrollTop</span>: <span class="number">1000</span> &#125;);&#125;, <span class="number">200</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="七、循环警告"><a href="#七、循环警告" class="headerlink" title="七、循环警告"></a>七、循环警告</h3><p>当在小程序里循环渲染一组数据时，可能在控制台出现如下警告：</p>
+<img src="/2017/12/28/question-about-weapp/for-key.jpg" title="循环警告">
+<p>之所以这样是因为可能会出现动态列表、但这些列表项又得保存对应的特征和状态，并且为了提高渲染性能。因此，你需要使用 <code>wx:key</code> 来指定列表中每项的唯一标识符。</p>
+<p>当渲染的数组项只包含本身时，你可以在 wx:key 上使用保留关键词 <code>*this</code>，即：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;view <span class="class"><span class="keyword">class</span></span>=<span class="string">"item"</span> wx:<span class="keyword">for</span>=<span class="string">"&#123;&#123;list&#125;&#125;"</span> wx:key=<span class="string">"&#123;&#123;*this&#125;&#125;"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>当渲染的数组项为复合属性时，你可以在 wx:key 上使用每项对应的某个属性（假设每项包含 name 属性），比如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;view <span class="class"><span class="keyword">class</span></span>=<span class="string">"item"</span> wx:<span class="keyword">for</span>=<span class="string">"&#123;&#123;list&#125;&#125;"</span> wx:key=<span class="string">"&#123;&#123;item.name&#125;&#125;"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="八、多重循环"><a href="#八、多重循环" class="headerlink" title="八、多重循环"></a>八、多重循环</h3><p>如果数据涉及多重嵌套，如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">data: &#123;</span><br><span class="line">  list: [</span><br><span class="line">    &#123;</span><br><span class="line">      name: <span class="string">'movie1'</span>,</span><br><span class="line">      type: [&#123;<span class="attr">desc</span>: <span class="string">'a'</span>&#125;, &#123;<span class="attr">desc</span>: <span class="string">'b'</span>&#125;]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      name: <span class="string">'movie2'</span>,</span><br><span class="line">      type: [&#123;<span class="attr">desc</span>: <span class="string">'a'</span>&#125;, &#123;<span class="attr">desc</span>: <span class="string">'c'</span>&#125;]</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么在 wxml 中，可以这样来循环出 type：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"item"</span> <span class="attr">wx:for</span>=<span class="string">"&#123;&#123;list&#125;&#125;"</span> <span class="attr">wx:key</span>=<span class="string">"&#123;&#123;item.name&#125;&#125;"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"name"</span>&gt;</span>&#123;&#123;item.name&#125;&#125;<span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">text</span> <span class="attr">wx:for</span>=<span class="string">"&#123;&#123;item.type&#125;&#125;"</span> <span class="attr">wx:key</span>=<span class="string">"item.name"</span>&gt;</span>&#123;&#123;index&#125;&#125; : &#123;&#123;item.desc&#125;&#125;<span class="tag">&lt;/<span class="name">text</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="九、-lt-text-gt-与-lt-text-gt-之间的空白与视图关系"><a href="#九、-lt-text-gt-与-lt-text-gt-之间的空白与视图关系" class="headerlink" title="九、&lt;text&gt; 与 &lt;/text&gt; 之间的空白与视图关系"></a>九、<code>&lt;text&gt;</code> 与 <code>&lt;/text&gt;</code> 之间的空白与视图关系</h3><p>借上面的数据和试图，当 <code>text</code> 组件里的 <code>&lt;text&gt;</code> 和 <code>&lt;/text&gt;</code> 之间有空格，或者没空格时，会呈现出不同的试图，见对比（这里只展示<code>text</code>代码），为了保证页面在手机屏幕下，示例代码块不折行，这里代码也使用的图片：</p>
+<p>下图分别展示 <code>text</code> 组件一行、两行、三行的情况：</p>
+<img src="/2017/12/28/question-about-weapp/text-space.jpg" title="text组件空白与视图">
+<p>可以看到，当 <code>text</code> 组件不换行时，视图中循环后的两个 <code>text</code> 处在同一行。而当 <code>text</code> 组件换成两行时，视图中循环后的两个 <code>text</code> 各占同一行。当 <code>text</code> 组件换成三行时，视图中循环后的两个 <code>text</code> 前面有一个空白行。</p>
+<h3 id="十、图片路径"><a href="#十、图片路径" class="headerlink" title="十、图片路径"></a>十、图片路径</h3><p>要在界面展示图片一般有两种形式，即 标签引入 或者 标签背景。</p>
+<p>针对 标签引入，小程序定义了 <code>image</code> 组件，该组件可以引入本地图片，也能引入远程服务器图片。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">image</span> <span class="attr">src</span>=<span class="string">"pic.png"</span>&gt;</span><span class="tag">&lt;/<span class="name">image</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">image</span> <span class="attr">src</span>=<span class="string">"http://www.xx.com/pic.png"</span>&gt;</span><span class="tag">&lt;/<span class="name">image</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>上面两种路径写法，都能正常的显示图片。</p>
+<p>但对于 标签背景 形式，倘若使用本地图片，如：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">view</span> <span class="attr">class</span>=<span class="string">"box"</span>&gt;</span><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br><span class="line"></span><br><span class="line">.box &#123;</span><br><span class="line">  width: 100px;</span><br><span class="line">  height: 200px;</span><br><span class="line">  background-image: url(pic.png);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>则组件的背景图不会显示，在控制台将看到以下错误：</p>
+<img src="/2017/12/28/question-about-weapp/img-path-error.jpg" title="本地图片加载失败">
+<p>即WXSS文件无法读取本地图片，我们得把它替换成远程服务图片（绝对路径），这样，背景图片才能正常显示。</p>
+<p>但如果你非要使用本地图片，也不是不可以。只是你得先将本地图片转换为 base64，再引入到背景样式中，这样，也能正常显示。</p>
+<h3 id="十一、事件对象里-currentTarget-和-target"><a href="#十一、事件对象里-currentTarget-和-target" class="headerlink" title="十一、事件对象里 currentTarget 和 target"></a>十一、事件对象里 currentTarget 和 target</h3><p>和JavaScript事件一样，小程序里事件函数带有一个 event 参数，它包含一组信息。</p>
+<p>值得注意的是，event对象里的 currentTarget 和 target 属性。其中，target 为 触发事件的源组件，而 currentTarget 为事件绑定的当前组件，这两者需要区别。</p>
+<p>在处理组件前，我们会在组件上加 <code>data-*</code> 属性，而在事件中，再通过 event 参数里 currentTarget（或者target） 的 dataset 属性读取相应的值。</p>
+<h3 id="十二、canvas-等原生组件层级最高"><a href="#十二、canvas-等原生组件层级最高" class="headerlink" title="十二、canvas 等原生组件层级最高"></a>十二、canvas 等原生组件层级最高</h3><p>通过官网资料，map、video、canvas、textarea等原生组件层级最高，无论其他组件设置多大的 z-index，也不能覆盖在原生组件之上。</p>
+<p>但迫于一些特殊需求，我们需要在这些原生组件上覆盖一些其他组件（比如map上的操作按钮、canvas上的提示弹层），那么有没有方法实现呢？</p>
+<p>答案是肯定的。经过尝试，发现目前主要有四种方法，总结如下：</p>
+<ol>
+<li>虽然普通组件不能覆盖原生组件，但是原生组件之间却有层级关系，根据渲染效果，后插入的原生组件层级更高。因此，可以考虑用后插入的原生组件覆盖之前的。</li>
+<li>利用原生组件的控件，比如 map 的 controls。</li>
+<li>在普通组件覆盖原生组件时，可以先暂时把原生组件隐藏。该方法在 Android 上没问题，但 iOS 却发现 canvas 组件不会被隐藏，仍然覆盖在最上层。</li>
+<li>使用 <code>cover-view</code> 组件，它是因为原生组件的层级问题而专门定义的组件。所以，基础库 1.4.0 才开始支持，低版本需注意作兼容处理。</li>
+</ol>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

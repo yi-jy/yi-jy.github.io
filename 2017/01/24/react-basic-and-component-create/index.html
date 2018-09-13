@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="React以及组件创建 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="react component">
+  
+
+  
+
+  <title>React以及组件创建 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">React以及组件创建</h1>
+
+  <time class="post-time">2017-01-24</time>
+
+  <div class="post-content">
+    <p>JSX 最简单的语法的可能是这样的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> greetWord = <span class="xml"><span class="tag">&lt;<span class="name">span</span>&gt;</span>HI<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span>;</span><br></pre></td></tr></table></figure>
+<p>可以看到，它既然不是字符串，也不是变量。而是一个不带双引号的、HTML标签与文本内容混合在一起的格式。</p>
+<p>要想在页面显示上面的内容，我们必须把它放入一个组件中。首先，定义一个组件，再利用 <code>{}</code> 符号，把上面的 jsx 内容插入组件中：</p>
+<a id="more"></a>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greet</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render () &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>&#123;greetWord&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;Greet name=<span class="string">"yix"</span>/&gt;,</span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">'root)</span></span><br><span class="line"><span class="string">)</span></span><br></pre></td></tr></table></figure>
+<p>当然，这里的 <code>&lt;div&gt;{greetWord}&lt;/div&gt;</code> 也可以替换成 <code>greetWord</code>，只需要保证 return 的内容是被HTML标签包裹的即可。这样，<code>Greet</code> 组件</p>
+<p>或者，你无需在前面定义 jsx，即可以直接在组件里插入内容：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greet</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render () &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>HI<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>为了代码的可读性，当 return 的内容涉及多行时，我们会把分成多行：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greet</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render () &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;span&gt;HI&lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>div&gt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>但运行时，却发现报错，提示返回的是非法格式。由于js中 return 后面会自动补 <code>;</code>，所以这里返回的是 <code>undefined</code>。我们尝试改进：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greet</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render () &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">span</span>&gt;</span>HI<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span><br><span class="line"><span class="xml">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在 return 后面紧跟着 <code>&lt;div&gt;</code>，这样就能正常渲染组件了。不过，官方则推荐使用 <code>()</code> 包裹 return 的内容，即：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greet</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render () &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;span&gt;HI&lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>div&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>组件中 <code>{}</code> 里的内容非常灵活，可以是任意的JavaScript表达式，变量、函数、运算都可以，如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">inputName</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'yix'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greet</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render () &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;span&gt;HI&lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">        &lt;h1&gt;&#123;inputName()&#125;&lt;/</span>h1&gt;</span><br><span class="line">        &lt;p&gt;现在是：&#123;(<span class="keyword">new</span> <span class="built_in">Date</span>()).toString()&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>div&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="渲染组件"><a href="#渲染组件" class="headerlink" title="渲染组件"></a>渲染组件</h2><p>前面主要说组件的创建，而要渲染这个组件，则需要引入 <code>react-dom</code> 库，如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">inputName</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'yix'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greet</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render () &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;span&gt;HI&lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">        &lt;h1&gt;&#123;inputName()&#125;&lt;/</span>h1&gt;</span><br><span class="line">      &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">ReactDOM.render(</span></span><br><span class="line"><span class="regexp">  &lt;Greet /</span>&gt;,</span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">'root)</span></span><br><span class="line"><span class="string">)</span></span><br></pre></td></tr></table></figure>
+<p>这样，组件 <code>Greet</code> 便在 id 为 root 的节点下进行了渲染。</p>
+<p>有的时候，我们需要针对条件来隐藏（不渲染）组件，你只需要 <code>return null</code> 即可。比如 LoadingTips 加载组件，当父组件的ajax请求完毕后，可根据传递的 <code>props.load</code> 属性，来决定 LoadingTips 组件的渲染与否：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">LoadingTips</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.props.load) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div className=<span class="string">"loading-layer"</span>&gt;</span><br><span class="line">        loading...</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  )</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="创建组件"><a href="#创建组件" class="headerlink" title="创建组件"></a>创建组件</h2><p>目前看来，react组件的创建主要分为三大类，即：</p>
+<ul>
+<li>纯函数创建无状态组件-SFC</li>
+<li>ES5-React.createClass</li>
+<li>ES6-extends React.Component</li>
+</ul>
+<h3 id="SFC"><a href="#SFC" class="headerlink" title="SFC"></a>SFC</h3><p>SFC，即Stateless Functional Component，也被叫做 无状态功能组件，比如，我们文章开头提到的组件，就是采用这种形式编写的。</p>
+<p>SFC组件通常被用来单纯展示一些UI界面，这种组件的数据来源主要是通过 <code>props</code>，不会涉及任何 <code>state</code> 的操作，所以被称为 无状态组件。可通过如下语法创建：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> React = <span class="built_in">require</span>(<span class="string">'react'</span>);</span><br><span class="line"><span class="keyword">var</span> ReactDOM = <span class="built_in">require</span>(<span class="string">'react-dom'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">InputName</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>&#123;props.name&#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;InputName name=<span class="string">"yix"</span> /&gt;,</span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">'root)</span></span><br><span class="line"><span class="string">)</span></span><br></pre></td></tr></table></figure>
+<p>在上面的代码中，<code>InputName</code> 就是一个 SFC组件。</p>
+<p>作为纯展示的组件，SFC组件的特点是不会被实例化，性能大幅度提升。因为没有状态，不能使用 <code>this.state</code> 来访问状态数据。只能通过 <code>this.props</code> 访问父级传递的数据，并且照搬显示该 <code>this.props</code>，因此，不会有副作用。</p>
+<p>介于代码简洁、性能高效以及无副作用，所以，提倡在大型应用中，尽可能把组件分割成无状态组件。</p>
+<h3 id="React-createClass"><a href="#React-createClass" class="headerlink" title="React.createClass"></a>React.createClass</h3><p>ES5创建组件的方式则是采用如下语法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> React = <span class="built_in">require</span>(<span class="string">'react'</span>);</span><br><span class="line"><span class="keyword">const</span> ReactDOM = <span class="built_in">require</span>(<span class="string">'react-dom'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Greet = React.createClass(&#123;</span><br><span class="line"></span><br><span class="line">  propTypes: &#123; <span class="comment">// 类型检测</span></span><br><span class="line">    name: React.PropTypes.name.isRequired</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  getDefaultProps: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="comment">// 默认属性</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      phone: <span class="string">'123'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  getInitialState: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="comment">// 初始state</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      name: <span class="string">'xx'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  changeName: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;<span class="attr">name</span>: <span class="string">'yix'</span>&#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  render: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h1&gt;&#123;<span class="keyword">this</span>.state.name&#125;&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">        &lt;button onClick=&#123;this.changeName&#125;&gt;&lt;/</span>button&gt;</span><br><span class="line">      &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br></pre></td></tr></table></figure>
+<p>这里可以看到，组件 <code>props</code> 和 <code>state</code> 的相关方法都定义在组件内部。并且因为存在实例化过程，我们也可以通过 <code>this.props</code> 和 <code>this.state</code> 来访问组件的数据。</p>
+<p>相应地，我们还可以在组件内添加生命周期方法，并进行相关处理。</p>
+<p>另外，对于使用 <code>React.createClass</code> 这种形式创建的组件，react做了内部处理。组件里面的所有函数都会自动进行this绑定。除此之外，这种形式的组件，还支持 <a href="https://reactjs.org/docs/react-without-es6.html#mixins" target="_blank" rel="noopener">mixin</a> 功能。</p>
+<h3 id="extends-React-Component"><a href="#extends-React-Component" class="headerlink" title="extends React.Component"></a>extends React.Component</h3><p>要说目前最流行的创建react组件语法，当然是ES6类结合继承的形式：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123;Component&#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">'react-dom'</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greet</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="keyword">super</span>(props);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.state = &#123; <span class="comment">// 初始state</span></span><br><span class="line">      text: <span class="string">'xx'</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.changeName = <span class="keyword">this</span>.changeName.bind(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  changeName(event) &#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;<span class="attr">name</span>: <span class="string">'yix'</span>&#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h1&gt;&#123;<span class="keyword">this</span>.state.name&#125;&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">        &lt;button onClick=&#123;this.changeName&#125;&gt;&lt;/</span>button&gt;</span><br><span class="line">      &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    );</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">Greeting.propTypes = &#123; /</span><span class="regexp">/ 类型检测</span></span><br><span class="line"><span class="regexp">  name: React.PropTypes.string.isRequired</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">Greet.defaultProps = &#123; /</span><span class="regexp">/ 默认属性</span></span><br><span class="line"><span class="regexp">  phone: '123'</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<p><code>extends React.Component</code> 这种形式创建的组件，把 类型检测 和 默认属性 “外置” 了，因为 ES6 的子类一开始没有 this 对象，通过在子类的构造函数中调用 <code>super</code> 方法来获取父级的引用。</p>
+<p>而在里面传入 <code>props</code> 参数，则表明可在 <code>constructor</code> 构造函数中通过 <code>this.props</code> 来访问父组件挂载的属性。但倘若你是在 <code>render()</code> 函数里访问 <code>this.props</code>，则 <code>super</code> 方法无需传入 <code>props</code> 参数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Greet</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.props);  <span class="comment">// 正常访问</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      ...</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>构造函数里除了 <code>super</code> 方法，我们还需要在 this 上设置了初始的 <code>state</code> 属性。</p>
+<p>但是，这种形式的组件有个缺点。由于我们是点 button 按钮，则事件内部的 this 实际上是 button DOM。因此，这种形式创建的组件，其中的的事件函数句柄不会自动绑定当前实例的 this，所以，我们还得在构造函数里手动绑定 this。</p>
+<p>另外，它还不支持react的 <a href="https://reactjs.org/docs/react-without-es6.html#mixins" target="_blank" rel="noopener">mixin</a> 功能。但可以考虑用封装高阶组件进行代替。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

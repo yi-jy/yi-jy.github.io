@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="电池API之H5 battery | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="HTML5 Battery">
+  
+
+  
+
+  <title>电池API之H5 battery | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">电池API之H5 battery</h1>
+
+  <time class="post-time">2014-11-11</time>
+
+  <div class="post-content">
+    <p>H5有很多不错的api，比如有关电池的api就是其中一个，它能实时反映设备当前电量。记得今年锤子手机发布会上，当时老罗说电池的工业技术完全没有跟上智能手机的发展，越来越大的屏幕，越来越丰富的手机应用，这些都是极其费电的。尽管现在的智能手机在电池电量显示或提示功能方面都做得不错了，但如果单从我们web技术来说，或许也能做点什么，其实可以把H5 battery当做在网页中显示设备电量的标志，我们可以根据H5 battery返回的不同状态对用户的行为作出提示，比如电量不足时，切换成省电的网页模式。</p>
+<a id="more"></a>
+<p>说点题外话，H5有非常多的api，可能你无法记得每个api的详细用法，但你至少做到心中有数，知道w3c有这么一个知识点和应用。或许你曾经在某处看到类似的文章，但过了一年半载后，这些技术就随时间而去了，待你需要用时，你可能又要去网上查找资料，熟悉其相关用法。因此把它们记录在博客或者技术文档里总能让自己有种归属感。总之，好记性不如烂笔头吧。</p>
+<h2 id="相关用法"><a href="#相关用法" class="headerlink" title="相关用法"></a>相关用法</h2><p>由于存在浏览器支持的差异，因此在使用前必须做跨浏览器处理：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery || navigator.msBattery;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (battery) &#123;</span><br><span class="line">　　<span class="keyword">do</span> something …<span class="comment">// 支持H5 battery</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">　　alert(<span class="string">"您的浏览器不支持H5 battery !"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>H5 battery的属性，详见表格：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>level</td>
+<td>表示电池电量当前的电量</td>
+<td>返回值为数值(小数点)</td>
+</tr>
+<tr>
+<td>charging</td>
+<td>表示电池是否在充电</td>
+<td>返回值为布尔值，true表示正在充电，false则是未充电</td>
+</tr>
+<tr>
+<td>chargingTime</td>
+<td>电池充满需要的时间</td>
+<td>返回值为数值。未充电情况下Infinity，而充电情况下也为Infinity</td>
+</tr>
+<tr>
+<td>dischargingTime</td>
+<td>电池当前电量可使用时间</td>
+<td>返回值为数值。充电情况下为Infinity，而未充电则返回具体的时间值，单位是秒</td>
+</tr>
+</tbody>
+</table>
+<p>H5 battery的事件，详见表格：</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>levelchange</td>
+<td>电池电量改变时触发</td>
+</tr>
+<tr>
+<td>chargingchange</td>
+<td>充电状态改变时触发</td>
+</tr>
+<tr>
+<td>chargingtimechange</td>
+<td>充电满时触发</td>
+</tr>
+<tr>
+<td>dischargingtimechange</td>
+<td>电池使用完时触发</td>
+</tr>
+</tbody>
+</table>
+<p>我在文章的最后给出了演示demo，截图如下：</p>
+
+<h2 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h2><p>之前chrome一直不支持，前段时间chrome升级到38，虽然查阅Caniuse网站显示38的版本支持，但经过测试仍然是不支持，可能是网站数据有误，同为webkit内核的safari也不支持。而firefox虽然很早就部分支持，但是却一直处在部分支持。</p>
+<p>具体的请移步这里：<a href="http://caniuse.com/#search=battery" target="_blank" rel="noopener">http://caniuse.com/#search=battery</a></p>
+<p>另外由于这个api主要作用还是在手机终端，经本人手机的UC浏览器测试，数据呈现好像也有误。</p>
+<p>如果你想查看准确的api效果演示，可在firefox打开此demo：<a href="/2014/11/11/h5-battery/H5-battery.html" title="H5 battery">H5 battery</a>，你也可以断开和接通电源进行对比。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

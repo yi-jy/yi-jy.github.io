@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="json-server | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="JSON Server mock数据 数据服务 模拟数据 JSONPlaceholder">
+  
+
+  
+
+  <title>使用 JSON Server 构建数据接口 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">使用 JSON Server 构建数据接口</h1>
+
+  <time class="post-time">2017-06-15</time>
+
+  <div class="post-content">
+    <p>目前来说，前后端分离 是web开发的主流模式。前端负责页面制作、交互实现，后端负责数据API的开发。两者并行处理，各司其职，项目开发完毕后一起联调，出了问题也能快速定位。</p>
+<p>而通常情况下，后端真实数据的研发往往滞后于UI界面的开发。所以，在项目开始前，前后端会约定好数据格式，这样，前端就可以先利用mock数据进行界面开发。一般的做法，是在本地新建多个json文件，然后利用ajax请求相应的文件，待后端数据接口开发完毕，直接将json地址换成真实接口地址即可。<br><a id="more"></a></p>
+<p>但还是会有如下问题：</p>
+<ul>
+<li>本地要建多个json数据文件</li>
+<li>为接近真实场景，要生成多条数据，还要随机模拟内容</li>
+<li>无法处理分页请求</li>
+<li>除 GET，POST、PUT、PATCH、DELETE等请求，无法直接在浏览器操作</li>
+<li>…</li>
+</ul>
+<p>为解决上述问题，你需要一个数据服务器，它就是 JSON Server。</p>
+<h2 id="一、安装与启动"><a href="#一、安装与启动" class="headerlink" title="一、安装与启动"></a>一、安装与启动</h2><p>JSON Server 是一个快速构建测试数据的 REST API 服务器。通过它，我们可以在短时间内创建多组测试数据，它允许我们自定义请求数据的路由，支持 GET，POST、PUT、PATCH、DELETE 等多种请求。另外，我们还可以跨域访问 JSON Server 构建的数据API。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>通过如下命令安装：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install -g json-server</span><br></pre></td></tr></table></figure>
+<p>我使用这款工具时，它的最新版本是 <code>0.10.1</code>。安装完，我们可以通过以下命令，来查看相关信息：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; json-server -h</span><br></pre></td></tr></table></figure>
+<p>CLI 输出的信息：</p>
+<img src="/2017/06/15/json-server/json-server-h.jpg" title="帮助">
+<p>其中包括配置文件、端口、主机、监听文件、路由设置、中间件，静态文件、数据只读等设置，在右边可以看到它们的默认值。</p>
+<h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><p>要启动 JSON Server 数据服务，首先，得创建一个数据文件。我们在任意位置新建一个文件夹 <code>json-server</code>，进入该目录，再新建一个 <code>db.json</code> 数据文件 ：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> mkdir json-server &amp;&amp; <span class="built_in">cd</span> json-server </span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">cd</span>.&gt;db.json</span></span><br></pre></td></tr></table></figure>
+<p>打开 <code>db.json</code>，加入内容：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"posts"</span>: [</span><br><span class="line">    &#123;<span class="string">"id"</span>: <span class="number">1</span>, <span class="string">"title"</span>: <span class="string">"title one"</span>, <span class="string">"body"</span>: <span class="string">"post ab"</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"id"</span>: <span class="number">2</span>, <span class="string">"title"</span>: <span class="string">"title two"</span>, <span class="string">"body"</span>: <span class="string">"post cd"</span>&#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"comments"</span>: [</span><br><span class="line">    &#123;<span class="string">"id"</span>: <span class="number">1</span>, <span class="string">"postId"</span>: <span class="number">1</span>, <span class="string">"email"</span>: <span class="string">"ab@xx.com"</span>, <span class="string">"body"</span>: <span class="string">"comment ab"</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"id"</span>: <span class="number">2</span>, <span class="string">"postId"</span>: <span class="number">1</span>, <span class="string">"email"</span>: <span class="string">"cd@xx.com"</span>, <span class="string">"body"</span>: <span class="string">"comment cd"</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"id"</span>: <span class="number">3</span>, <span class="string">"postId"</span>: <span class="number">2</span>, <span class="string">"email"</span>: <span class="string">"ef@xx.com"</span>, <span class="string">"body"</span>: <span class="string">"comment ef"</span>&#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接着，通过命令将数据文件与服务关联，可通过以下命令启动服务（<code>db.json</code> 里的内容一定要符合 JSON 格式，否者服务器会报错。）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; json-server --watch db.json</span><br></pre></td></tr></table></figure>
+<p>将看到：</p>
+<img src="/2017/06/15/json-server/json-server-start.jpg" title="启动服务">
+<p>此时，打开 <a href="http://localhost:3000，" target="_blank" rel="noopener">http://localhost:3000，</a> 便能看到一个关于本地 JSON Server 的首页，里面包含的 <code>Resources</code> 项，便是我们创建的接口。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">Resources</span><br><span class="line"></span><br><span class="line">/posts 2x</span><br><span class="line">/comments 3x</span><br><span class="line">/db state</span><br></pre></td></tr></table></figure>
+<p><code>/db</code> 是总的数据接口，<code>/posts</code>、<code>/comments</code> 分别是子接口，直接打开可访问到相应的数据。</p>
+<p>这个 JSON Server 首页，我们也可以自定义。只需要在根目录下创建 <code>./public</code> 文件夹，并在里面新建一个 <code>index.html</code> 页面即可。</p>
+<h2 id="二、数据操作"><a href="#二、数据操作" class="headerlink" title="二、数据操作"></a>二、数据操作</h2><p>前面说到，JSON Server 支持多种请求方式，并支持跨域请求。我们可以在其他项目中去请求上面的数据服务，来看下它们对应的数据操作，这里假设你使用的是 Jquery，版本2.1.3：</p>
+<h3 id="请求方式"><a href="#请求方式" class="headerlink" title="请求方式"></a>请求方式</h3><h4 id="GET"><a href="#GET" class="headerlink" title="GET"></a>GET</h4><p>GET 请求用于读取数据，以下内容通过不同参数请求不同接口：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> root = <span class="string">'http://localhost:3000'</span>;</span><br><span class="line"></span><br><span class="line">$.ajax(&#123;</span><br><span class="line">  url: root + <span class="string">'/posts/1'</span>,</span><br><span class="line">  method: <span class="string">'GET'</span></span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 返回数据： &#123;"id": 1, "title": "title one", "body": "post ab"&#125;</span></span><br><span class="line"></span><br><span class="line">$.ajax(&#123;</span><br><span class="line">  url: root + <span class="string">'/posts'</span>,</span><br><span class="line">  method: <span class="string">'GET'</span>,</span><br><span class="line">  data: &#123;</span><br><span class="line">    id: <span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 返回数据： [&#123;"id": 1, "title": "title one", "body": "post ab"&#125;]</span></span><br><span class="line"></span><br><span class="line">$.ajax(&#123;</span><br><span class="line">  url: root + <span class="string">'/comments'</span>,</span><br><span class="line">  method: <span class="string">'GET'</span></span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 返回数据：</span></span><br><span class="line"><span class="comment">[</span></span><br><span class="line"><span class="comment">  &#123;"id": 1, "postId": 1, "email": "ab@xx.com", "body": "comment ab"&#125;,</span></span><br><span class="line"><span class="comment">  ...</span></span><br><span class="line"><span class="comment">  &#123;"id": 6, "postId": 3, "email": "kl@ab.com", "body": "comment kl"&#125;,</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<p>除了基本查询，JSON Server 还支持多条件组合查询，详见 <code>条件查询</code> 章节。</p>
+<h4 id="POST"><a href="#POST" class="headerlink" title="POST"></a>POST</h4><p>POST 请求一般用于新增内容，以下为新增一篇文章：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> root = <span class="string">'http://localhost:3000'</span>;</span><br><span class="line"></span><br><span class="line">$.ajax(&#123;</span><br><span class="line">  url: root + <span class="string">'/posts'</span>,</span><br><span class="line">  method: <span class="string">'POST'</span>,</span><br><span class="line">  data: &#123;</span><br><span class="line">    title: <span class="string">'title three'</span>,</span><br><span class="line">    body: <span class="string">'post ef'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#123;"title": "title three", "body": "post ef", "id": 3&#125;</span></span><br></pre></td></tr></table></figure>
+<p>注意，对于一些版本的 jquery，需要在请求头添加 <code>Content-Type: application/json</code>，否者 POST，PUT，PATCH 请求会被处理成 GET，不会对数据做任何改变 。</p>
+<p>POST 请求发送完，ajax 回调函数将返回 <code>db.json</code> 存储的数据项。此时，打开 <code>db.json</code> 文件，你会发现数据项已经被写入到 <code>db.json</code> 中。</p>
+<p>可以看到，倘若没有指定数据的 id 属性，则 JSON Server 会根据已有数据最大的 id 值进行自增。</p>
+<p>倘若你 POST 的数据项里已经指定 id 的值，则存储到 <code>db.json</code> 里的字段值会变成字符串，比如你发送的数据为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">id</span>: <span class="number">4</span>, <span class="attr">title</span>: <span class="string">'title four'</span>, <span class="attr">body</span>: <span class="string">'post gh'</span>, <span class="attr">flag</span>: <span class="literal">true</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>则存储数据为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">"id"</span>: <span class="string">"4"</span>, <span class="string">"title"</span>: <span class="string">"title four"</span>, <span class="string">"body"</span>: <span class="string">"post gh"</span>, <span class="string">"flag"</span>: <span class="string">"true"</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，id 和 flag 的值都被转换为字符串。</p>
+<p>另外，对于提交相同 id 的数据，服务端会提示报错： <code>Error: Insert failed; duplicate id.</code> 。</p>
+<h4 id="DELETE"><a href="#DELETE" class="headerlink" title="DELETE"></a>DELETE</h4><p>DELETE 请求一般用于删除内容，以下为删除 id 为 4 的文章：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> root = <span class="string">'http://localhost:3000'</span>;</span><br><span class="line"></span><br><span class="line">$.ajax(&#123;</span><br><span class="line">  url: root + <span class="string">'/posts/4'</span>,</span><br><span class="line">  method: <span class="string">'DELETE'</span></span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// []</span></span><br></pre></td></tr></table></figure>
+<p>上面的 DELETE 请求返回一个空数组，表示删除成功。打开 <code>db.json</code> 文件，可以看到，第4篇文章已经被删除。</p>
+<h4 id="PUT"><a href="#PUT" class="headerlink" title="PUT"></a>PUT</h4><p>PUT 请求可更新或新增一项数据。它的具体作用是，当请求的数据存在，则更新该数据。当请求的数据不存在，则新增一项数据。以下分别为更新 id 为 1 的文章：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> root = <span class="string">'http://localhost:3000'</span>;</span><br><span class="line"></span><br><span class="line">$.ajax(&#123;</span><br><span class="line">  url: root + <span class="string">'/posts/1'</span>,</span><br><span class="line">  method: <span class="string">'PUT'</span>,</span><br><span class="line">  data: &#123;</span><br><span class="line">    id: <span class="number">1</span>,</span><br><span class="line">    title: <span class="string">'title one one'</span>,</span><br><span class="line">    body: <span class="string">'post ab ab'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#123;"id": 1, "title": "title one one", "body": "post ab ab"&#125;</span></span><br></pre></td></tr></table></figure>
+<p>但我尝试使用 PUT 发送新数据时，却出现 404 报错的情况。</p>
+<h4 id="PATCH"><a href="#PATCH" class="headerlink" title="PATCH"></a>PATCH</h4><p>PATCH 请求是对 PUT 的补充，用于数据项的局部更新，以下为更新 id 为 2 的 body 属性值：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> root = <span class="string">'http://localhost:3000'</span>;</span><br><span class="line"></span><br><span class="line">$.ajax(&#123;</span><br><span class="line">  url: root + <span class="string">'/posts/2'</span>,</span><br><span class="line">  method: <span class="string">'PATCH'</span>,</span><br><span class="line">  data: &#123;</span><br><span class="line">    body: <span class="string">'post cd cd'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#123;"id": 2, "title": "title two", "body": "post cd cd"&#125;</span></span><br></pre></td></tr></table></figure>
+<p>对 JSON Server 数据服务发送 增删改查 的请求，它里面的数据会作相应的更新，这种更新是基于 <a href="https://github.com/typicode/lowdb" target="_blank" rel="noopener">lowdb</a> 。</p>
+<h3 id="条件查询"><a href="#条件查询" class="headerlink" title="条件查询"></a>条件查询</h3><p>JSON Server 提供了多种形式的条件查询，首先，在 <code>db.json</code> 里弄点数据，5篇文章、3条评论：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"posts"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"id"</span>: <span class="number">1</span>,</span><br><span class="line">      <span class="string">"title"</span>: <span class="string">"aa"</span>,</span><br><span class="line">      <span class="string">"body"</span>: <span class="string">"post aa"</span>,</span><br><span class="line">      <span class="string">"tag"</span>: [<span class="string">"a1"</span>, <span class="string">"a2"</span>],</span><br><span class="line">      <span class="string">"likes"</span>: <span class="number">1000</span>,</span><br><span class="line">      <span class="string">"author"</span>: &#123;</span><br><span class="line">        <span class="string">"name"</span>: <span class="string">"tom"</span>,</span><br><span class="line">        <span class="string">"email"</span>: <span class="string">"tom@xx.com"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"id"</span>: <span class="number">2</span>,</span><br><span class="line">      <span class="string">"title"</span>: <span class="string">"bb"</span>,</span><br><span class="line">      <span class="string">"body"</span>: <span class="string">"post bb ttt"</span>,</span><br><span class="line">      <span class="string">"tag"</span>: [<span class="string">"b1"</span>],</span><br><span class="line">      <span class="string">"likes"</span>: <span class="number">500</span>,</span><br><span class="line">      <span class="string">"author"</span>: &#123;</span><br><span class="line">        <span class="string">"name"</span>: <span class="string">"jack"</span>,</span><br><span class="line">        <span class="string">"email"</span>: <span class="string">"jack@xx.com"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"id"</span>: <span class="number">3</span>,</span><br><span class="line">      <span class="string">"title"</span>: <span class="string">"cc"</span>,</span><br><span class="line">      <span class="string">"body"</span>: <span class="string">"post cc"</span>,</span><br><span class="line">      <span class="string">"tag"</span>: [<span class="string">"c1"</span>, <span class="string">"c2"</span>, <span class="string">"c3"</span>],</span><br><span class="line">      <span class="string">"likes"</span>: <span class="number">1200</span>,</span><br><span class="line">      <span class="string">"author"</span>: &#123;</span><br><span class="line">        <span class="string">"name"</span>: <span class="string">"lucy"</span>,</span><br><span class="line">        <span class="string">"email"</span>: <span class="string">"lucy@xx.com"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"id"</span>: <span class="number">4</span>,</span><br><span class="line">      <span class="string">"title"</span>: <span class="string">"dd"</span>,</span><br><span class="line">      <span class="string">"body"</span>: <span class="string">"post dd"</span>,</span><br><span class="line">      <span class="string">"tag"</span>: [<span class="string">"d1"</span>],</span><br><span class="line">      <span class="string">"likes"</span>: <span class="number">20</span>,</span><br><span class="line">      <span class="string">"author"</span>: &#123;</span><br><span class="line">        <span class="string">"name"</span>: <span class="string">"lucy"</span>,</span><br><span class="line">        <span class="string">"email"</span>: <span class="string">"lucy@xx.com"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"id"</span>: <span class="number">5</span>,</span><br><span class="line">      <span class="string">"title"</span>: <span class="string">"ee"</span>,</span><br><span class="line">      <span class="string">"body"</span>: <span class="string">"post ee"</span>,</span><br><span class="line">      <span class="string">"tag"</span>: [<span class="string">"e1"</span>],</span><br><span class="line">      <span class="string">"likes"</span>: <span class="number">100</span>,</span><br><span class="line">      <span class="string">"author"</span>: &#123;</span><br><span class="line">        <span class="string">"name"</span>: <span class="string">"joy"</span>,</span><br><span class="line">        <span class="string">"email"</span>: <span class="string">"joy@xx.com"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"comments"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"id"</span>: <span class="number">1</span>,</span><br><span class="line">      <span class="string">"postId"</span>: <span class="number">1</span>,</span><br><span class="line">      <span class="string">"email"</span>: <span class="string">"ab@xx.com"</span>,</span><br><span class="line">      <span class="string">"body"</span>: <span class="string">"comment ab"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"id"</span>: <span class="number">2</span>,</span><br><span class="line">      <span class="string">"postId"</span>: <span class="number">1</span>,</span><br><span class="line">      <span class="string">"email"</span>: <span class="string">"cd@xx.com"</span>,</span><br><span class="line">      <span class="string">"body"</span>: <span class="string">"comment cd"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"id"</span>: <span class="number">3</span>,</span><br><span class="line">      <span class="string">"postId"</span>: <span class="number">2</span>,</span><br><span class="line">      <span class="string">"email"</span>: <span class="string">"ef@xx.com"</span>,</span><br><span class="line">      <span class="string">"body"</span>: <span class="string">"comment ef"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后，再来看看每个查询操作：</p>
+<h4 id="过滤（Filter）"><a href="#过滤（Filter）" class="headerlink" title="过滤（Filter）"></a>过滤（Filter）</h4><p>除了普通参数，还可通过 <code>.</code> 来访问深层属性：</p>
+<ul>
+<li><a href="http://localhost:3000/posts?id=1&amp;id=2" target="_blank" rel="noopener">http://localhost:3000/posts?id=1&amp;id=2</a><br>获取 posts 中 id 为 1 或 2 的 文章（<code>db.json</code> 中 posts 的第1和第2条）</li>
+<li><a href="http://localhost:3000/posts?author.name=lucy" target="_blank" rel="noopener">http://localhost:3000/posts?author.name=lucy</a><br>获取 posts 中 author 属性 name 值为 lucy 的文章（<code>db.json</code> 中 posts 的第3、4条）</li>
+<li><a href="http://localhost:3000/posts?author.name=lucy&amp;title=cc" target="_blank" rel="noopener">http://localhost:3000/posts?author.name=lucy&amp;title=cc</a><br>获取 posts 中 author 属性 name 值为 lucy，且 title 为 cc 的文章（<code>db.json</code> 中 posts 的第3条）</li>
+<li><a href="http://localhost:3000/posts?tag.length=3" target="_blank" rel="noopener">http://localhost:3000/posts?tag.length=3</a><br>获取 posts 中 tag 个数为3的文章 （<code>db.json</code> 中 posts 的第3条）</li>
+</ul>
+<p>相同参数（id）取或，不同参数（author.name、title）取与。</p>
+<h4 id="分页（Paginate）"><a href="#分页（Paginate）" class="headerlink" title="分页（Paginate）"></a>分页（Paginate）</h4><p>可使用参数 <code>_page</code> 和 <code>_limit</code>(可选)，来返回分页数据。不用 <code>_limit</code> 时，默认返回 10 条。</p>
+<ul>
+<li><a href="http://localhost:3000/posts?_page=1" target="_blank" rel="noopener">http://localhost:3000/posts?_page=1</a><br>获取 posts 中 前10条数据。若已有数据小于10条，则全部返回（<code>db.json</code> 中 posts 的全部数据）</li>
+<li><a href="http://localhost:3000/posts?_page=2&amp;_limit=2" target="_blank" rel="noopener">http://localhost:3000/posts?_page=2&amp;_limit=2</a><br>每页限制2条，获取 posts 中第二页数据 （<code>db.json</code> 中 posts 的第3、4条）</li>
+</ul>
+<h4 id="截取（Slice）"><a href="#截取（Slice）" class="headerlink" title="截取（Slice）"></a>截取（Slice）</h4><p>Slice 截取的规则和数组中的 slice 方法相同。可使用参数 <code>_start</code>、<code>_end</code> 以及 <code>_limit</code> ，来返回截取数据。</p>
+<ul>
+<li><a href="http://localhost:3000/posts?_start=1&amp;_end=3" target="_blank" rel="noopener">http://localhost:3000/posts?_start=1&amp;_end=3</a><br>获取 posts 中第2条到第3条的数据（<code>db.json</code> 中 posts 的第2、3条）</li>
+<li><a href="http://localhost:3000/posts?_start=2&amp;_end=4" target="_blank" rel="noopener">http://localhost:3000/posts?_start=2&amp;_end=4</a><br>获取 posts 中第3条到第4条的数据（<code>db.json</code> 中 posts 的第3、4条）</li>
+<li><a href="http://localhost:3000/posts?_start=2&amp;_limit=2" target="_blank" rel="noopener">http://localhost:3000/posts?_start=2&amp;_limit=2</a><br>从第二条开始，获取 posts 中 后2条数据（<code>db.json</code> 中 posts 的第3、4条）</li>
+</ul>
+<p>包括 <code>_start</code> 的文章，但不包括 <code>_end</code> 的文章。可以把 <code>_start</code> 和 <code>_end</code> 看成数组项的索引值。</p>
+<h4 id="分类排序（Sort）"><a href="#分类排序（Sort）" class="headerlink" title="分类排序（Sort）"></a>分类排序（Sort）</h4><p>可使用参数 <code>_sort</code> 和 <code>_order</code>，来返回排序的数据。</p>
+<ul>
+<li><a href="http://localhost:3000/posts?_sort=likes&amp;_order=asc" target="_blank" rel="noopener">http://localhost:3000/posts?_sort=likes&amp;_order=asc</a><br>获取 posts 中按 likes 数升序的数据（<code>db.json</code> 中 posts 的 id 排序依次为 4、5、2、1、3）</li>
+<li><a href="http://localhost:3000/posts?_sort=likes&amp;_order=desc" target="_blank" rel="noopener">http://localhost:3000/posts?_sort=likes&amp;_order=desc</a><br>获取 posts 中按 likes 数降序的数据（<code>db.json</code> 中 posts 的 id 排序依次为 3、1、2、5、4）</li>
+</ul>
+<h4 id="运算（Operators）"><a href="#运算（Operators）" class="headerlink" title="运算（Operators）"></a>运算（Operators）</h4><p>可使用参数 <code>_gte</code> 和 <code>_lte</code>，来返回一个范围的数据。</p>
+<ul>
+<li><a href="http://localhost:3000/posts?likes_gte=100&amp;likes_lte=1000" target="_blank" rel="noopener">http://localhost:3000/posts?likes_gte=100&amp;likes_lte=1000</a><br>获取 posts 中 likes 数大于等于100、且小于等于1000的数据（<code>db.json</code> 中 posts 的第1、2、5条）</li>
+</ul>
+<p>可使用参数 <code>_ne</code>，来返回除指定之外的数据。</p>
+<ul>
+<li><a href="http://localhost:3000/posts?author.name_ne=lucy" target="_blank" rel="noopener">http://localhost:3000/posts?author.name_ne=lucy</a><br>获取 posts 中除 author.name 为 lucy 的数据（<code>db.json</code> 中 posts 的第1、2、5条）</li>
+</ul>
+<h4 id="全文搜索（Full-text-search）"><a href="#全文搜索（Full-text-search）" class="headerlink" title="全文搜索（Full-text search）"></a>全文搜索（Full-text search）</h4><p>可使用参数 <code>q</code>，来返回包含指定字符的数据。它会匹配每项数据的所有字段。</p>
+<ul>
+<li><a href="http://localhost:3000/posts?q=ttt" target="_blank" rel="noopener">http://localhost:3000/posts?q=ttt</a><br>获取 posts 中字段值包含 ttt 的数据（<code>db.json</code> 中 posts 的第2条）</li>
+</ul>
+<h4 id="关联（Relationships）"><a href="#关联（Relationships）" class="headerlink" title="关联（Relationships）"></a>关联（Relationships）</h4><p>可使用参数 <code>_embed</code>，将关联子数据拼接起来。</p>
+<ul>
+<li><a href="http://localhost:3000/posts/1?_embed=comments" target="_blank" rel="noopener">http://localhost:3000/posts/1?_embed=comments</a><br>获取 posts 中 id 为 1 的数据，并将它对应的 comments 数据拼接起来</li>
+</ul>
+<p>返回数据为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"id"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">"title"</span>: <span class="string">"aa"</span>,</span><br><span class="line">    <span class="string">"body"</span>: <span class="string">"post aa"</span>,</span><br><span class="line">    <span class="string">"tag"</span>: [<span class="string">"a1"</span>, <span class="string">"a2"</span>],</span><br><span class="line">    <span class="string">"likes"</span>: <span class="number">1000</span>,</span><br><span class="line">    <span class="string">"author"</span>: &#123;</span><br><span class="line">        <span class="string">"name"</span>: <span class="string">"tom"</span>,</span><br><span class="line">        <span class="string">"email"</span>: <span class="string">"tom@xx.com"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"comments"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">"id"</span>: <span class="number">1</span>,</span><br><span class="line">            <span class="string">"postId"</span>: <span class="number">1</span>,</span><br><span class="line">            <span class="string">"email"</span>: <span class="string">"ab@xx.com"</span>,</span><br><span class="line">            <span class="string">"body"</span>: <span class="string">"comment ab"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">"id"</span>: <span class="number">2</span>,</span><br><span class="line">            <span class="string">"postId"</span>: <span class="number">1</span>,</span><br><span class="line">            <span class="string">"email"</span>: <span class="string">"cd@xx.com"</span>,</span><br><span class="line">            <span class="string">"body"</span>: <span class="string">"comment cd"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><a href="http://localhost:3000/comments/1?_expand=post" target="_blank" rel="noopener">http://localhost:3000/comments/1?_expand=post</a><br>获取 comments 中 id 为 1 的数据，并将它对应的 post 数据拼接起来</li>
+</ul>
+<p>返回的数据为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"id"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">"postId"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">"email"</span>: <span class="string">"ab@xx.com"</span>,</span><br><span class="line">    <span class="string">"body"</span>: <span class="string">"comment ab"</span>,</span><br><span class="line">    <span class="string">"post"</span>: &#123;</span><br><span class="line">        <span class="string">"id"</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="string">"title"</span>: <span class="string">"aa"</span>,</span><br><span class="line">        <span class="string">"body"</span>: <span class="string">"post aa"</span>,</span><br><span class="line">        <span class="string">"tag"</span>: [<span class="string">"a1"</span>, <span class="string">"a2"</span>],</span><br><span class="line">        <span class="string">"likes"</span>: <span class="number">1000</span>,</span><br><span class="line">        <span class="string">"author"</span>: &#123;</span><br><span class="line">            <span class="string">"name"</span>: <span class="string">"tom"</span>,</span><br><span class="line">            <span class="string">"email"</span>: <span class="string">"tom@xx.com"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果你觉得自己建立一个数据服务器，创建数据这些操作麻烦。希望可以直接调用数据，那也是没问题的，只需要通过 JSONPlaceholder。</p>
+<h2 id="三、JSONPlaceholder"><a href="#三、JSONPlaceholder" class="headerlink" title="三、JSONPlaceholder"></a>三、JSONPlaceholder</h2><p><a href="http://jsonplaceholder.typicode.com/" target="_blank" rel="noopener">JSONPlaceholder</a> 可以说是 JSON Server 的一个线上例子，它是由 JSON Server 的作者开发的，正如它所建立的初衷：</p>
+<blockquote>
+<p>Most of the time when trying a new library, hacking a prototype or following a tutorial, I found myself in need of some data.</p>
+<p>I didn’t like the idea of using some public API because I had the feeling that I was spending more time registering a client and understanding a complex API than focusing on my task.</p>
+<p>But I liked the idea of image placeholders for web designers. So I decided to code a little Express server inspired by that and here is JSONPlaceholder.</p>
+</blockquote>
+<p>作者在开发一些项目时，需要若干测试数据。但网上一些公用的数据接口，需要注册，还要花时间了解流程以及API的使用方法。可是他只想专注项目本身的开发，于是，它对照web设计师所使用的 <a href="https://placeholder.com/" target="_blank" rel="noopener">image placeholder</a>，再结合 JSON Server，创建了 JSONPlaceholder。</p>
+<p>基于大多数项目的常见需求，它提供了一套可用的API数据，用户直接调用即可。并且它有如下特点：</p>
+<ul>
+<li>免注册</li>
+<li>零设置(编码)</li>
+<li>API简单</li>
+<li>关联性强</li>
+<li>资源过滤和嵌套</li>
+<li>跨域（CORS and JSONP）</li>
+<li>支持 GET, POST, PUT, PATCH, DELETE 和 OPTIONS 请求</li>
+<li>与 Backbone, AngularJS, Ember 等库兼容</li>
+</ul>
+<p>它包含的数据API有：</p>
+<table>
+<thead>
+<tr>
+<th>接口</th>
+<th>数据条数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="http://jsonplaceholder.typicode.com/posts" target="_blank" rel="noopener">/posts</a></td>
+<td>100</td>
+</tr>
+<tr>
+<td><a href="http://jsonplaceholder.typicode.com/comments" target="_blank" rel="noopener">/comments</a></td>
+<td>500</td>
+</tr>
+<tr>
+<td><a href="http://jsonplaceholder.typicode.com/albums" target="_blank" rel="noopener">/albums</a></td>
+<td>100</td>
+</tr>
+<tr>
+<td><a href="http://jsonplaceholder.typicode.com/photos" target="_blank" rel="noopener">/photos</a></td>
+<td>5000</td>
+</tr>
+<tr>
+<td><a href="http://jsonplaceholder.typicode.com/todos" target="_blank" rel="noopener">/todos</a></td>
+<td>200</td>
+</tr>
+<tr>
+<td><a href="http://jsonplaceholder.typicode.com/users" target="_blank" rel="noopener">/users</a></td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<p>并且，你还能使用不同的请求方式去请求不同的路由：</p>
+<table>
+<thead>
+<tr>
+<th>请求方式</th>
+<th>接口</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><a href="http://jsonplaceholder.typicode.com/posts" target="_blank" rel="noopener">/posts</a></td>
+<td>获取所有文章</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><a href="http://jsonplaceholder.typicode.com/posts/1" target="_blank" rel="noopener">/posts/1</a></td>
+<td>获取第一篇文章</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><a href="http://jsonplaceholder.typicode.com/posts/1/comments" target="_blank" rel="noopener">    /posts/1/comments</a></td>
+<td>通过 posts，查询第一篇文章所有的评论 </td>
+</tr>
+<tr>
+<td>GET</td>
+<td><a href="http://jsonplaceholder.typicode.com/comments?postId=1" target="_blank" rel="noopener">/comments?postId=1</a></td>
+<td>通过 comments，查询第一篇文章所有的评论  </td>
+</tr>
+<tr>
+<td>GET</td>
+<td><a href="http://jsonplaceholder.typicode.com/posts?userId=1" target="_blank" rel="noopener">/posts?userId=1</a></td>
+<td>获取 <code>userId=1</code> 发布的文章 </td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/posts</td>
+<td>新增一片文章</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/posts/1</td>
+<td>更新第一篇文章，没有相应的文章，则创建它</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>/posts/1</td>
+<td>更新第一篇文章的某个属性</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/posts/1</td>
+<td>删除第一篇文章</td>
+</tr>
+</tbody>
+</table>
+<p>而你要做的，只需要通过如下方式调用它即可（假如你用的Jquery）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> root = <span class="string">'http://jsonplaceholder.typicode.com'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 每页限制5条，获取第二页文章（6-10）</span></span><br><span class="line">$.ajax(&#123;</span><br><span class="line">  url: root + <span class="string">'/posts?_page=2&amp;_limit=5'</span>,</span><br><span class="line">  method: <span class="string">'GET'</span></span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 新增一篇文章</span></span><br><span class="line">$.ajax(&#123;</span><br><span class="line">  url: root + <span class="string">'/posts'</span>,</span><br><span class="line">  method: <span class="string">'POST'</span>,</span><br><span class="line">  data: &#123;</span><br><span class="line">    title: <span class="string">'fooooooo'</span>,</span><br><span class="line">    body: <span class="string">'barrrrr'</span>,</span><br><span class="line">    userId: <span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删除一篇文章</span></span><br><span class="line">$.ajax(&#123;</span><br><span class="line">  url: root + <span class="string">'/posts/1'</span>,</span><br><span class="line">  method: <span class="string">'DELETE'</span></span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>更多用法可参见，<a href="https://github.com/typicode/jsonplaceholder#how-to" target="_blank" rel="noopener">使用实例</a>。</p>
+<p>注意，你向 <code>http://jsonplaceholder.typicode.com</code> 发送的新增、修改、删除 的请求并不会真的对 jsonplaceholder 服务器上的数据执行 新增、修改、删除 的操作，它只是做了一个模拟请求。因此，如果你希望接近真实的数据操作，还是得通过 JSON Server 去创建一个数据服务。 </p>
+<h2 id="四、JSON-Server-深入"><a href="#四、JSON-Server-深入" class="headerlink" title="四、JSON Server 深入"></a>四、JSON Server 深入</h2><p>除了上面说到的内容外，JSON Server 还有一些相对高级的特性：</p>
+<h3 id="命令行设置"><a href="#命令行设置" class="headerlink" title="命令行设置"></a>命令行设置</h3><h4 id="自定义访问目录"><a href="#自定义访问目录" class="headerlink" title="自定义访问目录"></a>自定义访问目录</h4><p>默认情况下，服务器本地有一个 JSON Server 首页。在文章前面有提到，我们可以在根目录下新建 <code>./public</code> 目录，然后，在里面新建一个 <code>index.html</code> 便可自定义这个首页，除了 <code>index.html</code> 这个页面，我们还可以在 <code>./public</code> 中放 js、images等文件。</p>
+<p><code>./public</code> 是默认指定的文件名。</p>
+<p>若你不想使用 <code>./public</code> 这么一个文件名，你也可通过 <code>--static</code> 命令手动指定其他文件夹。比如，在根目录新建 <code>./demo</code> 目录， 要把 <code>./demo</code> 作为访问目录。只需如下命令：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; json-server --watch db.json --<span class="keyword">static</span> demo</span><br></pre></td></tr></table></figure>
+<p>由于 <code>./demo</code> 被当做了服务器访问的目录，因此启动后，通过 <code>http://localhost:3000</code> 便能访问 <code>./demo</code> 目录的内容。</p>
+<h4 id="设置端口号"><a href="#设置端口号" class="headerlink" title="设置端口号"></a>设置端口号</h4><p>默认情况下，JSON Server 服务器的端口号是 3000，我们也可以手动设置，如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; json-server --watch db.json --port <span class="number">9999</span></span><br></pre></td></tr></table></figure>
+<p>这里将端口号设置为 9999，打开 ，便能访问到 JSON Server 首页。</p>
+<h4 id="整合命令"><a href="#整合命令" class="headerlink" title="整合命令"></a>整合命令</h4><p>除了上面说到的两个命令，JSON Server 还提供了其他多个命令。为了避免在 CLI 中输入一串参数，我们可以在根目录新建 <code>json-server.json</code> 文件来覆盖默认设置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// json-server.json</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"port"</span>: <span class="string">"9999"</span>,</span><br><span class="line">  <span class="string">"watch"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="string">"delay"</span>: <span class="number">1000</span>,</span><br><span class="line">  <span class="string">"static"</span>: <span class="string">"./demo"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时，运行 <code>json-server db.json</code> 即可启动服务，并让上述设置生效。</p>
+<h3 id="创建动态数据"><a href="#创建动态数据" class="headerlink" title="创建动态数据"></a>创建动态数据</h3><p>除了手动新建 <code>db.json</code> 作为数据文件，我们还可以通过运行js文件来生成动态数据。在根目录新建 <code>data.js</code> 文件，加入代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// data.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> data = &#123;<span class="attr">users</span>: [] &#125;;</span><br><span class="line">  <span class="comment">// Create 50 users</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">50</span>; i++) &#123;</span><br><span class="line">    data.users.push(&#123; <span class="attr">id</span>: i, <span class="attr">name</span>: <span class="string">`user<span class="subst">$&#123;i&#125;</span>`</span> &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>运行 <code>json-server data.js</code>，访问 <a href="http://localhost:9999/users，" target="_blank" rel="noopener">http://localhost:9999/users，</a> 便能看到生成的数据（存在内存）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123;<span class="string">"id"</span>: <span class="number">0</span>, <span class="string">"name"</span>: <span class="string">"user0"</span>&#125;,</span><br><span class="line">  &#123;<span class="string">"id"</span>: <span class="number">1</span>, <span class="string">"name"</span>: <span class="string">"user1"</span>&#125;,</span><br><span class="line">  ...</span><br><span class="line">  &#123;<span class="string">"id"</span>: <span class="number">49</span>, <span class="string">"name"</span>: <span class="string">"user49"</span>&#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h3 id="自定义路由"><a href="#自定义路由" class="headerlink" title="自定义路由"></a>自定义路由</h3><p>我们并非一定要按照 <code>db.json</code> 定义的数据结构来访问相应的接口，可通过在根目录创建一个 <code>routes.json</code> 文件来自定义访问路由：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// routes.json</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"/api/p"</span>: <span class="string">"/posts"</span>,</span><br><span class="line">  <span class="string">"/api/c"</span>: <span class="string">"/comments"</span>,</span><br><span class="line">  <span class="string">"/api/:resource?id=:id"</span>: <span class="string">"/:resource/:id"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 <code>json-server.json</code> 文件中新增路由指定：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// json-server.json</span></span><br><span class="line">&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="string">"routes"</span>: <span class="string">"./routes.json"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行 <code>json-server db.json</code> 重启服务，此时，访问左边的地址，等价于访问右边的：</p>
+<table>
+<thead>
+<tr>
+<th>新路由</th>
+<th>旧路由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="http://localhost:9999/api/p" target="_blank" rel="noopener">http://localhost:9999/api/p</a></td>
+<td><a href="http://localhost:9999/posts" target="_blank" rel="noopener">http://localhost:9999/posts</a></td>
+</tr>
+<tr>
+<td><a href="http://localhost:9999/api/c" target="_blank" rel="noopener">http://localhost:9999/api/c</a></td>
+<td><a href="http://localhost:9999/comments" target="_blank" rel="noopener">http://localhost:9999/comments</a></td>
+</tr>
+<tr>
+<td><a href="http://localhost:9999/api/p?id=1" target="_blank" rel="noopener">http://localhost:9999/api/p?id=1</a></td>
+<td><a href="http://localhost:9999/posts/1" target="_blank" rel="noopener">http://localhost:9999/posts/1</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h3><p>为了让数据访问功能更强大、更灵活，JSON Server 提供了中间件，用户可在数据返回前，进行相关操作。比如，下面这段代码便是在数据返回前，进行相关验证：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// server.js</span></span><br><span class="line"><span class="keyword">const</span> jsonServer = <span class="built_in">require</span>(<span class="string">'json-server'</span>)</span><br><span class="line"><span class="keyword">const</span> server = jsonServer.create()</span><br><span class="line"><span class="keyword">const</span> router = jsonServer.router(<span class="string">'db.json'</span>)</span><br><span class="line"><span class="keyword">const</span> middlewares = jsonServer.defaults()</span><br><span class="line"></span><br><span class="line">server.use(middlewares)</span><br><span class="line">server.use(<span class="function">(<span class="params">req, res, next</span>) =&gt;</span> &#123;</span><br><span class="line"> <span class="keyword">if</span> (isAuthorized(req)) &#123; <span class="comment">// 增加验证代码</span></span><br><span class="line">   next() <span class="comment">// 继续执行 JSON Server 路由</span></span><br><span class="line"> &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">   res.sendStatus(<span class="number">401</span>)</span><br><span class="line"> &#125;</span><br><span class="line">&#125;)</span><br><span class="line">server.use(router)</span><br><span class="line">server.listen(<span class="number">3000</span>, () =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'JSON Server is running'</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>新增 <code>server.js</code> 文件后，你只需要运行 <code>node server.js</code>， 便可返回数据前进行相关验证。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

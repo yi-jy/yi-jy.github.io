@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="translate-webp-case-study | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="WebP">
+  
+
+  
+
+  <title>【翻译】WebP图片的使用指导：一个案例研究 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">【翻译】WebP图片的使用指导：一个案例研究</h1>
+
+  <time class="post-time">2015-10-29</time>
+
+  <div class="post-content">
+    <p>原文地址：<a href="http://www.smashingmagazine.com/2015/10/webp-images-and-performance/" target="_blank" rel="noopener">Guide To Using WebP Images Today: A Case Study</a></p>
+<p>俗话说一图胜千言，但在网上，一图却可以抵过上千字节甚至更多。HTTP 文档表明图片平均占整个网页的64%，基于此，图片的压缩是非常关键的，尤其当用户因为你的页面加载过慢时而关闭它。</p>
+<p>图片压缩的主要问题是保证图片大小的情况下而不牺牲图片质量，相对于JPEG, PNG 和 GIF这些标准格式，在过去通过尝试创建新类型文件去压缩图片并不是太成功。<br><a id="more"></a></p>
+<h2 id="开始-WebP"><a href="#开始-WebP" class="headerlink" title="开始 WebP"></a>开始 WebP</h2><p>WebP 是在2010创建并且现在由Google开发的一种图片格式，它提供了图片的无损和有损压缩。一些大的公司都有使用WebP，显著地有<a href="https://gigaom.com/2014/07/19/the-story-of-webp-how-google-wants-to-speed-up-the-web-one-image-at-a-time/" target="_blank" rel="noopener">Google, Facebook 和 eBay</a>。</p>
+<p>在我们公司，一直尝试使用技术提升网站性能。因此，我们做了一些 A/B 测试去弄明白WebP对图片的影响，以及它如何才能更好的应用在我们客户的项目中。</p>
+<p>“较小的文件尺寸”是我们开始使用 WebP 的一个主要原因，根据 Google 介绍：</p>
+<ul>
+<li>WebP 无损图片文件比 PNG 格式的小26%</li>
+<li>在同等结构指标下，WebP 有损图片文件比 JPEG 格式的小25% 到 34%</li>
+<li>WebP 支持无损透明（也被称为Alpha通道），仅只需22%的字节</li>
+</ul>
+<p>我们的测试揭露了 WebP 图片格式的利与弊：</p>
+<table>
+<thead>
+<tr>
+<th>利</th>
+<th>弊</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>更小的文件尺寸</td>
+<td>较差的浏览器支持</td>
+</tr>
+<tr>
+<td>改良的压缩算法</td>
+<td>不具有可塑的外观</td>
+</tr>
+<tr>
+<td>平滑的颜色层次</td>
+<td>较差的输出（导出）接口</td>
+</tr>
+<tr>
+<td>Alpha通道的掩饰</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="图片质量"><a href="#图片质量" class="headerlink" title="图片质量"></a>图片质量</h2><p>WebP 运用了一种新的压缩算法，相对于其他类型的文件，它并没有因为人工痕迹（比如变形或退化）而看上去不同。WebP 运用了一个很好的原理来保持图片清晰的边缘，但是，正如你所期望的有损文件，它丢失了细节和纹理。而相比 JPEG 文件在固定区域表现紧致的人工痕迹 ，WebP 拥有下降到最低质量设置的平滑划分。在低配置中的一个负面东西就是人脸可别塑造或色调分色的外观。</p>
+<img src="/2015/10/29/translate-webp-case-study/01-photo-comparison-opt-small.jpg" title="JPEG 和 WebP在质量上的差异">
+<img src="/2015/10/29/translate-webp-case-study/02-photo-comparison-2x-opt-small.jpg" title="JPEG 和 WebP在质量上的差异">
+<p>在 WebP 图片格式上，我们还有其他事情需要考虑，压缩设置和JPEG不是一比一匹配的，不要期望一个50%质量的JPEG和一个50%质量的 webP 相同。在 WebP 上质量会大幅度下降，因此以你的方式去开始高质量的压缩。</p>
+<p>另一个颠覆性的好处是它能够增加一个alpha 通道的掩盖，很像PNG，不像它的无损副本，然而，你通常可以压缩一个可用的WebP图片，相对与它将近十分之一尺寸等效的PNG图。允许对主机的选项和功能，这对WebP是一个出色的应用，如果不这样，大尺寸的文件会让网站运行缓慢，一个实际的例子就是，880KB 的 PNG图（24位alpha通道），被压缩到41KB—节约了95%，虽然这95%不是标准，但它确实表明有这种可能。</p>
+<img src="/2015/10/29/translate-webp-case-study/03-illustration-comparison-opt-small.png" title="JPEG 和 WebP在纹理上的差异">
+<p>为了进一步减小图片的大小，我们可以在图片编辑的保存对话框里，通过取消“保存元数据”的选项来省略元数据。甚至为了更进一步的压缩保存，我们可以选择“有损alpha通道”选项。alpha通道的质量设置反应在这些图片中。比如，一个50%质量图片将会有50%质量有损alpha通道。在我们的测试中，我们期望在遮罩边缘有人工痕迹，但它同时也是一个对整个图片值得注意的压缩改变。我们当然认为这是进一步缩小文件大小的选择，当这样做时我们会密切监控图像质量，同时，在差的网速下监视带有渐变消失的alpha通道。</p>
+<img src="/2015/10/29/translate-webp-case-study/04-banding-comparison-opt-small.jpg" title="JPEG 和 WebP在alpha通道上的差异">
+<p>我们很激动的发现一个 <a href="http://telegraphics.com.au/sw/product/WebPFormat#webpformat" target="_blank" rel="noopener">Photoshop 插件</a> 可以支持WebP。这让设置WebP质量的量度变的很容易， 这个插件的界面遗留了一些待改进的东西—它还未被Adobe完全采纳，目前看来，你不能通过预览图片去决定质量的设置，这是很不爽的。</p>
+<img src="/2015/10/29/translate-webp-case-study/05-webp-interface-opt.png" title="xx">
+<p>作为一个解决方案，Google的chrome浏览器允许文件做一个快速对比。在Photoshop中访问保存对话框同样也不方便。为了节约时间，我们建立了一套键盘快捷键，因此可以避免重复访问“保存”的下拉菜单。尽管有些警告，相当于那些繁琐的操作还是值得的。</p>
+<p>在显著文件尺寸保存中，好的质量和alpha通道，在所有的图片格式当中，WebP像一个真正的赢家。当测试时，结果明朗化了，奇怪的是在不同图片格式中没有明显的赢家。通常情况是WebP比其他格式出色的多，但是JPEG和PNG8总是偶然的在尺寸或者质量，或者同时两者上战胜WebP。在使用WebP前，你应该做大量测试，因为它可能不是你想要的理想情况。</p>
+<h2 id="运用"><a href="#运用" class="headerlink" title="运用"></a>运用</h2><p>一旦决定使用，WebP将会在我们工作中成为一个高效的工具，我们让开发者来测试执行。WebP 在 Chrome, Opera, Opera Mini浏览器里原生支持的，而安卓浏览器和安卓版chrome、Firefox、IE、Safari这些浏览器 是不原生支持，尽管Firefox在WebP方面有相当长的历史。幸运的是，针对不支持的浏览器有一些解决方案。</p>
+<p>通过研究，我们发现支持WebP格式有三个可行的选项，我们想确保对于页面尺寸我们使用的是最佳选项，请牢记速度指数是一个关键的指标，并且要把需要的任何JavaScript polyfills考虑进去。</p>
+<p>我们运行了四个测试来思考应该朝哪个方向进行。第一个测试我们使用普通的JPEG来作为控制量，而其他三个测试运用的选项如下。我们使用JPEG图片和同等质量的WebP图片（269KB 的JPEG 和52KB 的WebP），<a href="http://telegraphics.com.au/sw/product/WebPFormat#webpformat" target="_blank" rel="noopener">四个测试所有的可用结果在这个PDF中</a>。</p>
+<p>在第二个测试中，我们引用了 <a href="http://webpjs.appspot.com/" target="_blank" rel="noopener">WebPJS</a>，一个由Dominik Homberger开发、大小为67K的polyfill ，它使得WebP支持主流浏览器，甚至包含IE6。这个polyfill非常有用，因为它不要求你改变现有代码img元素的语法，只需要改变将.jpeg 或 .png后缀名改为.webp，polyfill 就能正常工作。</p>
+<p>第三个方案是使用 <a href="http://scottjehl.github.io/picturefill/" target="_blank" rel="noopener">Picturefill</a>，这个polyfill让我们可以使用 <code>&lt;picture&gt;</code> 元素，即便它还不能原生支持。对于支持webP的浏览器，它同样允许开发者使用 <code>&lt;source&gt;</code> 元素，而对于不支持webP的浏览器，它将webP转换为JPEG, PNG或其他格式的图片（显然，<code>&lt;picture&gt;</code> 元素也有惊人的力量）。</p>
+<p>第四个测试是将webP应用在服务器上.htaccess文件的代码里，这个选择就是由 <a href="https://github.com/vincentorback/WebP-images-with-htaccess" target="_blank" rel="noopener">Vincent Orback设计</a>。使用此方案，.htaccess代码会查找页面中每个图片WebP 的版本号，如果发现浏览器支持WebP ，并且WebP图片可用，它丢弃JPEG或PNG而采用WebP图像。这对节约大量时间非常有用，因为你不用在代码中改变img的语法，也不用改变图片到.webp的扩展。</p>
+<p>通过审查这些数据，我们认定运行在所有浏览器当中，WebP polyfill（测试二）是最轻量级的解决方案，但这个方案上在速度指标上并没有给我们很深的印象。除了在IOS以外，在图片下载上这个WebP polyfill表面看上去比JPEG控制量和其他测试应用更糟。</p>
+<p>我们同样注意到了在iOS设备上，100KB大小的文件比在其他设备上大。在测试中，我们仍然注意到在iOS5.1 以及 IE8 和 IE9中，WebP 图片会被下载三次。因为两次额外的请求并不理想，它总是比同等的JPEG小。我们没有测试新版本的IOS版本，因此这个问题可能已解决。我们更倾向于最初的应用，因为它能更好的支持浏览器。</p>
+<h2 id="展望未来"><a href="#展望未来" class="headerlink" title="展望未来"></a>展望未来</h2><p>我们团队已经决定采用之前测试中的方案三，对支持webP的浏览器，使用 <code>&lt;picture&gt;</code> 元素去服务WebP 图片，而对不支持的则应用JPEG 或 PNG，我们相信这对渐进增减和平稳退化是一种非常好的渠道。我们原本以为可以结合WebP polyfill来应用WebP，结果发现效果都不太理想。</p>
+<p>WebP不会让JPEG 和 PNG这种图片格式过时，但对于增加你的技能它是一个很不错的工具，准备好迎接WebP，并在每个新的项目中做一些测试和比较吧！</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

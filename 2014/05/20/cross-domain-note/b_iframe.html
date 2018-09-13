@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+</head>
+
+<body id="nmb">
+
+<input type="button" value="我是iframe页面的元素，点击我可以改变引用iframe页面的元素属性" id="btn02"/>
+<p>被嵌套页面</p>
+<p>被嵌套页面</p>
+<p>被嵌套页面</p>
+<p>被嵌套页面</p>
+
+</body>
+</html>
+
+<script type="text/javascript">
+	var oBtn02=document.getElementById("btn02");
+	
+	oBtn02.onclick=function(){
+		
+		//window.parent.document.getElementById("btn01").style.width="100%";
+		//window.parent引用iframe的页面
+		
+		window.top.document.getElementById("btn01").style.width="100%";
+		//window.top指的是最顶级引用的页面
+	}
+</script>

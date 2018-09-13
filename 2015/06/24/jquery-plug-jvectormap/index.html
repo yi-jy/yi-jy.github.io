@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="一款基于jQuery的地图插件–jvectormap | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="jvectormap echart 地图插件">
+  
+
+  
+
+  <title>一款基于jQuery的地图插件–jvectormap | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">一款基于jQuery的地图插件–jvectormap</h1>
+
+  <time class="post-time">2015-06-24</time>
+
+  <div class="post-content">
+    <p>jvectormap是一款基于jquery的地图插件，它的官网 <a href="http://jvectormap.com/" target="_blank" rel="noopener">http://jvectormap.com/</a></p>
+<p>首先来看个例子。<a href="/2015/06/24/jquery-plug-jvectormap/provice-data.html" title="中国每个省份的称呼">中国每个省份的称呼</a>，然后，开始使用jvectormap来开发一款地图吧</p>
+<a id="more"></a>
+<h2 id="创建地图"><a href="#创建地图" class="headerlink" title="创建地图"></a>创建地图</h2><p>地图的创建，主要包括js文件的下载和文件的引入，如下操作：</p>
+<h3 id="1-下载jvectormap文件"><a href="#1-下载jvectormap文件" class="headerlink" title="1. 下载jvectormap文件"></a>1. 下载jvectormap文件</h3><p>需要下载的文件包括处理地图功能的jvectormap工具库、美化地图控件的css，和每个区域地图的js库：</p>
+<p>工具库和css可通过 <a href="http://jvectormap.com/download/" target="_blank" rel="noopener">http://jvectormap.com/download/</a> 进行下载</p>
+<p>区域地图js文件则需要在 <a href="http://jvectormap.com/maps/world/europe/" target="_blank" rel="noopener">http://jvectormap.com/maps/world/europe/</a> 中进行选择下载</p>
+<h3 id="2-引入jvectormap文件"><a href="#2-引入jvectormap文件" class="headerlink" title="2. 引入jvectormap文件"></a>2. 引入jvectormap文件</h3><p>假设工具库、css和区域地图js的名称分别为jquery-jvectormap-2.0.2.css、jquery-jvectormap-2.0.2.min.js和jquery-jvectormap-cn-mill-en.js，那么我们将它们引入到页面中：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"jquery-jvectormap-2.0.2.css"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"jquery-1.8.0.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"jquery-jvectormap-2.0.2.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"jquery-jvectormap-cn-mill-en.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>当以上工作都完成之后，我们需要一个容器去装载地图：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"map-container"</span> <span class="attr">style</span>=<span class="string">"width:800px;height:600px"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后通过js将地图信息与容器结合起来，进行地图初始化：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$(<span class="string">".map-container"</span>).vectorMap(&#123;</span><br><span class="line">    map: <span class="string">"cn_mill_en"</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>地图初始化demo：<a href="/2015/06/24/jquery-plug-jvectormap/provice.html" title="jvectormap地图初始化">jvectormap地图初始化</a></p>
+<p>以上vectorMap中map的值为 jquery-jvectormap-cn-mill-en.js 文件jquery扩展方法vectorMap的第二个参数。打开demo，当你鼠标在地图上移动时，你会发现每个地域显示的tips都是其省市对应的汉语拼音或英文，为了更直观，我们可以在 jquery-jvectormap-cn-mill-en.js 修改每个paths的name属性值。</p>
+<h2 id="与地图交互"><a href="#与地图交互" class="headerlink" title="与地图交互"></a>与地图交互</h2><p>在jvectormap中，我们可以设置jvectormap里的属性和方法来规定地图显示的样式和行为，比如说规定地图初始化背景色和每个区域填充色、是否能允许缩放和拖拽、是否可以选中地图某个区域等。关于地图自身设置，更多信息可访问：<a href="http://jvectormap.com/documentation/javascript-api/jvm-map/" target="_blank" rel="noopener">http://jvectormap.com/documentation/javascript-api/jvm-map/</a></p>
+<p>大多数情况下，我们不仅仅只是为了生成地图，更进一步的目的是为了结合地图来展现每个区域所对应的数据。在vectorMap有onRegionTipShow方法，该方法会在鼠标经过某个区域时触发，并且该方法有一个参数为code，而这个code就是鼠标当前所在地域的索引值，于是，我们就可以通过这个索引值来获取数据信息。假设我们准备的地图数据为mapdata，其中id的值为每个区域的索引值：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> mapdata = [</span><br><span class="line">    &#123; <span class="attr">id</span>: <span class="string">"CN-54"</span>, <span class="attr">province</span>: <span class="string">"西藏"</span> , <span class="attr">data</span> : <span class="string">"Xizang"</span>&#125;,</span><br><span class="line">    &#123; <span class="attr">id</span>: <span class="string">"CN-52"</span>, <span class="attr">province</span>: <span class="string">"贵州"</span> , <span class="attr">data</span> : <span class="string">"Guizhou"</span>&#125;,</span><br><span class="line">    &#123; <span class="attr">id</span>: <span class="string">"CN-35"</span>, <span class="attr">province</span>: <span class="string">"福建"</span> , <span class="attr">data</span> : <span class="string">"Fujian"</span>&#125;,</span><br><span class="line">    ...</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>然后在vectorMap中加入方法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">onRegionTipShow: <span class="function"><span class="keyword">function</span>(<span class="params">e, el, code</span>)</span>&#123;</span><br><span class="line">    $.each(mapdata, <span class="function"><span class="keyword">function</span> (<span class="params">i, items</span>) </span>&#123;</span><br><span class="line">　　　　    <span class="keyword">if</span> (items.id === code) &#123;</span><br><span class="line">　　　　　　    $regionName.html(items.province);</span><br><span class="line">            $regionData.html(items.province + <span class="string">"的英文称呼："</span> + items.data);</span><br><span class="line">            el.html(items.province);</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，你也可以作一些其他交互。比如官网的一些不同形式的例子：<a href="http://jvectormap.com/examples/world-gdp/" target="_blank" rel="noopener">http://jvectormap.com/examples/world-gdp/</a></p>
+<h2 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h2><p>一般情况下，因为地图是由svg生成，所以像其他图形库一样，对于不兼容svg技术浏览器的则用vml渲染，因此它对低版本IE甚至IE6也是完全兼容的。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>写完本篇文章之后，发现涉及可视化地图开发的还有百度的echart，它似乎更符合国情，但是上面所介绍的并非没有什么卵用，毕竟它们语法和使用都大同小异。若你想再研究地图开发，我推荐你请前往<a href="http://echarts.baidu.com/doc/example.html#map" target="_blank" rel="noopener">http://echarts.baidu.com/doc/example.html#map</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

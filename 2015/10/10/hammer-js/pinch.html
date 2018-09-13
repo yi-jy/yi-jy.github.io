@@ -1,0 +1,108 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<link rel="stylesheet" href="css/page.css">
+<title>pinch</title>
+</head>
+
+<body>
+
+<div class="container" onselectstart="return false;">
+
+  <div class="hammer-test">
+    <p class="test-des">pinch-缩放</p>
+    <div class="pinch-box"></div>
+  </div>
+
+
+  <div class="hammer-test">
+    <p class="test-des">识别器类型</p>
+    <div class="recognizers-type-box"></div>
+    <textarea name="" id="" cols="30" rows="10" class="recognizers-type"></textarea>
+  </div>
+
+
+</div>
+
+<img src="images/pinch.png" alt="" class="qr-code-img">
+
+<script type="text/javascript" src="js/zepto.min.js"></script>
+<script type="text/javascript" src="js/hammer.min.js"></script>
+<script type="text/javascript">
+
+
+var pinchBox = $(".pinch-box"),
+  mPinchBox = new Hammer(pinchBox.get(0));
+
+mPinchBox.startScale = mPinchBox.initScale = 1;
+
+mPinchBox.get("pinch").set({ enable: true });
+
+mPinchBox.on("pinchstart", function(e) {
+  mPinchBox.startScale = mPinchBox.startScale || 1;
+  mPinchBox.initScale = mPinchBox.startScale || 1;
+  pinchBox.html(mPinchBox.startScale);
+});
+
+mPinchBox.on("pinchout", function(e) {
+  mPinchBox.startScale = mPinchBox.initScale + (e.scale - 1); // 使用toFixed可能会导致不缩放，比如保留两位小数，可能计算出来的还是那个值
+    pinchBox.css({
+      "transform" : "scale(" + mPinchBox.startScale + ")",
+      "-webkit-transform" :  "scale(" + mPinchBox.startScale + ")"
+    });
+    pinchBox.html(mPinchBox.startScale);
+
+});
+
+mPinchBox.on("pinchin", function(e) {
+  mPinchBox.startScale = mPinchBox.initScale - (1 - e.scale);
+  if(mPinchBox.startScale <= 1) {
+    mPinchBox.startScale = 1;
+  };
+    pinchBox.css({
+      "transform" : "scale(" + mPinchBox.startScale + ")",
+      "-webkit-transform" :  "scale(" + mPinchBox.startScale + ")"
+    });
+    pinchBox.html(mPinchBox.startScale);
+});
+
+mPinchBox.on("pinchmove", function(e) {
+  pinchBox.css({
+    "color" : "#fff",
+    "background" : "#75845c"
+  });
+
+});
+
+mPinchBox.on("pinchend", function(e) {
+    pinchBox.css({
+    "color" : "#333",
+    "background" : "#ccc"
+  });
+});
+
+
+
+// 探测识别器类型
+var recognizersTypeBox = $(".recognizers-type-box"),
+  mRecognizersTypeBox = new Hammer(recognizersTypeBox.get(0));
+
+mRecognizersTypeBox.on("pinchstart pinchend pinchcancel pinchin pinchout", function(e) {
+  $(".recognizers-type").html($(".recognizers-type").html() + e.type + " ");
+});
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+

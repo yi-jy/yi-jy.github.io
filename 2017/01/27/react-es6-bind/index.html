@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="ES6创建React组件的绑定方法 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="react es6 bind">
+  
+
+  
+
+  <title>ES6创建React组件的绑定方法 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">ES6创建React组件的绑定方法</h1>
+
+  <time class="post-time">2017-01-27</time>
+
+  <div class="post-content">
+    <p>在前面的文章，我们说到使用ES6 <code>extends React.Component</code> 这种方式创建的组件，其中的的事件函数句柄不会自动绑定当前实例的 this，我们需要手动绑定 this。</p>
+<p>而绑定this的方法主要有两种方法，每种方法又有两种表现形式：</p>
+<a id="more"></a>
+<h2 id="使用-bind"><a href="#使用-bind" class="headerlink" title="使用 bind"></a>使用 bind</h2><p>ES5为所有的函数定义了一个原生的 bind() 方法，用户只需要传入特定的环境变量，当函数被调用时，就会在这个特定的环境中执行。使用 bind 绑定this有两种形式，分别是：</p>
+<p>使用 bind 形式一：在构造函数内部绑定。</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Login</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  constructor() &#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.clickLogin = <span class="keyword">this</span>.clickLogin.bind(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  clickLogin() &#123;</span><br><span class="line">    console.log(<span class="keyword">this</span>); <span class="comment">// Login</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;button onClick=&#123;<span class="keyword">this</span>.clickLogin&#125;&gt;</span><br><span class="line">        login</span><br><span class="line">      &lt;/button&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用 bind 形式二：在事件句柄里绑定。</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Login</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  clickLogin() &#123;</span><br><span class="line">    console.log(<span class="keyword">this</span>); <span class="comment">// Login</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;button onClick=&#123;<span class="keyword">this</span>.clickLogin.bind(<span class="keyword">this</span>)&#125;&gt;</span><br><span class="line">        login</span><br><span class="line">      &lt;/button&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="基于-箭头函数"><a href="#基于-箭头函数" class="headerlink" title="基于 箭头函数"></a>基于 箭头函数</h2><p>与普通函数不同，箭头函数本身没有this，它的this指向的是定义它时的上下文环境。所以，当我们创建组件，在其中定义一些事件函数时，它内部的this，就是组件实例。使用 箭头函数 绑定this有两种形式，分别是：</p>
+<p>箭头函数形式一：在定义事件方法时使用箭头函数。</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Login</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  clickLogin = () =&gt; &#123;</span><br><span class="line">    console.log(<span class="keyword">this</span>); <span class="comment">// Login</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;button onClick=&#123;<span class="keyword">this</span>.clickLogin&#125;&gt;</span><br><span class="line">        login</span><br><span class="line">      &lt;/button&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>箭头函数形式二：在事件句柄中使用箭头函数。</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Login</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  clickLogin() &#123;</span><br><span class="line">    console.log(<span class="keyword">this</span>); <span class="comment">// Login</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;button onClick=&#123;(e) =&gt; <span class="keyword">this</span>.clickLogin(e)&#125;&gt;</span><br><span class="line">        login</span><br><span class="line">      &lt;/button&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，使用 “在构造函数内部绑定” 或者 “在定义事件方法时使用箭头函数” 这两种形式的绑定明显好于 “事件句柄” 的两种形式。因为如果存在多个的事件句柄的话，需要多次调用。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

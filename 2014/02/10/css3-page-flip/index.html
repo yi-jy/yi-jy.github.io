@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="css3翻书的实现 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css3-animation css3翻书效果">
+  
+
+  
+
+  <title>css3翻书的实现 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">css3翻书的实现</h1>
+
+  <time class="post-time">2014-02-10</time>
+
+  <div class="post-content">
+    <p>Css3可以实现很多你意想不到的UE。可以是元素形状的变化，也可以是一些比较特殊的布局，还可以是各式各类的动画效果。不过动画除了webkit内核浏览器以外，其他浏览器对于分步动画（animation）并不买账。但这些并不是主要的，毕竟这些都是大势所趋。无论是网站聚合页、亦或者是节日专题等页面，很多都在逐渐采用css3动画结合滚动视差。闲话不多说，进入本文主题↓。</p>
+<a id="more"></a>
+<p>以前网站看到翻书的效果大多基于flash的，在兼容性方面，它的确比css3普遍多，但是前提是你的浏览器已安装了flash player。而在技术方面，如果你对于flash以及as不熟悉的话，那么这可能是个trouble。此时，Css3呼之欲出，此篇文章主要是利用css3的animation来实现翻书效果。</p>
+<p>翻书必定涉及到元素层级的关系，而且翻书有两种结果，一种是翻过去此页，另一种是把此页翻回来。我首先在书页上覆盖两个层（page-unfold， page-fold），分别位于书上和书的左侧，它们各自控制书页的翻过去和翻回来。假设总页数为len，接下来将逐步分析翻页过程：</p>
+<p><strong>第n页翻过去：</strong></p>
+<img src="/2014/02/10/css3-page-flip/pageFlip012.jpg" title="第n页翻过去">
+<p>每次点击page-fold，页数递增。且让当前页和翻过去的页设置相同的class01和z-index（len）。这样后面翻过去的页就覆盖在前面翻过去的页上。</p>
+<p><strong>第n页翻回来：</strong></p>
+<img src="/2014/02/10/css3-page-flip/pageFlip023.jpg" title="第n页翻回来">
+<p>每次点击page-unfold，页数递减。且让翻过去的页设置另一个相同的class02，而z-index需要做相应的比较，令当前页的z-index为len-n，然后再设置已经翻过去的页面的z-index为len-n-1。这样就不会存在页面顺序覆盖问题。</p>
+<p>其实比较困难主要是需要模拟翻书的过程，需要不断的调整每个阶段各角的圆角值和元素的高度。老规矩，最后demo展示，为了效果逼真，我还特意加入了翻书声哈。</p>
+<p>具体的demo页面：<a href="/2014/02/10/css3-page-flip/css3-page-flip.html" title="css3翻书的实现">css3翻书的实现</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

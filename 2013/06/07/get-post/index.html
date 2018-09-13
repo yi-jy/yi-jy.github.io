@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="get与post请求 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="请求方式 get post">
+  
+
+  
+
+  <title>get与post请求 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">get与post请求</h1>
+
+  <time class="post-time">2013-06-07</time>
+
+  <div class="post-content">
+    <p>在http请求协议中，有两种数据传送方式最为常见，那就是 get 和 post 请求方式。</p>
+<a id="more"></a>
+<h2 id="GET"><a href="#GET" class="headerlink" title="GET"></a>GET</h2><p>get主要是从服务器获取数据，通常我们提交一个表单，用get方式会这样写，form表单的method会用get：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"http://www.baidu.com/"</span> <span class="attr">method</span>=<span class="string">"get"</span>&gt;</span></span><br><span class="line">　　用户名：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"user"</span>/&gt;</span></span><br><span class="line">　　密码：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">name</span>=<span class="string">"password"</span>/&gt;</span></span><br><span class="line">　　<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"提交"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>当我们输入用户名：yix, 密码：123456时，页面会跳转到这样一个网址：</p>
+<img src="/2013/06/07/get-post/get.jpg" title="get方式提交的网址">
+<p>由以上网址可以看到，get方式是将数据放在url里面来提交的，即数据会显示在url中，这样我们就可以看到用户名和密码等信息。显然，这种数据提交的方式安全性是很低的。并且，url的最大容量为10K左右，所以这种方式的容量也是比较低的。</p>
+<p>但正是这种url存放了数据（url的参数）的机制，因此可以根据这些具体的参数得到一个网站的某篇文章，或者某个帖子的详细地址，而非这个网站的主页地址。</p>
+<h2 id="POST"><a href="#POST" class="headerlink" title="POST"></a>POST</h2><p>post方式，是把本地数据提交给服务器，form表单的method会用post：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"http://www.baidu.com/"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br><span class="line">　　用户名：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"user"</span>/&gt;</span></span><br><span class="line">　　密码：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">name</span>=<span class="string">"password"</span>/&gt;</span></span><br><span class="line">　　<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"提交"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>我们再次输入用户名：yix, 密码：123456时，页面会跳转到这样一个网址：</p>
+<img src="/2013/06/07/get-post/post.jpg" title="post方式提交的网址">
+<p>由上面的网址我们可以看到，与get相比，post是把数据放在http content中，url除了首页地址看不到任何的其他数据，因此数据安全性大大的提高。而且，一般来说32位系统的机器http content的容量为2G左右。</p>
+<h2 id="GET和POST的区别"><a href="#GET和POST的区别" class="headerlink" title="GET和POST的区别"></a>GET和POST的区别</h2><ol>
+<li><p>处理数据： get是从服务器获取数据，post是把本地数据提交给服务器。post请求不会被缓存，而get可以。</p>
+</li>
+<li><p>安全性：get会把数据显示在url中，而post则不会。因此post的安全性要get好很多。</p>
+</li>
+<li><p>容量性：get最多10K左右，post则为2G。所以post的容量要比get大很多。</p>
+</li>
+</ol>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

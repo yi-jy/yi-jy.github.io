@@ -1,0 +1,70 @@
+﻿/* reset */
+body,ol,ul,h1,h2,h3,h4,h5,p,blockquote,th,td,dl,dt,dd,form,input,textarea,select{margin:0;padding:0;}
+address,cite,code,dfn,b,em,var,i{font-style:normal;font-weight:normal;}
+em,strong{font-weight:bold;}
+h1,h2,h3,h4,h5,h6{font-weight:bold;}
+ul,ol{list-style:none;}
+img{border:0;vertical-align:top;}
+input,textarea,select{vertical-align:middle;outline:none;}
+body{font-size:14px;line-height:20px;font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;color:#333;background:#fff;}
+a{color:#444;text-decoration:none;}
+a:hover,a:active{text-decoration:none;}
+table,table td,table th{border:1px solid #ddd;border-collapse:collapse}
+table td{padding:5px}
+
+.clearfix{zoom:1;}
+.clearfix:after{display:block;content:'';height:0;clear:both;}
+
+html,body{position: relative;width:100%;height:100%;overflow-x:hidden;}
+
+.transition{-webkit-transition: 0.2s all;
+-o-transition: 0.2s all ease-out;
+transition: 0.2s all ease-out;
+}
+
+.container{padding:20px;-moz-user-select:none;}
+.hammer-des{}
+.hammer-test{padding-top:20px;}
+.hammer-test .test-des{padding-bottom:10px;}
+.transition{-webkit-transition:0.5s all;transition:0.5s all;}
+
+#pan-box{position: relative;height:100px;}
+#pan-box ul{position: absolute;left:0;top:0;width:630px;list-style:none;}
+#pan-box li{float: left;width:80px;height:100px;margin-right:10px;background:#ccc;}
+
+.pan-horizontal-box,
+.pan-vertical-box,
+.recognizers-type-box,
+.pinch-box,
+.press-box,
+.rotate-box,
+.swipe-box,
+.tap-box{width:200px;height:100px;line-height:100px;text-align:center;background:#ccc;}
+
+.pinch-box{
+	transform-origin:0 0;
+	-webkit-transform-origin:0 0;
+}
+
+.rotate-box{width:250px;height:250px;overflow:hidden;}
+.swipe-box,
+.recognizers-type-box-swipe{height:200px;}
+
+.tap-box{margin-top:20px;margin-bottom:30px;padding:20px;line-height:30px;}
+
+.container{
+	-webkit-perspective: 500;
+    -moz-perspective: 500;
+    perspective: 500;
+    overflow:hidden;
+}
+.hammer-test-tap{-webkit-transform-style:preserve-3d;transform-style:preserve-3d;}
+
+.index-list li{padding-left:20px;padding-top:10px;font-size:20px;}
+.toggle-action{padding-bottom:30px;}
+.toggle-action input{padding:5px 10px;}
+
+.qr-code-img{position: absolute;right:10px;bottom:10px;}
+@media all and (max-width:640px) {
+	.qr-code-img{display:none;}
+}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+  body,textarea{margin:0;padding:0;}
+  .svg-box{position:relative;width:90%;margin:1%;}
+  .svg-box .tips{color:red;font-size:12px;}
+  .svg-box .svg-code-text ,.svg-box .svg ,.svg-box .img{width:75%;height:180px;overflow:auto;border:1px solid #ddd;}
+  .svg-box .svg-action-btn{position:absolute;left:78%;top:85px;}
+  .user-para{position:absolute;left:88%;top:85px;}
+  </style>
+</head>
+<body>
+
+<div class="svg-box svg-code">
+  <p class="tips"><strong>你可以修改部分代码：</strong></p>
+  <textarea name="" class="svg-code-text" cols="35" rows="13"><svg width="300" height="170" class="mysvg" viewbox="0 0 300 170"  xmlns="http://www.w3.org/2000/svg" version="1.1" >
+
+  <path d="M100 10 L50 60 L150 60 Z" stroke="#FB716D" stroke-width="3" fill="#FBA28A"/>
+  <rect x="55" y="61" width="90" height="100" fill="#F3C392" ></rect>
+  <rect x="85" y="97" width="30" height="30" stroke="#f6f6f6" stroke-width="3" fill="#B2DBCB"/>
+  <line x1="85" x2="115" y1="112" y2="112" stroke="#f6f6f6" stroke-width="3" fill="transparent"/>
+  <line x1="100" x2="100" y1="97" y2="127" stroke="#f6f6f6" stroke-width="3" fill="transparent"/>
+  <g transform="translate(150,-18)">
+    <path d="M 30 160 A 30 35, 0, 1, 1, 60 160 L 45 160 Z" fill="#7ACB9E"></path>
+    <rect x="40" y="160" width="10" height="22" fill="#EBBEA6" />
+  </g>
+
+  <g transform="translate(187,-18)">
+    <path d="M70 100 L40 160 L100 160 Z" fill="#7ACB9E"/>
+    <rect x="65" y="160" width="10" height="22" fill="#EBBEA6" />
+  </g>
+
+</svg>
+
+</textarea>
+
+  <button class="svg-action-btn render-svg">生成svg ↓</button>
+</div>
+
+<div class="svg-box svg-container">
+
+  <div class="svg"></div>
+
+  <button class="svg-action-btn generate-img">生成svg图片 ↓</button>
+    <div class="user-para">
+      <input type="text" placeholder="图片名称，默认svg.png" class="img-name"/>
+        <input type="text" placeholder="图片尺寸比例，默认为1" class="img-scale"/>
+    </div>
+</div>
+
+<div class="svg-box img-container">
+  <div class="img">
+      <img src="" alt="" class="svg-img">
+    </div>
+  <button class="svg-action-btn download-img">下载图片 ↓</button>
+</div>
+
+
+
+
+</body>
+</html>
+
+<script src="saveSvgAsPng.js"></script>
+<script>
+
+  (function(){
+    var svgCodeText  = getEle(".svg-code-text"),
+      renderSvg = getEle(".render-svg"),
+      generateImg = getEle(".generate-img"),
+      svg = getEle(".svg"),
+      svgImg = getEle(".svg-img"),
+      downloadImg = getEle(".download-img"),
+      imgName = getEle(".img-name"),
+      imgScale = getEle(".img-scale");
+
+    renderSvg.addEventListener("click",function(){
+      svg.innerHTML = svgCodeText.value;
+    })
+
+    generateImg.addEventListener("click",function(){
+      var mySvg = getEle(".mysvg"),
+        iImgScale = parseInt(imgScale.value) || 1;
+      if(!svg.innerHTML){
+        alert("请先生成svg！");
+        return;
+      }
+      svgAsDataUri(mySvg, iImgScale, function(uri) {
+        svgImg.setAttribute("src",uri);
+      });
+    })
+
+    downloadImg.addEventListener("click",function(){
+      if(svgImg.getAttribute("src")){
+        var mySvg = getEle(".mysvg"),
+          iImgScale = parseInt(imgScale.value) || 1,
+          oImgName = imgName.value || "svg";
+        saveSvgAsPng(mySvg, oImgName+".png", iImgScale);
+      }
+      else{
+        alert("请先生成svg或svg图片！");
+        return;
+      }
+    })
+
+    function getEle(obj){
+      var d = document;
+      return d.querySelector(obj);
+    }
+  })()
+
+
+  // var mySvg = document.querySelector(".mysvg");
+  // var csvg = mySvg.outerHTML;
+  // var curi = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(csvg)));
+
+  // var image = new Image();
+  // image.src = curi;
+  // image.onload = function() {
+  //   var canvas = document.createElement('canvas');
+  //   canvas.width = image.width;
+  //   canvas.height = image.height;
+  //   var context = canvas.getContext('2d');
+  //   context.drawImage(image, 0, 0);
+
+  //   var a = document.createElement('a');
+  //   a.download = name;
+  //   a.href = canvas.toDataURL('image/png');
+
+
+  //   d.querySelector(".svg-img-cc").setAttribute("src",a.href);
+
+  // }
+
+</script>
+

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="css2.0 实现圆角 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css2 圆角">
+  
+
+  
+
+  <title>css2.0 实现圆角 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">css2.0 实现圆角</h1>
+
+  <time class="post-time">2013-01-14</time>
+
+  <div class="post-content">
+    
+<p>一直都很想写一篇关于CSS实现圆角的文章，今天不想再错过。之前有一篇用CSS去实现三角形有很多种方法，但这里用CSS2.0实现圆角只有一种方法。我们知道，如果使用最新的CSS3.0，只需要使用它独有的属性border-radius即可。比如，要圆角10px，则为border-radius:10px。但是，CSS2.0却没有提供类似的属性，于是前端们发挥它们的聪明才智，不靠背景图，而只用CSS2.0也完成了圆角的功能。</p>
+<a id="more"></a>
+<p>原理：利用CSS的margin，以及DIV上下排列的宽度相差两像素来模拟圆角。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.corner</span>&#123;<span class="attribute">width</span>:<span class="number">500px</span>;<span class="attribute">height</span>:auto;<span class="attribute">background</span>:green;<span class="attribute">overflow</span>:hidden;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.top</span>,<span class="selector-class">.bottom</span>&#123;<span class="attribute">background</span>:<span class="number">#fff</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.c1</span>,<span class="selector-class">.c2</span>,<span class="selector-class">.c3</span>,<span class="selector-class">.c4</span>&#123;<span class="attribute">display</span>:block;<span class="attribute">height</span>:<span class="number">1px</span>;<span class="attribute">background</span>:green;<span class="attribute">overflow</span>:hidden; &#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.c1</span>&#123;<span class="attribute">margin</span>:<span class="number">0</span> <span class="number">5px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.c2</span>&#123;<span class="attribute">margin</span>:<span class="number">0</span> <span class="number">3px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.c3</span>&#123;<span class="attribute">margin</span>:<span class="number">0</span> <span class="number">2px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.c4</span>&#123;<span class="attribute">margin</span>:<span class="number">0</span> <span class="number">1px</span>;<span class="attribute">height</span>:<span class="number">2px</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"corner"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"top"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"c1"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"c2"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"c3"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"c4"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"bottom"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"c4"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"c3"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"c2"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"c1"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>下图分别是网页放大4倍的效果图：</p>
+<p>图一：左边的是用CSS2.0模拟出来的圆角，里面的每个锯齿都是一个span（块），而右边是利用CSS3.0制作出来的。</p>
+<img src="/2013/01/14/css2-radius/radius_01.jpg" title="css2与css3对比">
+<p>图二：左边的是用CSS2.0模拟出来的圆角，里面的每个锯齿都是一个span（块），右边是利用作图工具制作出来的，若做圆角，需采用背景图的形式。</p>
+<img src="/2013/01/14/css2-radius/radius_01.jpg" title="css2与圆角图片对比">
+<p>由上面的图片对比，可知CSS3.0制作出的圆角最为平滑，其次是作图工具，最后才是css2.o。若为了追求页面大小和制作方便，又想兼容各大浏览器，虽然代码量也增多了，但在打造圆角方面，也不失为一种方法。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

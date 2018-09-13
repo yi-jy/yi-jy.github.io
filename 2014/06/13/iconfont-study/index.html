@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="iconfont 深入实践 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="iconfont icomoon css-字体">
+  
+
+  
+
+  <title>iconfont 深入实践 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">iconfont 深入实践</h1>
+
+  <time class="post-time">2014-06-13</time>
+
+  <div class="post-content">
+    
+<p>说到iconfont，网上还是有很多关于它的介绍，但能提取有价值信息的文章却少之又少，各种转载 ！！！不解释。但也有比较靠谱的相关资料，比如国外的icomoon，以及国内的阿里iconfont。很早就看到过iconfont这种技术，只是项目无此需求，所以直到现在才去实践它。</p>
+<p>当我们遇到一种技术，有时并不能只单纯的制作一个demo就草草了事。写博客虽然也只是记录某种技术，但它可以让你更系统、全面的了解这种技术。接下来，我们就几个方面深入分析iconfont。</p>
+<a id="more"></a>
+<h2 id="为什么要使用iconfont（iconfont的优点）"><a href="#为什么要使用iconfont（iconfont的优点）" class="headerlink" title="为什么要使用iconfont（iconfont的优点）"></a>为什么要使用iconfont（iconfont的优点）</h2><p>一种技术的产生必定是有它的原因的，就像当初javascript的诞生是为了校验表单而减少服务器的反复请求。iconfont并不是什么新技术，兼容ie6等低版本浏览器，它主要是通过自定义字体来代替了图标，我们知道，字体不会像位图一样放大后失真，而且我们可以控制字体的颜色，所以它可以完全代替一些icon。</p>
+<p>通过分析，我们可以得到iconfont的一些特点：</p>
+<ol>
+<li><p>兼容IE6等低版本的浏览器</p>
+</li>
+<li><p>矢量，可自由变换而不失真，而且可以任意改变其颜色和大小</p>
+</li>
+<li><p>iconfont比图片小，另外iconfont不会像js一样阻碍其他文件下载</p>
+</li>
+</ol>
+<p>是不是跃跃欲试了？使用iconfont可以有两种途径：</p>
+<p>第一种是你可以通过文章开头我提供的两个网站去下载免费的字体，据我测试，icomoon里下载的自定义只能通过伪类的content应用到网页中，这对不支持伪类的IE6来说无疑是一大伤痛。相对前者而言，阿里的iconfont则没有此问题，使用方面更贴合国情，哈哈！不过icomoon支持在线编辑icon，而阿里的iconfont则支持上传自定义图标，这都是他们自身不错的功能。你可以进入他们的官网了解更多详情。</p>
+<p>第二种方法你也可以自己定义icon然后转化为字体再去使用，这也是本篇文章一大重点。那么如何做呢？且看下文。</p>
+<h2 id="如何自己制作iconfont"><a href="#如何自己制作iconfont" class="headerlink" title="如何自己制作iconfont"></a>如何自己制作iconfont</h2><p>准备工具：FW（PS），FontCreator（可通过网盘下载<a href="http://pan.baidu.com/s/1i39Sc9f）" target="_blank" rel="noopener">http://pan.baidu.com/s/1i39Sc9f）</a></p>
+<p>第一步：制作icon图标。首先用fw或者ps制作icon，大小为350*350（px）。注意icon图标要用路径绘制，原因你懂得。制作图标是每个前端开发必备技能，在此就不详述。</p>
+<p>第二步：安装FontCreator并打开字体。打开FontCreator，再打开某个样本字体，如果你没有样本字体，也可以通过这里下载：<a href="http://pan.baidu.com/s/1kTLZn6n" target="_blank" rel="noopener">http://pan.baidu.com/s/1kTLZn6n</a></p>
+<p>具体操作：文件 -&gt; 打开 -&gt; 字体文件。打开之后我们会看到这样一个界面：</p>
+<img src="/2014/06/13/iconfont-study/iconfont01.jpg" title="制作icon字体步骤一">
+<p>其中红色箭头所指的就是第一个icon字，它前面的几个框可以无视，然后我们就开始创建自己的icon字体。</p>
+<p>第三步：创建新icon字。在软件的空白区域右键，然后在弹出的菜单中选择添加。你会看到如下界面：</p>
+<img src="/2014/06/13/iconfont-study/iconfont02.jpg" title="制作icon字体步骤二">
+<p>第四步：给新添加的icon字命名。选择新添加的icon字，右键-&gt; 属性 -&gt; 输入名称。这里我就按顺序来，输入 uniE002 。</p>
+<img src="/2014/06/13/iconfont-study/iconfont03.jpg" title="制作icon字体步骤三">
+<p>然后切换到映射窗口，在值下面的框中输入 $ + 新icon字名称的后四位 , 即 $E002 。然后点击下面的添加。</p>
+<img src="/2014/06/13/iconfont-study/iconfont04.jpg" title="制作icon字体步骤四">
+<p>第五步：导入icon图标。双击新icon字，会出现格子界面，然后把600后面的线移动到1020的位置。（图中表示已经移动好的）</p>
+<img src="/2014/06/13/iconfont-study/iconfont05.jpg" title="制作icon字体步骤五">
+<p>然后 右键 -&gt; 导入图像 -&gt; 载入 。再切换到字形，加倍处选择 2.50倍，勾选 默认，最后 点击生成。</p>
+<img src="/2014/06/13/iconfont-study/iconfont06.jpg" title="制作icon字体步骤六">
+<p>然后就会看到icon图标导入到了FontCreator。接下来 Ctrl+A，用上下左右箭头移动图标到到下图坐标的大体位置，然后Ctrl+S保存，关闭“格子层”。</p>
+<img src="/2014/06/13/iconfont-study/iconfont07.jpg" title="制作icon字体步骤七">
+<p>第六步：另存为新icon字体。文件 -&gt; 另外为 新的字体（这里我保存为 myfont.ttf）。</p>
+<p>那么说到这里。字体制作完了吗？ 是的。<strong>但是</strong>，由于每个浏览器对于iconfont所支持的字体格式不同，所以制作的字体在一些其他浏览器会显示异常，目前我们制作的为ttf格式字体，它只能支持chrome浏览器。</p>
+<p>一般而言，iconfont中浏览器适用的字体格式大体有四种，分别为 ttf ，eot，woff 以及 svg。因此我们需要把ttf分别转为了其他三种格式（myfont.eot , myfont.woff , myfont.svg），这里提供了两个网址，可以很方便转换字体格式：</p>
+<p><a href="http://www.freefontconverter.com/" target="_blank" rel="noopener">http://www.freefontconverter.com/</a> 可以转换除eot以外的多种格式。</p>
+<p><a href="http://ttf2eot.sebastiankippe.com/" target="_blank" rel="noopener">http://ttf2eot.sebastiankippe.com/</a> 它是一个专门将ttf格式转换为 eot格式的网站。</p>
+<p>好了，转换好了四种格式的字体，开始使用这些iconfont吧。</p>
+<h2 id="如何在网页中运用iconfont"><a href="#如何在网页中运用iconfont" class="headerlink" title="如何在网页中运用iconfont"></a>如何在网页中运用iconfont</h2><p>我们自定义的iconfont做好后，接下来当然是在网页中使用iconfont，主要有两个步骤，这里我假定自定义字体的名称为myfont，存放在fonts文件夹。使用iconfont元素的class为myIconfont ：</p>
+<p>第一步：首先你必须在样式表引入字体的路径</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 样式引入字体 */</span></span><br><span class="line">@<span class="keyword">font-face</span> &#123;</span><br><span class="line">  <span class="attribute">font-family</span>: <span class="string">"myfont"</span>;</span><br><span class="line">  <span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">'fonts/myfont.eot'</span>); <span class="comment">/* IE9*/</span></span><br><span class="line">  <span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">'fonts/myfont.eot?#iefix'</span>) <span class="built_in">format</span>(<span class="string">'embedded-opentype'</span>), <span class="comment">/* IE6-IE8 */</span></span><br><span class="line">  <span class="built_in">url</span>(<span class="string">'fonts/myfont.woff'</span>) <span class="built_in">format</span>(<span class="string">'woff'</span>), <span class="comment">/* chrome、firefox */</span></span><br><span class="line">  <span class="built_in">url</span>(<span class="string">'fonts/myfont.ttf'</span>) <span class="built_in">format</span>(<span class="string">'truetype'</span>), <span class="comment">/* chrome、firefox、opera、Safari, Android, iOS 4.2+*/</span></span><br><span class="line">  <span class="built_in">url</span>(<span class="string">'fonts/myfont.svg#iconfont'</span>) <span class="built_in">format</span>(<span class="string">'svg'</span>); <span class="comment">/* iOS 4.1- */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第二步：给对应的元素定义iconfont字体</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 样式定义字体 */</span></span><br><span class="line"><span class="selector-class">.myIconfont</span> &#123;</span><br><span class="line">  <span class="attribute">font-family</span>:<span class="string">"myfont"</span> <span class="meta">!important</span>;</span><br><span class="line">  <span class="attribute">font-size</span>:<span class="number">60px</span>;</span><br><span class="line">  <span class="attribute">font-style</span>:normal;</span><br><span class="line">  <span class="attribute">-webkit-font-smoothing</span>: antialiased;<span class="comment">/* 防止字体图标在safair或chrome浏览器下被加粗 */</span></span><br><span class="line">  <span class="attribute">-webkit-text-stroke-width</span>: <span class="number">0.2px</span>; <span class="comment">/* 防止字体图标在pc端的chrome浏览器下出现严重的锯齿； */</span></span><br><span class="line">  <span class="attribute">-moz-osx-font-smoothing</span>: grayscale; <span class="comment">/* 防止字体图标在pc端的firefox浏览器下出现严重的锯齿； */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>iconfont使用过程中在不同浏览器会出现一些细微的显示问题，可以通过标注前的样式解决。</p>
+<h2 id="使用iconfont的一些弊端"><a href="#使用iconfont的一些弊端" class="headerlink" title="使用iconfont的一些弊端"></a>使用iconfont的一些弊端</h2><p>当然凡事无绝对，我们在使用iconfont的同时，也会带来一些问题：</p>
+<p>1 . 无论你是否全部使用到了iconfont里面的字，浏览器都会将整个字体文件下载，所以字体未下载完之前，在网页会显示空白或方框</p>
+<p>2 . 在ie9、ie10以及firefox中，存在跨域问题。必须在网页增加 Access-Control-Allow-Origin</p>
+<p>3 . 由于各浏览器支持的字体格式不同，因此你要准备多种字体格式</p>
+<p>4 . 低版本浏览器只支持纯色icon，现在浏览器可支持渐变色。所以iconfont不适合多色系的图标</p>
+<p>最后，我多绘制了几个icon，为了区分其他网页icon，特意每个增加了X标志，详见demo： <a href="/2014/06/13/iconfont-study/iconfont.html" title="iconfont实践">iconfont实践</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://iconfont.cn" target="_blank" rel="noopener">iconfont</a></li>
+<li><a href="http://blog.csdn.net/agileclipse/article/details/12450949" target="_blank" rel="noopener">web字体格式及几种在线格式转换工具介绍</a></li>
+</ul>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

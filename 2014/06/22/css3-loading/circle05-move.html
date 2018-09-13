@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+
+.loading{position:relative;width:220px;height:220px;margin:100px auto;background:#fff;overflow:hidden;}
+.l{position:absolute;top:0;left:0;width:100px;height:200px;}
+.l-mask{position:absolute;top:0;left:0;z-index:1;width:110px;height:220px;background:#fff;}
+.l{border:10px solid #990000;border-right:none;border-top-left-radius:200px;border-bottom-left-radius:200px;-webkit-transform-origin:100% 50%;transform-origin:100% 50%;}
+.r{position:absolute;top:0;right:0;z-index:3;width:100px;height:200px;border:10px solid #990000;border-left:none;border-top-right-radius:200px;border-bottom-right-radius:200px;display:none;}
+.tc{text-align:center;}
+</style>
+</head>
+
+<body>
+
+<div class="loading">
+  <div class="l-mask"></div>
+  <div class="l"></div>
+    <div class="r"></div>
+</div>
+
+<p class="tc"><input type="button" value="点击载入" class="action"/></p>
+
+</body>
+</html>
+
+
+<script type="text/javascript">
+(function(){
+  var circleLMask=document.querySelector(".l-mask"),
+    circleL=document.querySelector(".l"),
+    circleR=document.querySelector(".r"),
+    i=0,
+    action=document.querySelector(".action");
+
+  function percent(){
+    timer=setInterval(function(){
+      i++;
+      if(i===180){
+        circleLMask.style.display="none";
+        circleR.style.display="block";
+      }
+      else if(i===360){
+        clearInterval(timer);
+        action.value="载入完成";
+        action.disabled=true;
+      }
+      circleL.style.webkitTransform="rotate("+i+"deg)";
+      circleL.style.transform="rotate("+i+"deg)";
+    },10)
+  }
+
+  action.onclick=function(){
+    percent();
+    this.value="载入中...";
+  }
+})()
+</script>

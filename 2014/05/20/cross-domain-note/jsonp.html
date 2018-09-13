@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+body,p{margin:0;padding:0;}
+.container{padding:30px;}
+#box p{margin-bottom:10px;}
+#box div{padding-top:30px;margin-bottom:30px;border-bottom:1px solid #ccc;}
+#box b{color:red;}
+#box .p-con{font-size:12px;}
+#box a{color:#008000;}
+.user-action{text-align:center;}
+.user-action #txt{width:300px;height:26px;line-height:26px;}
+.user-action #btn{height:30px;line-height:30px;}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="user-action">
+        <input type="text" value="" id="txt"/>
+        <input type="button" value="点击或回车搜索" id="btn">
+    </div>
+    <div id="box"></div>
+</div>
+
+<script type="text/javascript">
+
+  var oTxt=getId("txt"),
+    oBtn=getId("btn"),
+    oBox=getId("box");
+
+  addEvent(oBtn,"click",sear);
+
+  addEvent(oTxt,"keyup",function(e){
+    var e=window.event||e;
+    if(e.keyCode==13){
+      sear();
+    }
+  });
+
+  function sear(){
+    var kw=oTxt.value;
+    var url="http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q="+kw+"&callback=dataFn";
+    oBox.innerHTML="";
+    createScript(url);
+  }
+
+  function createScript(url){
+      var script=document.createElement('script');
+        script.type="text/javascript";
+        script.src=url;
+        document.getElementsByTagName("head")[0].appendChild(script);
+    }
+
+  function dataFn(data){
+    var getResult=data.responseData.results;
+    for(var i in getResult){
+      var oDiv=document.createElement("div");
+      oDiv.innerHTML="<p class='p-title'>"+getResult[i].title+"</p>"+"<p class='p-con'>"+getResult[i].content+"</p>"+"<p class='p-url'><a href='"+getResult[i].url+"' target='_blank'>"+getResult[i].url+"</a></p>";
+      oBox.appendChild(oDiv);
+    }
+  }
+
+  function addEvent(obj,sEvent,fn){
+    if(obj.attachEvent){
+      obj.attachEvent("on"+sEvent,fn);
+    }
+    else{
+      obj.addEventListener(sEvent,fn,false);
+    }
+  }
+
+  function getId(id){
+    return document.getElementById(id);
+  }
+
+
+</script>
+
+
+</body>
+</html>
+
+
+　

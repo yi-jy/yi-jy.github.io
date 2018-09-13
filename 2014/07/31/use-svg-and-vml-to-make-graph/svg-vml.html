@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+/*svg or vml 2014-7-28 22:30*/
+body,ul,p{margin:0;padding:0;}
+li{list-style:none;}
+.data-box{width:250px;height:125px;margin:8px auto;font-size:12px;}
+.my-data{width:250px;height:125px;}
+.my-data .chart-box{position:relative;height:100px;background:#ffc;}
+.data-month .data-month-item{float:left;width:20%;color:#333;font-size:14px;line-height:25px;text-align:center;list-style:none;}
+
+.svg-box{display:none;position:relative;}
+.svg-box .my-svg{position:relative;}
+.svg-box .svg-circle{stroke:#F60;stroke-width:2;fill:#fff;cursor: pointer;z-index:1000;}
+.svg-box .svg-circle:hover{fill:#F60}
+.svg-box .svg-line{position:relative;z-index:10;}
+.svg-layer path{display:none;}
+.svg-layer-up .layer-path-up{display:block;}
+.svg-layer-down .layer-path-down{display:block;}
+.svg-layer .rect-val{fill:red;}
+
+v\:Shape,v\:Line,v\:PolyLine,v\:Rect,v\:RoundRect,v\:TextBox,v\:shadow,v\:Oval,v\:Image,v\:Group{behavior:url(#default#vml);display:inline-block;}
+.vml-box{display:none;position:relative;}
+.vml-box .vml-line{position:relative;z-index:1;left:0;top:0;}
+.vml-box .vml-circle{position:absolute;z-index:10;width:10px;height:10px;cursor:pointer;}
+.vml-box .vml-tips{position:absolute;z-index:10;left:300px;top:80px;display:none;width:40px;height:30px;padding:5px;filter:alpha(opacity=80);border:1px solid #7cb5ec;background:#fff;}
+.vml-box .vml-tips .rect-val{margin-right:5px;}
+
+.loading-tips{line-height:100px;text-align:center;}
+</style>
+</head>
+
+<body>
+
+<div class="data-box">
+    <div class="my-data">
+        <div class="chart-box">
+          <div class="loading-tips">数据载入中...</div>
+            <div class="svg-box">
+                <svg xmlns="http://www.w3.org/2000/svg"  version="1.1" width="100%" height="100%" class="my-svg">
+                    <path class="chart-line" d="M10 20 L30 10 L350 350" style="fill:none;stroke:#ccc;stroke-width:2"></path>
+                    <circle class="svg-circle" r="5"></circle>
+                    <circle class="svg-circle" r="5"></circle>
+                    <circle class="svg-circle" r="5"></circle>
+                    <circle class="svg-circle" r="5"></circle>
+                    <circle class="svg-circle" r="5"></circle>
+                    <g class="svg-layer svg-layer-up" transform="translate(350,80)" style="display:none;">
+                        <path class="layer-path-down" fill="rgba(255, 255, 255, .8)" d="M0 0 L50 0 L50 40 L30 40 L25 45 L20 40 L0 40 Z" stroke-width="1" stroke="#7cb5ec"></path>
+                        <path class="layer-path-up" fill="rgba(255, 255, 255, .8)" d="M0 0 L20 0 L25 -5 L30 0 L50 0 L50 40 L0 40 Z" stroke-width="1" stroke="#7cb5ec"></path>
+                        <text x="3" y="15">
+                            <tspan class="rect-key"></tspan>
+                            <tspan x="3" dy="18" style="fill:red" class="rect-val"></tspan>
+                            <tspan>M</tspan>
+                        </text>
+                    </g>
+                </svg>
+            </div>
+        </div>
+        <div class="data-month">
+            <ul>
+                <li class="data-month-item">1月</li>
+                <li class="data-month-item">2月</li>
+                <li class="data-month-item">3月</li>
+                <li class="data-month-item">4月</li>
+                <li class="data-month-item">5月</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+</html>
+
+
+<script type="text/javascript" src="http://yi-jy.com/js/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="chart.js"></script>
+<script type="text/javascript">
+$(function(){
+
+
+  function createChart(dataInfo){
+      // 判断浏览器是否支持svg，开发只需传入json数据即可，以下为具体数据格式[月份：流量]
+      var dataInfo = {
+          chartData:[
+            {"xTitle":"一月","yVal":"120"},
+            {"xTitle":"二月","yVal":"20"},
+            {"xTitle":"三月","yVal":"70"},
+            {"xTitle":"四月","yVal":"30"},
+            {"xTitle":"五月","yVal":"200"}
+          ]
+      }
+
+      if($.browser.msie){
+        if(parseInt($.browser.version)<9){
+          $(".svg-box").remove();
+          $("html").attr("xmlns:v","urn:schemas-microsoft-com:vml");
+          vmlFn(dataInfo);
+        }
+      }
+      else{
+       svgFn(dataInfo);
+      }
+  }
+
+    createChart();
+})
+</script>
+

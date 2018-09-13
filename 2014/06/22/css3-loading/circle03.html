@@ -1,0 +1,72 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+
+
+@-webkit-keyframes circleRotote04{
+    0%{ -webkit-transform:rotate(0deg);}
+  100%{ -webkit-transform:rotate(360deg);}
+}
+@keyframes circleRotote04{
+     0%{ transform:rotate(0deg);}
+  100%{ transform:rotate(360deg);}
+}
+
+body {
+  text-align: center;
+}
+
+.icon-loading {
+  position: relative;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #aaa;
+  margin-right: 10px;
+  vertical-align: middle;
+  border-radius: 50%;
+  -webkit-animation: circleRotote04 1.2s linear infinite;
+  animation: circleRotote04 1.2s linear infinite;
+}
+
+.icon-loading::before,
+.icon-loading::after {
+  position: absolute;
+  content: '';
+  width: 4px;
+  height: 4px;
+}
+
+.icon-loading::before {
+  left: -4px;
+  top: 6px;
+  border-left: 2px solid #aaa;
+  border-top: 2px solid #aaa;
+  -webkit-transform: rotate(40deg);
+  transform: rotate(40deg);
+  box-shadow: -2px -2px 2px #fff;
+}
+
+.icon-loading::after {
+  right: -4px;
+  top: 3px;
+  border-right: 2px solid #aaa;
+  border-bottom: 2px solid #aaa;
+  -webkit-transform: rotate(40deg);
+  transform: rotate(40deg);
+  box-shadow: 2px 2px 2px #fff;
+}
+</style>
+</head>
+
+<body>
+
+<span class="icon-loading"></span>
+
+</body>
+</html>
+

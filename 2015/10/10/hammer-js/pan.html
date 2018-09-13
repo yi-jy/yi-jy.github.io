@@ -1,0 +1,149 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<link rel="stylesheet" href="css/page.css">
+<title>pan</title>
+</head>
+
+<body>
+
+<div class="container" onselectstart="return false;">
+
+  <div class="hammer-test">
+    <p class="test-des">pan-平移</p>
+    <div id="pan-box">
+      <ul class="clearfix box-list" >
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+        <li>6</li>
+        <li>7</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="hammer-test">
+    <p class="test-des">左右滑动</p>
+    <div class="pan-horizontal-box"></div>
+  </div>
+
+  <div class="hammer-test">
+    <p class="test-des">上下滑动</p>
+    <div class="pan-vertical-box"></div>
+  </div>
+
+
+  <div class="hammer-test">
+    <p class="test-des">识别器类型</p>
+    <div class="recognizers-type-box"></div>
+    <textarea name="" id="" cols="30" rows="10" class="recognizers-type"></textarea>
+  </div>
+
+
+</div>
+
+<img src="images/pan.png" alt="" class="qr-code-img">
+
+<script type="text/javascript" src="js/zepto.min.js"></script>
+<script type="text/javascript" src="js/hammer.min.js"></script>
+<script type="text/javascript">
+
+
+// 拖拽
+var panBox = $("#pan-box"),
+  boxList = $(".box-list"),
+  mPanBox = new Hammer(panBox.get(0));
+
+mPanBox.startX = 0;
+mPanBox.maxW = boxList.width() - $(window).width();
+
+mPanBox.on("panstart", function(e) {
+  panBox.removeClass("transition");
+    mPanBox.startX = panBox.offset().left;
+});
+
+mPanBox.on("panmove", function(e) {
+    if(mPanBox.maxW > 0){
+      panBox.css({
+        "left" : mPanBox.startX + e.deltaX
+      })
+    }
+});
+
+mPanBox.on("panend", function(e) {
+  panBox.addClass("transition");
+    if(panBox.offset().left > 0){
+      panBox.css({
+        "left" : 0
+      });
+    }
+    else if(panBox.offset().left < -mPanBox.maxW && mPanBox.maxW > 0){
+      panBox.css({
+        "left" : -mPanBox.maxW
+      });
+    }
+});
+
+
+
+// 当只需要左滑或右滑动作时
+var panHorizontalBox = $(".pan-horizontal-box"),
+  mPanHorizontalBox = new Hammer(panHorizontalBox.get(0));
+
+mPanHorizontalBox.on("panleft", function(e) {
+  panHorizontalBox.html("左滑距离：" + e.deltaX);
+});
+
+mPanHorizontalBox.on("panright", function(e) {
+  panHorizontalBox.html("右滑距离：" + e.deltaX);
+});
+
+
+
+// 当只需要上滑或下滑动作时
+var panVerticalBox = $(".pan-vertical-box"),
+  mPanVerticalBox = new Hammer(panVerticalBox.get(0));
+
+mPanVerticalBox.get("pan").set({
+    // direction: Hammer.DIRECTION_VERTICAL
+    direction: Hammer.DIRECTION_ALL
+});
+
+mPanVerticalBox.on("panup", function(e) {
+  panVerticalBox.html("上滑距离：" + e.deltaY);
+  e.preventDefault();
+});
+
+mPanVerticalBox.on("pandown", function(e) {
+  panVerticalBox.html("下滑距离：" + e.deltaY);
+  e.preventDefault();
+});
+
+
+// 探测识别器类型
+var recognizersTypeBox = $(".recognizers-type-box"),
+  mRecognizersTypeBox = new Hammer(recognizersTypeBox.get(0));
+
+mRecognizersTypeBox.on("panstart panend pancancel panleft panright panup pandown", function(e) {
+  $(".recognizers-type").html($(".recognizers-type").html() + e.type + " ");
+});
+
+
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+

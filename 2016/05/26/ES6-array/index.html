@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="ES6-array | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="es6 数组">
+  
+
+  
+
+  <title>ES6中的数组 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">ES6中的数组</h1>
+
+  <time class="post-time">2016-05-26</time>
+
+  <div class="post-content">
+    <p>数组是js中很重要的数据类型，虽然在 ES5 中，关于数组的方法和属性很多。但为了更加简洁、高效的操作数组，ES6 中又在数组原型上和实例上新增了一些方法。<a id="more"></a></p>
+<h2 id="一、Array方法"><a href="#一、Array方法" class="headerlink" title="一、Array方法"></a>一、Array方法</h2><h3 id="1-1-Array-from"><a href="#1-1-Array-from" class="headerlink" title="1.1 Array.from()"></a>1.1 Array.from()</h3><p>js中存在很多类似数组的对象，比如说 获取的一组DOM元素，比如说 函数的参数。</p>
+<p>它们有着类似数组的属性，比如说键值对，或者 length 属性，但它们并不能使用数组里的方法。</p>
+<p>要把一个类似数组的对象转换成一个真正的数组有时候可能很麻烦，就拿 函数的参数 来说，你需要通过如下方式：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">convertArray</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> arr = [];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="built_in">arguments</span>.length; i++) &#123;</span><br><span class="line">        arr.push(<span class="built_in">arguments</span>[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(convertArray(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)); <span class="comment">// [1, 2, 3]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.prototype.toString.call(convertArray(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>))); <span class="comment">// '[object Array]'</span></span><br></pre></td></tr></table></figure>
+<p>你也可以通过另外一种方式来转换数组，我们再拿 一组DOM元素 来说：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>aa<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>bb<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>cc<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> li = <span class="built_in">document</span>.querySelectorAll(<span class="string">'li'</span>);</span><br><span class="line"><span class="keyword">var</span> convertArray = <span class="built_in">Array</span>.prototype.slice.call(li);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(convertArray); <span class="comment">// [li, li, li]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.prototype.toString.call(convertArray)); <span class="comment">// [object Array]</span></span><br></pre></td></tr></table></figure>
+<p>虽然上面两种方式都能实现转换成数组的目的，但是因为需要各种代码‘模拟’，我们还是觉得有些繁琐。因此，ES6 中提供了 <code>Array.from()</code> 方法，它有一个参数，即类似数组对象，它的返回值为一个数组。</p>
+<p>如果传入的是其他值，<code>Array.from()</code> 会做一些特殊处理：</p>
+<ul>
+<li>参数为 数组， 则该方法返回原数组</li>
+<li>参数为 字符串， 则该方法返回字符串以空格拆分的数组</li>
+<li>参数为 数字，则该方法返回空数组</li>
+<li>参数为 NaN，则该方法返回空数组</li>
+<li>参数为 其他数据类型，则该方法报错</li>
+</ul>
+<p>用代码来说明下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> li = <span class="built_in">document</span>.querySelectorAll(<span class="string">'li'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.from(&#123;<span class="string">'0'</span>: <span class="number">5</span>, <span class="string">'1'</span>: <span class="number">10</span>, <span class="attr">length</span>: <span class="number">2</span>&#125;)); <span class="comment">// [5, 10]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.from(&#123;<span class="attr">length</span>: <span class="number">3</span>&#125;)); <span class="comment">// [undefined, undefined, undefined]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.from(li)); <span class="comment">// [li, li, li]</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.from([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])); <span class="comment">// [1, 2, 3]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.from(<span class="string">'abc'</span>)); <span class="comment">// ["a", "b", "c"]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.from(<span class="number">2</span>)); <span class="comment">// []</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.from(<span class="literal">NaN</span>)); <span class="comment">// []</span></span><br></pre></td></tr></table></figure>
+<h3 id="1-2-Array-of"><a href="#1-2-Array-of" class="headerlink" title="1.2 Array.of()"></a>1.2 Array.of()</h3><p>我们通常使用 <code>Array()</code> 方法来创建新数组（其实都是直接使用 <code>[]</code>）：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>()); <span class="comment">// []</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>(<span class="number">3</span>)); </span><br><span class="line"><span class="comment">// [] 最新chrome，估计是把 [,,,] 优化成 [] </span></span><br><span class="line"><span class="comment">// [,,,] 旧版chrome</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>(<span class="number">3</span>).length); <span class="comment">// 3</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>(<span class="number">3</span>)[<span class="number">1</span>]); <span class="comment">// undefined</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>(<span class="string">'a'</span>)); <span class="comment">// ["a"]</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="string">'abc'</span>)); <span class="comment">// [1, 2, "abc"]</span></span><br></pre></td></tr></table></figure>
+<p>从上面的代码可以发现，<code>Array()</code> 传入的情况不同，返回的值也有很大差异：</p>
+<ul>
+<li>不传参数时，返回的是空数组。</li>
+<li>参数为 一个数字，则表示创建包含该数字项长度的数组，其中数组的每项都是 undefined。</li>
+<li>参数为 一个字符串，则直接返回包含该字符串，且数组长度为1的数组。</li>
+<li>参数为 多项，则直接返回包含这些项，对应的数组。</li>
+</ul>
+<p>额，就因为传入的参数不同，就返回各种各样的结果。这很容易让人混淆好吗？而且你也不太可能记录各种传参的情况以及对应的返回值吧。</p>
+<p>还好，ES6中引入了 <code>Array.of()</code> 方法。 无论你传入怎样的参数，它都是创建一个 “对应” 的数组。来看看它的使用：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.of()); <span class="comment">// []</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.of(<span class="number">3</span>)); <span class="comment">// [3]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.of(<span class="number">3</span>).length); <span class="comment">// 1</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.of(<span class="string">'a'</span>)); <span class="comment">// ["a"]</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.of(<span class="number">1</span>, <span class="number">2</span>, <span class="string">'abc'</span>)); <span class="comment">// [1, 2, "abc"]</span></span><br></pre></td></tr></table></figure>
+<h2 id="二、数组实例方法"><a href="#二、数组实例方法" class="headerlink" title="二、数组实例方法"></a>二、数组实例方法</h2><h3 id="2-1-find-、findIndex"><a href="#2-1-find-、findIndex" class="headerlink" title="2.1 find()、findIndex()"></a>2.1 find()、findIndex()</h3><p>如果要查询数组中的符合条件的某一项，你通常的做法是：</p>
+<ol>
+<li>循环整个数组</li>
+<li>逐个匹配该项是否满足条件</li>
+<li>把满足条件的数组项返回出来</li>
+</ol>
+<p>有点繁琐？的确如此。 ES6 中 <code>find()</code> 方法可以把你从里面解脱出来，该方法用于查询符合条件的第一个数组项，它的参数是一个回调函数，函数里设置查找规则。</p>
+<p>它的用法：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> positiveNumber = <span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> value &gt; <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log([<span class="number">2</span>, <span class="number">3</span>, <span class="number">-1</span>].find(positiveNumber)); <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+<p>除了 数组项 外，这个回调函数还接受另外两个参数：索引值 和 原数组</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> positiveNumber = <span class="function"><span class="keyword">function</span>(<span class="params">value, index, arr</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(index, arr); <span class="comment">// 0  [2, 3, -1]</span></span><br><span class="line">    <span class="keyword">return</span> value &gt; <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log([<span class="number">2</span>, <span class="number">3</span>, <span class="number">-1</span>].find(positiveNumber)); <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+<p>不过我觉得这个方法设计的有点奇怪，它为什么不是返回一个符合条件的数组呢？如果需要对符合条件的多个数组项同时操作怎么办？循环使用 <code>find</code> ?</p>
+<p>我们再来说说 <code>findIndex()</code> 方法，它的作用是返回第一个符合条件的数组项的索引位置。如果没有找到则返回 -1 ，它的用法和参数与 <code>find()</code> 相同：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> positiveNumberIndex = <span class="function"><span class="keyword">function</span>(<span class="params">value, index, arr</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(index, arr); <span class="comment">// 0  [2, 3, -1]</span></span><br><span class="line">    <span class="keyword">return</span> value &gt; <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log([<span class="number">2</span>, <span class="number">3</span>, <span class="number">-1</span>].findIndex(positiveNumberIndex)); <span class="comment">// 0</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-2-fill"><a href="#2-2-fill" class="headerlink" title="2.2 fill()"></a>2.2 fill()</h3><p>fill 在字面上是填充的意思，所以 <code>fill()</code> 就表示通过一个或多个参数，来填充(覆盖)原始数组里的数组项。</p>
+<p>当只传递一个参数时，该函数会用这个参数重写所有数组项：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log([<span class="number">2</span>, <span class="number">3</span>, <span class="number">-1</span>].fill(<span class="number">1</span>)); <span class="comment">// [1, 1, 1]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">5</span>).fill(<span class="number">2</span>)); <span class="comment">// [2, 2, 2, 2, 2]</span></span><br></pre></td></tr></table></figure>
+<p>在某些情况下，你可能不想替换数组里的所有项，这时，你可以给它传递一个开始索引和一个结束索引，即该函数的第二个或第三个参数：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log([<span class="number">2</span>, <span class="number">3</span>, <span class="number">-1</span>, <span class="number">0</span>].fill(<span class="number">1</span>, <span class="number">1</span>)); <span class="comment">// [2, 1, 1, 1]</span></span><br><span class="line"><span class="built_in">console</span>.log([<span class="number">2</span>, <span class="number">3</span>, <span class="number">-1</span>, <span class="number">0</span>].fill(<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>)); <span class="comment">// [2, 1, -1, 0]</span></span><br></pre></td></tr></table></figure>
+<p>看到没，当传递了第二个参数后，则该参数索引在数组中后面的所有项都被替换。当传递了第三个参数后，那么就设置了一个替换范围。当同时传递后面这两个参数时，它的功能就有点类似之前操作数组的 <code>splice</code> 方法。但是，它似乎比 <code>splice</code> 方法功能更强大些。</p>
+<p>需要注意的是，如果后面两个参数为负数，则需要将这个负数加上数组的长度，从而得到正确的索引位置。</p>
+<h3 id="2-3-copyWithin"><a href="#2-3-copyWithin" class="headerlink" title="2.3 copyWithin()"></a>2.3 copyWithin()</h3><p><code>copyWithin</code> 方法和前面说的 <code>fill()</code> 方法类似，主要功能还是更新替换数组项，但是它更强调复制功能，它是通过复制数组里的某一项或某几项来替换数组项。</p>
+<p>它有三个参数：</p>
+<ul>
+<li>target，必选，表示开始替换数组项的索引。</li>
+<li>start，可选，表示从该索引数组项开始复制数据，默认值为 0。</li>
+<li>end，可选，表示从该索引数组项结束复制数据，默认值为数组长度。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log([<span class="number">2</span>, <span class="number">3</span>, <span class="number">-1</span>, <span class="number">0</span>].copyWithin(<span class="number">1</span>)); <span class="comment">// [2, 2, 3, -1]</span></span><br><span class="line"><span class="built_in">console</span>.log([<span class="number">2</span>, <span class="number">3</span>, <span class="number">-1</span>, <span class="number">0</span>].copyWithin(<span class="number">1</span>, <span class="number">2</span>)); <span class="comment">// [2, -1, 0, 0]</span></span><br><span class="line"><span class="built_in">console</span>.log([<span class="number">2</span>, <span class="number">3</span>, <span class="number">-1</span>, <span class="number">0</span>].copyWithin(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)); <span class="comment">// [2, -1, -1, 0]</span></span><br></pre></td></tr></table></figure>
+<p>第一行代码只要一个参数，表示从数组第 1 项开始替换，复制的数据是从第 0 项到 最后 一项。</p>
+<p>第二行代码有两个参数，表示从数组第 1 项开始替换，复制的数据是从第 2 项到 最后 一项。</p>
+<p>第三行代码有三个参数，表示从数组第 1 项开始替换，复制的数据是从第 2 项到第 3 项。</p>
+<p>需要注意的是，数组里的操作，第二个索引大多数都是不包含在内的，它的作用只是限定一个范围而已。</p>
+<h3 id="2-4-entries-，keys-、values"><a href="#2-4-entries-，keys-、values" class="headerlink" title="2.4 entries()，keys()、values()"></a>2.4 entries()，keys()、values()</h3><p>通过 <code>entries()</code> , <code>keys()</code> 和 <code>values()</code> 方法，ES6 中还新增了数组中键值对、键、值的循环。这三个方法返回的值，内部都是一种 ArrayIterator 结构，无法直接读取。</p>
+<p><code>entries()</code> 循环键值：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>],</span><br><span class="line">    iterator = arr.entries();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next().value); <span class="comment">// [0, 'a']</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next().value); <span class="comment">// [1, 'b']</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next().value); <span class="comment">// [2, 'c']</span></span><br></pre></td></tr></table></figure>
+<p>当然，如果你了解 ES6 的迭代器的话，你也可以直接循环出来：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>],</span><br><span class="line">    iterator = arr.entries();</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">of</span> iterator) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(i); <span class="comment">// [0, 'a'] , [1, 'b'], [2, 'c']</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>keys()</code> 循环键：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>],</span><br><span class="line">    iterator = arr.keys();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next().value); <span class="comment">// 0</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next().value); <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next().value); <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+<p><code>values()</code> 循环值：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>],</span><br><span class="line">    iterator = arr.values();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next().value); <span class="comment">// 'a'</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next().value); <span class="comment">// 'b'</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next().value); <span class="comment">// 'c'</span></span><br></pre></td></tr></table></figure>
+<p>对于 <code>values()</code> 方法，浏览器支持性可能弱一些。在写本片文章时，我用的chrome 54 版本进行测试的，但该方法返回的却是 <code>arr.values is not a function</code> 。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

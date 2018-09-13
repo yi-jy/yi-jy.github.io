@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="javascript-clone | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="深拷贝 浅拷贝 jQuery.extend">
+  
+
+  
+
+  <title>javascript中的深拷贝和浅拷贝 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">javascript中的深拷贝和浅拷贝</h1>
+
+  <time class="post-time">2014-04-02</time>
+
+  <div class="post-content">
+    <p>JavaScript 包含了多种数据类型，它们大体可以归为两大类，即 基本数据类型（String,Number,Boolean,null,undefined）、引用数据类型（Object）。其中，引用数据类型主要以 对象（Object）、函数（Funciton）、数组（Array）以及 正则（Regexp）这些内置对象为代表。</p>
+<a id="more"></a>
+<p>基本数据类型的赋值比较简单，1 就是 1，2 就是 2，变量之间不会互相影响：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="number">1</span>,</span><br><span class="line">  b;</span><br><span class="line"></span><br><span class="line">b = a;</span><br><span class="line"><span class="built_in">console</span>.log(b); <span class="comment">// 1</span></span><br><span class="line"></span><br><span class="line">b = <span class="number">2</span>;</span><br><span class="line"><span class="built_in">console</span>.log(a, b); <span class="comment">// 1 2</span></span><br></pre></td></tr></table></figure>
+<p>一开始将 a 的值赋值给 b，b 的值就变成 1。当 b 重新赋值为 2 时，a 的值仍然为 1。</p>
+<p>但引用数据类型就没那么简单了，正是如此，很多JavaScript书籍都花大篇幅来讲解引用数据类型。</p>
+<p>我们知道，当定义一些JavaScript变量时，这些变量会存在内存中。但 基本数据类型 和 引用数类型 存储在内存中的数据结构形式是有差异的。</p>
+<p>基本数据类型是存在 栈内存，引用数据类型存在于 堆内存。</p>
+<p>基本数据类型的赋值，就是简单的复制内容。但引用数据类型的赋值，不仅复制内容，而且，它还复制引用关系。这种引用关系，是原数据指向内存地址的指针。</p>
+<p>来看下对象的拷贝：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> obj1 = &#123;&#125;, obj2 = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(obj1 === obj2); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<p>上面的代码，obj1 和 obj2 虽然都是新建的空对象，但它们并不相等。因为它们同时开辟了两块内存空间，来存储这两个对象。</p>
+<p>再来看对象的赋值：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> person1 = &#123;<span class="attr">company</span>: <span class="string">'xx'</span>, <span class="attr">job</span>: <span class="string">'web'</span>, <span class="attr">name</span>: <span class="string">'tom'</span>&#125;,</span><br><span class="line">  person2 = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">person2 = person1;</span><br><span class="line"><span class="built_in">console</span>.log(person2 === person1); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line">person2.name = <span class="string">'john'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(person1, person2);</span><br><span class="line"><span class="comment">// &#123;company: "xx", job: "web", name: "john"&#125;</span></span><br><span class="line"><span class="comment">// &#123;company: "xx", job: "web", name: "john"&#125;</span></span><br><span class="line"></span><br><span class="line">person1.age = <span class="number">29</span>;</span><br><span class="line"><span class="built_in">console</span>.log(person1, person2);</span><br><span class="line"><span class="comment">// &#123;company: "xx", job: "web", name: "john", age: 29&#125;</span></span><br><span class="line"><span class="comment">// &#123;company: "xx", job: "web", name: "john", age: 29&#125;</span></span><br></pre></td></tr></table></figure>
+<p>在这里，为了让对象 person1 和对象 person2 共享 company、job 的值，我们将 person1 对象的内容赋值到 person2 上，对两者进行对比，它们竟然完全相等。</p>
+<p>当通过 <code>person2.name = &#39;john&#39;</code> 来改变 name 属性时，person1 对象的 name 属性的值也变成了 mol。同时，我们又给 person1 对象新增一个 age 属性，此时，person2 对象也新增了 age 属性。</p>
+<p>这说明 person2 和 person1 占用的是同一块内存地址，person2 的指针指向存储 person1 的内存地址。</p>
+<p>这样，也导致了原对象和新对象的相互影响。</p>
+<h2 id="浅拷贝"><a href="#浅拷贝" class="headerlink" title="浅拷贝"></a>浅拷贝</h2><p>但大多数情况下，我们只想拷贝相同的内容，而并不想原对象受到新对象的影响。</p>
+<p>因为 person1 和 person2 根本就是两个人，他们有共性（company、job），也有个性（name、age）。在处理每个对象时，当然希望他们的“个性”互不相关。</p>
+<p>我们常规的做法是，新建一个对象来拷贝原对象的所有属性。这样，就相当于把对象之间的赋值，分解为一个个基本数据类型（对象属性）的赋值。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">shallowCopy</span>(<span class="params">origin</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> copy = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> prop <span class="keyword">in</span> origin) &#123;</span><br><span class="line">    <span class="keyword">if</span> (origin.hasOwnProperty(prop)) &#123; <span class="comment">// 只针对自身属性，忽略对象的原型属性</span></span><br><span class="line">      copy[prop] = origin[prop];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> copy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> person1 = &#123;<span class="attr">company</span>: <span class="string">'xx'</span>, <span class="attr">job</span>: <span class="string">'web'</span>, <span class="attr">name</span>: <span class="string">'tom'</span>&#125;,</span><br><span class="line">  person2 = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">person2 = shallowCopy(person1);</span><br><span class="line"><span class="built_in">console</span>.log(person2 === person1); <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">person2.name = <span class="string">'john'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(person1, person2);</span><br><span class="line"><span class="comment">// &#123;company: "xx", job: "web", name: "tom"&#125;</span></span><br><span class="line"><span class="comment">// &#123;company: "xx", job: "web", name: "john"&#125;</span></span><br><span class="line"></span><br><span class="line">person1.age = <span class="number">29</span>;</span><br><span class="line"><span class="built_in">console</span>.log(person1, person2);</span><br><span class="line"><span class="comment">// &#123;company: "xx", job: "web", name: "tom", age: 29&#125;</span></span><br><span class="line"><span class="comment">// &#123;company: "xx", job: "web", name: "john"&#125;</span></span><br></pre></td></tr></table></figure>
+<p>这种形式的拷贝称之为浅拷贝。</p>
+<h3 id="浅拷贝的问题"><a href="#浅拷贝的问题" class="headerlink" title="浅拷贝的问题"></a>浅拷贝的问题</h3><p>当然，有的时候我们需要拷贝的对象没那么简单，对象的属性值可能还嵌套着对象或者数组，或者多重嵌套。那上面的函数代码还能正常运行吗？</p>
+<p>来看个例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">shallowCopy</span>(<span class="params">origin</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> copy = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> prop <span class="keyword">in</span> origin) &#123;</span><br><span class="line">    <span class="keyword">if</span> (origin.hasOwnProperty(prop)) &#123; <span class="comment">// 只针对自身属性，忽略对象的原型属性</span></span><br><span class="line">      copy[prop] = origin[prop];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> copy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> person1 = &#123;<span class="attr">company</span>: <span class="string">'xx'</span>, <span class="attr">name</span>: <span class="string">'tom'</span>, <span class="attr">contact</span>: &#123;<span class="attr">tel</span>: <span class="number">1234</span>, <span class="attr">title</span>: <span class="string">'...'</span>&#125;&#125;,</span><br><span class="line">  person2 = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">person2 = shallowCopy(person1);</span><br><span class="line"></span><br><span class="line">person2.name = <span class="string">'john'</span>;</span><br><span class="line">person2.contact.tel = <span class="number">4321</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(person1, person2);</span><br><span class="line"><span class="comment">// &#123;company: 'xx', name: 'tom', contact: &#123;tel: 4321, title: '...'&#125;&#125;</span></span><br><span class="line"><span class="comment">// &#123;company: 'xx', name: "john", contact: &#123;tel: 4321, title: '...'&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+<p>上面的代码中，我们还是将 person1 对象的属性拷贝给 person2， person1 的 name 属性并没有因 person2 的 name 值发生变化而变化。</p>
+<p>不同的是，原对象包含了一个 contact 属性，它的值是一个对象，当我们改变 person2 中 contact 对象下的 tel 属性时，person1 也跟着发生改变了。</p>
+<p>这显然不是我们想要的结果。此时，你需要 深拷贝。</p>
+<h2 id="深拷贝"><a href="#深拷贝" class="headerlink" title="深拷贝"></a>深拷贝</h2><p>所谓的 深拷贝，就是将原对象的所有属性（包括嵌套的基本数据类型、引用数据类型）都拷贝一遍。来看下面代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">deepCopy</span>(<span class="params">origin</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 当 origin 为子属性时，它的值可能为对象，也可能为数组，for in 后结构不同</span></span><br><span class="line">  <span class="keyword">var</span> copy = <span class="built_in">Array</span>.isArray(origin) ? [] : &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> prop <span class="keyword">in</span> origin) &#123;</span><br><span class="line">    <span class="keyword">if</span> (origin.hasOwnProperty(prop)) &#123; <span class="comment">// 只针对自身属性，忽略对象的原型属性</span></span><br><span class="line">      <span class="comment">// 子属性值为对象时，对属性进行递归，直到基本数据类型</span></span><br><span class="line">      copy[prop] = <span class="keyword">typeof</span> origin[prop] === <span class="string">'object'</span> ? deepCopy(origin[prop]) : origin[prop];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> copy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> person1 = &#123;<span class="attr">company</span>: <span class="string">'xx'</span>, <span class="attr">name</span>: <span class="string">'tom'</span>, <span class="attr">contact</span>: &#123;<span class="attr">tel</span>: <span class="number">1234</span>, <span class="attr">title</span>: [<span class="string">'P3'</span>]&#125;&#125;,</span><br><span class="line">  person2 = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">person2 = deepCopy(person1);</span><br><span class="line"></span><br><span class="line">person2.name = <span class="string">'john'</span>;</span><br><span class="line">person2.contact.tel = <span class="number">4321</span>;</span><br><span class="line">person2.contact.title.push(<span class="string">'M1'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(person1, person2);</span><br><span class="line"><span class="comment">// &#123;company: 'xx', name: 'tom', contact: &#123;tel: 1234, title: ['P3']&#125;&#125;</span></span><br><span class="line"><span class="comment">// &#123;company: 'xx', name: "john", contact: &#123;tel: 4321, title: ['P3', 'M1']&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+<p>上面的 <code>deepCopy</code> 函数实现了深拷贝，这样一来，对于原对象而言，无论是深层属性、还是属性的值是否对象，统统不会受新对象的影响。</p>
+<p>需要注意的是，这种形式的拷贝，因为需要递归所有属性，所以，它比较耗性能。</p>
+<p>除了上面的方法。有的人还利用 JSON 的原型方法来实现 深拷贝。即先序列化，再反序列化：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> person1 = &#123;<span class="attr">company</span>: <span class="string">'xx'</span>, <span class="attr">contact</span>: &#123;<span class="attr">tel</span>: <span class="number">1234</span>, <span class="attr">title</span>: <span class="string">'...'</span>&#125;&#125;,</span><br><span class="line">  person2 = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">person2 = <span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(person1));</span><br><span class="line"></span><br><span class="line">person2.contact.tel = <span class="number">4321</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(person1, person2);</span><br><span class="line"><span class="comment">// &#123;company: 'xx', contact: &#123;tel: 1234, title: '...'&#125;&#125;</span></span><br><span class="line"><span class="comment">// &#123;company: 'xx', contact: &#123;tel: 4321, title: '...'&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+<p>总得来讲，浅拷贝是新对象只复制原对象最外层的属性，而深拷贝则是递归复制原对象的所有属性。也是说，浅拷贝中，原对象属性如果包含对象（假设A），则新对象会与原对象共享A的内存地址。但深拷贝中，原对象把所有嵌套属性的内存地址都拷贝一份给新对象。</p>
+<p>所以，浅拷贝与深拷贝最主要的区别是，对象的内层(嵌套)属性有没有完全彻底拷贝，直到属性值为基本数据类型为止。</p>
+<h2 id="Jquery-里的浅拷贝和深拷贝"><a href="#Jquery-里的浅拷贝和深拷贝" class="headerlink" title="Jquery 里的浅拷贝和深拷贝"></a>Jquery 里的浅拷贝和深拷贝</h2><p>Jquery 作为最常用的工具库，它封装了一个扩展对象的方法，即 <code>jQuery.extend([deep], target, object1 [, objectN])</code>，通过它，我们可以轻松的实现浅、深拷贝：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> person1 = &#123;<span class="attr">company</span>: <span class="string">'xx'</span>, <span class="attr">contact</span>: &#123;<span class="attr">tel</span>: <span class="number">1234</span>, <span class="attr">title</span>: <span class="string">'...'</span>&#125;&#125;,</span><br><span class="line">  person2 = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 浅拷贝</span></span><br><span class="line">person2 = $.extend(&#123;&#125;, person1);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 深拷贝</span></span><br><span class="line">person2 = $.extend(<span class="literal">true</span>, &#123;&#125;, person1);</span><br></pre></td></tr></table></figure>
+<p>另外，underscore 好像只实现了 浅拷贝。</p>
+<p>最后要说的是，所谓的 浅拷贝 和 深拷贝，只是针对引用数据类型而言。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

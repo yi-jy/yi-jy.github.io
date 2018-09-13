@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="webpack-refresh | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="webpack webpack-dev-server HMR 模块热更新">
+  
+
+  
+
+  <title>webpack 里的刷新 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">webpack 里的刷新</h1>
+
+  <time class="post-time">2017-06-11</time>
+
+  <div class="post-content">
+    <p>webpack 里涉及了多种形式的刷新，其中包括文件监听，修改内容时，页面的整体刷新，还有修改组件时，只针对组件的局部刷新。从最基本的 <code>webpack -w</code>，到 <code>webpack-dev-server</code> 与 <code>html-webpack-plugin</code> 的结合，再到 Hot Module Replacement，它们都有其对应的应用场景。</p>
+<p>注：本文的内容是对上一篇文章【webpack】的补充与提高，所以，项目结构和文件是相同的。</p>
+<a id="more"></a>
+<h3 id="webpack-–watch"><a href="#webpack-–watch" class="headerlink" title="webpack –watch"></a>webpack –watch</h3><p>webpack 给我们提供了 <code>webpack --watch</code> 这么一个命令，它的简写是 <code>webpack -w</code>。当在 cli 中输入 <code>webpack -w</code>，webpack会开启监听模式，观察项目文件的变化。</p>
+<p>这样，你在每次修改完文件后，就无需再运行 <code>webpack -p</code> 去重新编译文件，只需要刷新浏览器，便能看到修改的效果。</p>
+<p>所以，这个命令的优点是修改后免编译，缺点是修改完文件后，还是得手动去刷新浏览器。</p>
+<h3 id="webpack-dev-server"><a href="#webpack-dev-server" class="headerlink" title="webpack-dev-server"></a>webpack-dev-server</h3><p>理想情况下，我们是希望修改完文件后，浏览器会自动刷新，即插件具备<a href="http://livereload.com/" target="_blank" rel="noopener">livereload</a>的功能。通过文章前面的描述，可以采用 <code>webpack-dev-server</code> 并且设置 <code>inline: true</code> 属性。</p>
+<p>当修改 <code>entry</code> 里设置的 JavaScript 文件时，浏览器里的页面也跟着刷新。</p>
+<p>但修改 html、css 文件却发现浏览器却没跟着刷新，也就是说，这个插件不会监控 html、css 文件。</p>
+<p>所以，你还需要借助 <code>html-webpack-plugin</code> 插件。这样，无论是修改 html文件、js文件，还是 css文件，或其他资源，页面都能自动刷新了。</p>
+<h3 id="模块热替换-HMR-Hot-Module-Replacement"><a href="#模块热替换-HMR-Hot-Module-Replacement" class="headerlink" title="模块热替换 HMR(Hot Module Replacement)"></a>模块热替换 HMR(Hot Module Replacement)</h3><p>随着web技术在移动端的发展，单页面应用变得越来越火热。这种应用一般只有一个页面，它由许多组件和模块组成，然后通过ajax结合路由方式去加载不同状态的模块。</p>
+<p>一个复杂的单页面应用，通常包含了很多组件，而组件里面又包含很多状态。用户的操作，是从一个组件的状态，到另外一个状态，或者到下一个组件。</p>
+<p>但这种单页面应用，在开发时也带来一些问题。</p>
+<p>比如，一个申请贷款的项目。第一步是 “填写个人信息”，操作完后进入第二个界面 “绑定并设置银行卡”，继续操作完后进入第三个界面 “选择贷款方式”…等等后续界面的操作。当我们在修改第三个组件  “选择贷款方式” 时，页面会重新刷新，所有之前填写的信息被重置，各种状态被丢失，界面也回到第一个组件，即 “填写个人信息”。要查看修改的效果，还得完成前面界面的操作，直到第三个界面。</p>
+<p>又比如，假如某个页面的结构是一个tab切换，里面每一个tab项都是一个组件，默认是显示第一个tab项。但我们在开发第二个tab项时，每次修改和变更，页面又重新刷新到第一个tab项，要查看修改后的效果，还得手动切换到第二个tab项。</p>
+<p>这无疑给我们的开发调试带来了一定的阻碍。</p>
+<h4 id="模块热替换的概念"><a href="#模块热替换的概念" class="headerlink" title="模块热替换的概念"></a>模块热替换的概念</h4><p>依照webpack官网的解释，可以理解为：</p>
+<blockquote>
+<p>模块热替换功能会在应用程序运行过程中替换、添加或删除模块，而无需重新加载页面。这使得你可以在独立模块变更后，无需刷新整个页面，就可以更新这些模块，极大地加速了开发时间。</p>
+</blockquote>
+<p>你可以把 HMR 看成是 LiveReload 的一种替换方式。</p>
+<p>注意：无论是前面提到的刷新插件、还是HMR，它们都是应用在开发环境中，辅助我们更好的开发项目，与生产环境无关！</p>
+<h4 id="模块热替换-react"><a href="#模块热替换-react" class="headerlink" title="模块热替换-react"></a>模块热替换-react</h4><p>要实现 模块热替换 的功能，可以通过很多方式。由于涉及到组件化开发，目前最流行的采用 webpack + react 的开发模式，如果你采用的也是 react 开发，那么，你可以使用通过 <code>react-hot-loader</code> 加载器来实现 模块热替换，去刷新 react 组件。</p>
+<p>首先安装它：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install --save-dev react-hot-loader@next</span><br></pre></td></tr></table></figure>
+<p>然后在 <code>webpack.config.js</code> 中设置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">var</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>);</span><br><span class="line">...</span><br><span class="line">  entry: [</span><br><span class="line">    <span class="string">'react-hot-loader/patch'</span>, <span class="comment">// 开启 React 代码的模块热替换(HMR)</span></span><br><span class="line"></span><br><span class="line">    <span class="string">'webpack-dev-server/client?http://localhost:8080'</span>, <span class="comment">// 为 webpack-dev-server 的环境打包代码，然后连接到指定服务器域名与端口</span></span><br><span class="line"></span><br><span class="line">    <span class="string">'webpack/hot/only-dev-server'</span>, <span class="comment">// 为热替换(HMR)打包好代码，only- 意味着只有成功更新运行代码才会执行热替换(HMR)</span></span><br><span class="line"></span><br><span class="line">    path.resolve(__dirname, <span class="string">'./src/res/js/main.js'</span>)</span><br><span class="line">  ],</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'./dist/res/'</span>),</span><br><span class="line">    filename: <span class="string">'js/[name].js'</span>,</span><br><span class="line">    publicPath: <span class="string">'/'</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devServer: &#123;</span><br><span class="line">    inline: <span class="literal">true</span>,</span><br><span class="line">    historyApiFallback: <span class="literal">true</span>,</span><br><span class="line">    hot: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">....</span><br><span class="line"></span><br><span class="line">  plugins: [</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">new</span> webpack.HotModuleReplacementPlugin(), <span class="comment">// 开启全局的模块热替换(HMR)</span></span><br><span class="line">    <span class="keyword">new</span> webpack.NamedModulesPlugin() <span class="comment">// 当模块热替换(HMR)时在浏览器控制台输出对用户更友好的模块名字信息</span></span><br><span class="line">  ]</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>上面的代码中，<code>entry</code> 的值为一个数组，除了原来的 <code>path.resolve(__dirname, &#39;./src/res/js/main.js&#39;)</code>， 它还增加了 <code>&#39;react-hot-loader/patch&#39;</code>、<code>&#39;webpack-dev-server/client?http://localhost:8080&#39;</code>、以及 <code>&#39;webpack/hot/only-dev-server&#39;</code> 这三项。</p>
+<p>另外，还在 <code>devServer</code> 中开启了 <code>hot</code> 属性，<code>plugins</code> 新增了关于 HMR 的设置。</p>
+<p>最后，修改 <code>main.js</code>：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.js</span></span><br><span class="line"><span class="keyword">import</span> React,&#123;Component&#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Navbar <span class="keyword">from</span> <span class="string">'./navbar'</span>;</span><br><span class="line"><span class="keyword">import</span> Heading <span class="keyword">from</span> <span class="string">'./heading'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; AppContainer &#125; <span class="keyword">from</span> <span class="string">'react-hot-loader'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HelloReact</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">    <span class="keyword">this</span>.state = &#123;</span><br><span class="line">      num: <span class="number">0</span>,</span><br><span class="line">      tabIndex: <span class="number">0</span></span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    <span class="keyword">var</span> _this = <span class="keyword">this</span>;</span><br><span class="line"></span><br><span class="line">    setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">var</span> num = _this.state.num;</span><br><span class="line"></span><br><span class="line">      num += <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">      _this.setState(&#123;</span><br><span class="line">        num: num</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;, <span class="number">1000</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">switch</span>(index) &#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">      tabIndex: index</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render()&#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h3 style=&#123;&#123;<span class="attr">color</span>: <span class="string">'red'</span>&#125;&#125;&gt;&#123;<span class="keyword">this</span>.state.num&#125;&lt;<span class="regexp">/h3&gt;</span></span><br><span class="line"><span class="regexp">        &lt;div className="switch"&gt;</span></span><br><span class="line"><span class="regexp">          &lt;button className="" onClick=&#123;() =&gt; this.switch(0)&#125;&gt;Navbar&lt;/</span>button&gt;</span><br><span class="line">          &lt;button className=<span class="string">""</span> onClick=&#123;() =&gt; <span class="keyword">this</span>.switch(<span class="number">1</span>)&#125;&gt;Heading&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>div&gt;</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="keyword">this</span>.state.tabIndex === <span class="number">0</span></span><br><span class="line">          ?</span><br><span class="line">          &lt;Navbar /&gt;</span><br><span class="line">          :</span><br><span class="line">          &lt;Heading /&gt;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">      &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">render(&lt;AppContainer&gt;&lt;HelloReact /</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">AppContainer</span>&gt;</span></span>, <span class="built_in">document</span>.getElementById(<span class="string">'hello-react'</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 组件热刷新</span></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">module</span>.hot) &#123;</span><br><span class="line">  <span class="built_in">module</span>.hot.accept([<span class="string">'./navbar'</span>, <span class="string">'./heading'</span>], () =&gt; &#123;</span><br><span class="line">    render(<span class="xml"><span class="tag">&lt;<span class="name">AppContainer</span>&gt;</span><span class="tag">&lt;<span class="name">HelloReact</span> /&gt;</span><span class="tag">&lt;/<span class="name">AppContainer</span>&gt;</span></span>, <span class="built_in">document</span>.getElementById(<span class="string">'hello-react'</span>));</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上述代码中，父组件包含了两个子组件 <code>&lt;Navbar /&gt;</code> 和 <code>&lt;Heading /&gt;</code>（它们的代码，在此不赘述），父组件设置了一个定时器计数，并且，用户可以切点击 <code>Navbar</code> 和 <code>Heading</code> 按钮来切换这两个子组件的显示隐藏。</p>
+<p>这样，我们无论是修改 <code>&lt;Navbar /&gt;</code> 组件，还是修改 <code>&lt;Heading /&gt;</code> 组件，都只更新它们对应的视图，而不会刷新整个页面，父组件里的定时计数也不会被重置。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

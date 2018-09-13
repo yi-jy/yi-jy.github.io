@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="ie6不支持图片圆角的解决方案 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="ie6圆角">
+  
+
+  
+
+  <title>ie6不支持图片圆角的解决方案 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">ie6不支持图片圆角的解决方案</h1>
+
+  <time class="post-time">2012-10-15</time>
+
+  <div class="post-content">
+    <p>css3可以使用border-radius轻易的对任何元素使用圆角。</p>
+<p>但css2如何解决呢？倘若需求需要我们页面的图片都实现圆角，并且需要兼容ie6等低版本浏览器，那么又如何来实现呢？</p>
+<a id="more"></a>
+<p>我们想到用一张中间透明（如下图）覆盖在图片上，而对于不支持png的ie6，我们可以单独对ie6使用gif格式的背景，不过缺点是有那么点锯齿，但无关大雅。如果你非要使用png，也可以使用相关的js使png在ie6下透明化。</p>
+<img src="/2012/10/15/IE6-image-radius/circle-bg.jpg" title="圆角背景图">
+<p>效果图如下：</p>
+<img src="/2012/10/15/IE6-image-radius/circle-img-chrome.jpg" title="圆角背景-chrome">
+<img src="/2012/10/15/IE6-image-radius/circle-img-ie6.jpg" title="圆角背景-IE6">
+<p>相关代码如下：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.box</span>&#123;<span class="attribute">position</span>:relative;<span class="attribute">width</span>:<span class="number">120px</span>;<span class="attribute">height</span>:<span class="number">120px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.circle</span>&#123;<span class="attribute">position</span>:absolute;<span class="attribute">left</span>:<span class="number">0</span>;<span class="attribute">top</span>:<span class="number">0</span>;<span class="attribute">width</span>:<span class="number">100%</span>;<span class="attribute">height</span>:<span class="number">100%</span>;<span class="attribute">background</span>:<span class="built_in">url</span>(circle.png);<span class="attribute">_background</span>:<span class="built_in">url</span>(circle.gif);&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.img</span>&#123;<span class="attribute">border-radius</span>:<span class="number">50%</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"demo.jpg"</span> <span class="attr">class</span>=<span class="string">"img"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">b</span> <span class="attr">class</span>=<span class="string">"circle"</span>&gt;</span><span class="tag">&lt;/<span class="name">b</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这里为何要加border-radius:50%呢？虽然使用了背景覆盖，但为了防止背景图片加载失败时，在高级浏览器也看不到圆角，从而在此利用了css的渐进增强和优雅降级。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,47 @@
+
+<!doctype html>
+<html manifest="flower.mainfest">
+<head>
+<meta charset="utf-8">
+<title>html5 离线存储</title>
+<link type="text/css" rel="stylesheet" href="flower.css"/>
+</head>
+
+<body>
+
+<div class="network-status">
+</div>
+
+<div class="flower">
+  <img src="flower.jpg" class="flower-img"/>
+    <div class="flower-info">
+      <h3 class="flower-name">忽地笑</h3>
+        <p class="flower-intro">忽地笑，又名铁色箭（本草纲目）---传说是“恶魔的温柔”，是天堂中自愿投入地狱的花朵，却被众恶魔们遣回来了，但因为回不了天堂而仍徘徊在黄泉的路上，众魔因不忍心，同意让忽地笑开在凡间路上，给离开人世的亡魂们一个安慰。<br/>
+          分布于日本、缅甸、中国台湾岛以及中国大陆的湖北、湖南、广西、云南、广东、福建、四川等地，生长于海拔600米至2,300米的地区，见于阴湿山坡，目前尚未由人工引种栽培。
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
+
+
+<script type="text/javascript">
+(function(){
+  var oNetworkStatus = document.querySelector(".network-status")
+
+  oNetworkStatus.innerHTML = Online()?"网络已链接":"网络已断开";
+
+  function Online() {
+    return navigator.onLine;
+  }
+})()
+
+</script>
+
+
+
+
+
+
+

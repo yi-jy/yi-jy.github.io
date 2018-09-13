@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="HTML5本地存储之web Storage | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="localstorage sessionstorage">
+  
+
+  
+
+  <title>HTML5本地存储之web Storage | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">HTML5本地存储之web Storage</h1>
+
+  <time class="post-time">2014-03-15</time>
+
+  <div class="post-content">
+    <p>我们知道，存储信息主要是在服务端或客户端。服务端可通过各种服务器语言，把数据存储在数据库里，这也是网站存储用户信息的主要途径。而在客户端呢？html5之前，web浏览器都是通过cookie来存储的，不过cookie存在以下缺点：</p>
+<a id="more"></a>
+<ol>
+<li>cookie需要通过javascript 频繁的设置和读取；</li>
+<li>数量和体积是有限的，数量不超过50个，大小不超过4KB。</li>
+<li>cookie以一个文件的形式存在客户端的机器上，用户可更改，安全性较低。</li>
+</ol>
+<p>在html5中新增了web Storage存储功能。</p>
+<p>无论用户是离线还是在线状态，用户操作web storage都可以将信息存储在本地，因此web storage又被称作为“本地存储”。</p>
+<p>web storage存储的数据只能只能在同一机器，同一浏览器读取。</p>
+<p>另外，它存储数据的格式与cookie类似，也是以键值对的格式进行存储。</p>
+<h2 id="web-storage分类"><a href="#web-storage分类" class="headerlink" title="web storage分类"></a>web storage分类</h2><p>storage主要分为两类：localStorage（本地存储） 和sessionStorage（会话存储）；</p>
+<h3 id="localStorage"><a href="#localStorage" class="headerlink" title="localStorage"></a>localStorage</h3><p>localStorage对象可以永久存储，当然我们也可以手动的删除数据，存储量有5M的限制。</p>
+<p>该对象可以在不同页面间共享数据存储，比如我们在一个选项页打开了一个网页，设置了一些东西，再在另外一个选项页打开此页面时，会看到我们的设置。</p>
+<h3 id="sessionStorage"><a href="#sessionStorage" class="headerlink" title="sessionStorage"></a>sessionStorage</h3><p>sessionStorage对象则是临时对话存储，也就是说当我们关闭窗口后，数据存储就失效，sessionStorage与localStorage有相同的方法。只不过两者存储数据的时间不同。</p>
+<h2 id="web-storage数据的操作"><a href="#web-storage数据的操作" class="headerlink" title="web storage数据的操作"></a>web storage数据的操作</h2><h3 id="设置"><a href="#设置" class="headerlink" title="设置"></a>设置</h3><p>设置存储数据主要有三种方式：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">localStorage[key] = value;</span><br><span class="line">localStorage.key = value;</span><br><span class="line">localStorage.setItem(<span class="string">"key"</span>, value);</span><br></pre></td></tr></table></figure>
+<h3 id="读取"><a href="#读取" class="headerlink" title="读取"></a>读取</h3><p>读取数据的方式主要是通过它的键值，也有三种方式：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">localStorage[key];</span><br><span class="line">localStorage.key;</span><br><span class="line">localStorage.getItem(<span class="string">"myKey"</span>);</span><br></pre></td></tr></table></figure>
+<p>我们可以看到，web storage对象与普通对象属性和方法的设置、读取是类似的，第三种方法则更偏向于cookie的写法。它们返回的值都是字符串。</p>
+<p>若要读取所有的存储数据，我们可以通过遍历：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (localStorage) &#123;</span><br><span class="line">　<span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>,len=localStorage.length; i&lt;len; i++) &#123;</span><br><span class="line">　　<span class="keyword">var</span> iKey = localStorage.key(i);</span><br><span class="line">　　<span class="keyword">var</span> iItem = localStorage[iKey];</span><br><span class="line">　　alert(iKey+<span class="string">";"</span>+iItem);</span><br><span class="line">　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><p>删除单条数据，只需要对它进行removeItem函数操作：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">localStorage.removeItem(<span class="string">"key"</span>);</span><br></pre></td></tr></table></figure>
+<p>而清空所有本地保存的数据。我们可以使用clear()：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">localStorage.clear();</span><br></pre></td></tr></table></figure>
+<p>我们可以通过在window上绑定storage事件来监听存储的数据是否发生变化。比如在一个页面设置了一些数据变化，那么我们用这个页面新建选项页或切换到另外的选项页时，也会同步变化。此对象有五个属性：</p>
+<ul>
+<li>key,修改或删除Key值，如果调用clear()，key为null</li>
+<li>newValue，新设置的值或null</li>
+<li>oldValue，原来的值或null</li>
+<li>storageArea, 当前的storage对象</li>
+<li>url，触发函数所在的url</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">window</span>.addEventListener) &#123;</span><br><span class="line">　<span class="built_in">window</span>.addEventListener(<span class="string">'storage'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">　　<span class="built_in">console</span>.log(e.key);</span><br><span class="line">　　<span class="built_in">console</span>.log(e.newValue);</span><br><span class="line">　　<span class="built_in">console</span>.log(e.oldValue);</span><br><span class="line">　　<span class="built_in">console</span>.log(e.url);</span><br><span class="line">　　...</span><br><span class="line"></span><br><span class="line">　&#125;,<span class="literal">false</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">　<span class="built_in">window</span>.attachEvent(<span class="string">'onstorage'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">　...</span><br><span class="line">　&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后，要注意的是，有些浏览器开启了隐身模式，本地存储和读取可能会失效。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

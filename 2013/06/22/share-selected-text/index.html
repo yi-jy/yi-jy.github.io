@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="“文字选中分享到”简单实现 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="getSelection()  selection.createRange()  分享文字">
+  
+
+  
+
+  <title>“文字选中分享到”简单实现 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">“文字选中分享到”简单实现</h1>
+
+  <time class="post-time">2013-06-22</time>
+
+  <div class="post-content">
+    <p>通常我们在阅读新浪博客的时候，当选中文章中的一段文字，会出现下面这一现象：</p>
+<a id="more"></a>
+<img src="/2013/06/22/share-selected-text/share.jpg" title="新浪选中文字分享">
+<p>选中文字后，当我们抬起鼠标会出现一个新浪的分享按钮，这有利于我们很方便的将有用的文字信息分享到微博。那么这种效果是如何实现的？</p>
+<p><strong>首先想的是，如何把用户选中的文字保存下来呢？</strong></p>
+<p>在javascript中，它为我们提供　<code>document.selection.createRange().text</code>　这样一个方法，它返回的是一个字符串，但是只适用ie。在其他的浏览器，则是用的 <code>window.getSelection().toString()</code>　。</p>
+<p>于是我们封装这个函数，以便兼容多个浏览器：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">textSelect</span>(<span class="params"></span>)</span>&#123;　　</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">document</span>.selection)&#123;　<span class="comment">// ie</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">document</span>.selection.createRange().text;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123; <span class="comment">//标准</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">window</span>.getSelection().toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>文字选中后，鼠标抬起分享按钮的出现？</strong></p>
+<p>我们在html中定义一个绝对定位的分享层：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"share"</span> <span class="attr">style</span>=<span class="string">"position:absolute;display:none;"</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"../images/share.gif"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>接着，将鼠标的坐标点赋给分享层并显示这个层，在这里我们做了一个选中文字长度的条件限制，如果文字长度大于10,则分享层才显示。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ele.onmouseup=<span class="function"><span class="keyword">function</span>(<span class="params">ev</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> oEvent=ev||event,</span><br><span class="line">        left=oEvent.clientX,</span><br><span class="line">        top=oEvent.clientY; </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(textSelect().length&gt;<span class="number">10</span>)&#123;</span><br><span class="line">        setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params">ev</span>)</span>&#123;</span><br><span class="line">            oShare.style.display=<span class="string">"block"</span>;</span><br><span class="line">            oShare.style.left=left+<span class="string">"px"</span>;</span><br><span class="line">            oShare.style.top=top+<span class="string">"px"</span>;</span><br><span class="line">        &#125;, <span class="number">100</span>) <span class="comment">//100ms后出现，防止在IE下触发太快，影响选中文字的范围</span></span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        oShare.style.display=<span class="string">"none"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>最后，如何把选中的文字带到微博发布框？</strong></p>
+<img src="/2013/06/22/share-selected-text/share_wb.jpg" title="文字分享发布">
+<p>当我们点击分享按钮时，网页会跳到分享发布框页面，这乍一看是个很复杂的问题，的确，有些东西不知道就算你想破脑袋也无从入手。在这里，新浪给我们提供了一个分享接口，将分享发布框页面的网址拆分如下：</p>
+<blockquote>
+<p><a href="http://v.t.sina.com.cn/share/share.php?searchPic=false&amp;title=&quot;+textSelect()+&quot;&amp;url=window.location.href" target="_blank" rel="noopener">http://v.t.sina.com.cn/share/share.php?searchPic=false&amp;title=&quot;+textSelect()+&quot;&amp;url=window.location.href</a></p>
+</blockquote>
+<p>红色部分是新浪分享发布页面的网址及相关参数，深蓝色部分是你的分享文字，绿色部分是你需要分享的网页地址（博文地址）。</p>
+<p>于是就有：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">oShare.onclick=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;  </span><br><span class="line">    <span class="built_in">window</span>.open(<span class="string">"http://v.t.sina.com.cn/share/share.php?searchPic=false&amp;title="</span>+textSelect()+<span class="string">"&amp;url=window.location.href"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上就是分享文字效果的步骤讲解。</p>
+<p>demo的完整代码如下：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">”p1″</span>&gt;</span>本书从最早期Netscape浏览器中的JavaScript开始讲起，直到当前它对XML和Web服务的具体支持，内容主要涉及JavaScript的语言特点、JavaScript与浏览器的交互、更高级的JavaScript技巧，以及与在Web应用程序中部署JavaScript解决方案有关的问题，如错误处理、调试、安全性、优化/混淆化、XML和Web服务，最后介绍应用所有这些知识来创建动态用户界面。”本书作者显然非常了解读者的需要，切中要害，信息密集。单单对客户端通信、Web服务、正则表达式、DOM、XML处理等现代JavaScript技术的详细讲解，就已经物超所值。”<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">”share”</span> <span class="attr">style</span>=<span class="string">”position:absolute;display:none;”</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">”../images/share.gif”</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript">(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="function"><span class="keyword">function</span> <span class="title">textSelect</span><span class="params">()</span></span>&#123;  <span class="comment">//核心函数</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">if</span>(<span class="built_in">document</span>.selection)&#123;　<span class="comment">// ie</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> <span class="built_in">document</span>.selection.createRange().text;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">else</span>&#123; <span class="comment">//标准</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> <span class="built_in">window</span>.getSelection().toString();</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> d=<span class="built_in">document</span>,oP=d.getElementById(<span class="string">"p1"</span>),oShare=d.getElementById(<span class="string">"share"</span>);</span></span><br><span class="line"><span class="actionscript">    oP.onmouseup=<span class="function"><span class="keyword">function</span><span class="params">(ev)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">var</span> oEvent=ev||event,left=oEvent.clientX,top=oEvent.clientY; </span></span><br><span class="line"><span class="actionscript">        <span class="keyword">if</span>(textSelect().length&gt;<span class="number">10</span>)&#123;</span></span><br><span class="line"><span class="actionscript">            setTimeout(<span class="function"><span class="keyword">function</span><span class="params">(ev)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">                oShare.style.display=<span class="string">"block"</span>;</span></span><br><span class="line"><span class="actionscript">                oShare.style.left=left+<span class="string">"px"</span>;</span></span><br><span class="line"><span class="actionscript">                oShare.style.top=top+<span class="string">"px"</span>;</span></span><br><span class="line"><span class="actionscript">            &#125;,<span class="number">100</span>) <span class="comment">//100ms后出现，防止在IE下触发太快，影响选中文字的范围</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">        &#125;　</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">else</span>&#123;</span></span><br><span class="line"><span class="actionscript">            oShare.style.display=<span class="string">"none"</span>;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">    oShare.onclick=<span class="function"><span class="keyword">function</span><span class="params">(ev)</span></span>&#123;  <span class="comment">//阻止冒泡函数</span></span></span><br><span class="line"><span class="actionscript">        <span class="keyword">var</span> oEvent=ev||event;</span></span><br><span class="line"><span class="actionscript">        oEvent.cancelBubble=<span class="literal">true</span>;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">window</span>.open(‘http:<span class="comment">//v.t.sina.com.cn/share/share.php?　searchPic=false&amp;title=’+textSelect()+’&amp;url=http://baike.baidu.com/view/605930.htm’);</span></span></span><br><span class="line"><span class="actionscript"><span class="comment">//这里的百度百科的网址，如果在服务器网页可以使用window.location.href</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.onclick=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;　</span></span><br><span class="line"><span class="actionscript">        oShare.style.display=<span class="string">"none"</span>; </span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;)();</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

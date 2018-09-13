@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>跳转到新页面某处（无滚动效果）</p>
+<select onchange="window.open(this.options[this.selectedIndex].value,'_Blank')">
+	<option value="" selected>---请选择滚动到页面的位置--</option>
+    <option value="page.html#bb">bb</option>
+	<option value="page.html#cc">cc</option>
+    <option value="page.html#ee">ee</option>
+    <option value="page.html#gg">gg</option>
+    <option value="page.html#ii">ii</option>
+</select>
+<p></p>
+<p>跳转到新页面某处（滚动效果）</p>
+<select onchange="window.open(this.options[this.selectedIndex].value,'_Blank')">
+	<option value="" selected>---请选择滚动到页面的位置--</option>
+    <option value="page.html?bb">bb</option>
+	<option value="page.html?cc">cc</option>
+    <option value="page.html?ee">ee</option>
+    <option value="page.html?gg">gg</option>
+    <option value="page.html?ii">ii</option>
+</select>
+
+</body>
+</html>

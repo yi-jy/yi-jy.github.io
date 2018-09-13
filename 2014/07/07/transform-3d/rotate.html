@@ -1,0 +1,316 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+*{margin:0;padding:0;}
+.demo{position: relative;padding:30px;}
+.demo-row{padding-bottom:30px;zoom:1;font-family:"microsoft yahei";}
+.demo-row:after,.demo-row-con:after{content:'';display:block;height:0;clear:both;}
+.demo-row-tit{margin-bottom:30px;font:16px/30px "microsoft yahei";}
+.demo-row-tit span{margin-right:5px;color:#F30;font-size:20px;}
+.demo-row-con{position:relative;}
+.demo-row-con .line{position:absolute;left:0;top:50%;z-index:10000;width:100%;height:1px;text-align:right;font-size:12px;color:#666;background:#ccc;}
+.demo-row-3d{-webkit-perspective:500px;perspective:500px;}
+.demo-row-3d .demo-row-con{-webkit-transform-style:preserve-3d;transform-style:preserve-3d;}
+.box{float:left;width:80px;height:80px;margin-right:100px;padding:10px;color:#fff;font-size:12px;line-height:18px;word-break:break-all;-wekit-transition:0.5s all;transition:0.5s all;background:green;}
+.box1{-webkit-transform:rotate(30deg);transform:rotate(30deg);}
+.box2{-webkit-transform:rotate(-30deg);transform:rotate(-30deg);}
+.box3{-webkit-transform:rotateX(30deg);transform:rotateX(30deg);}
+.box4{-webkit-transform:rotateX(-30deg);transform:rotateX(-30deg);}
+.box5{-webkit-transform:rotateY(30deg);transform:rotateY(30deg);}
+.box6{-webkit-transform:rotateY(-30deg);transform:rotateY(-30deg);}
+.note{padding:10px 0;}
+.demo-row-dc{position:relative;margin:0 auto;width:100px;height:100px;}
+.demo-row-dc .box7{position:absolute;left:-120px;-webkit-transform:rotateY(30deg);transform:rotateY(30deg);}
+.demo-row-dc .box8{position:absolute;left:120px;-webkit-transform:rotateY(-30deg);transform:rotateY(-30deg);}
+.box9{-webkit-transform:rotateZ(30deg);transform:rotateZ(30deg);}
+.box10{-webkit-transform:rotateZ(-30deg);transform:rotateZ(-30deg);}
+
+.box-move01-02{-webkit-animation:box-move01-02 3s 0s linear infinite;animation:box-move01-02 3s 0s linear infinite;}
+
+@-webkit-keyframes box-move01-02{
+    0%{
+      -webkit-transform:rotate(0);
+    }
+    50%{
+      -webkit-transform:rotate(30deg);
+    }
+    100%{
+      -webkit-transform:rotate(30deg);
+    }
+  }
+
+@keyframes box-move01-02{
+    0%{
+      transform:rotate(0);
+    }
+    50%{
+      transform:rotate(30deg);
+    }
+    100%{
+      transform:rotate(30deg);
+    }
+  }
+
+.box-move03-04{-webkit-animation:box-move03-04 3s 0s linear infinite;animation:box-move03-04 3s 0s linear infinite;}
+
+@-webkit-keyframes box-move03-04{
+    0%{
+      -webkit-transform:rotateX(0);
+    }
+    50%{
+      -webkit-transform:rotateX(30deg);
+    }
+    100%{
+      -webkit-transform:rotateX(30deg);
+    }
+  }
+
+@keyframes box-move03-04{
+    0%{
+      transform:rotateX(0);
+    }
+    50%{
+      transform:rotateX(30deg);
+    }
+    100%{
+      transform:rotateX(30deg);
+    }
+  }
+
+.box-move05-06{-webkit-animation:box-move05-06 3s 0s linear infinite;animation:box-move05-06 3s 0s linear infinite;}
+
+@-webkit-keyframes box-move05-06{
+    0%{
+      -webkit-transform:rotateY(0);
+    }
+    50%{
+      -webkit-transform:rotateY(30deg);
+    }
+    100%{
+      -webkit-transform:rotateY(30deg);
+    }
+  }
+
+@keyframes box-move05-06{
+    0%{
+      transform:rotateY(0);
+    }
+    50%{
+      transform:rotateY(30deg);
+    }
+    100%{
+      transform:rotateY(30deg);
+    }
+  }
+
+.box-move09-10{-webkit-animation:box-move09-10 3s 0s linear infinite;animation:box-move09-10 3s 0s linear infinite;}
+
+@-webkit-keyframes box-move09-10{
+    0%{
+      -webkit-transform:rotateZ(0);
+    }
+    50%{
+      -webkit-transform:rotateZ(30deg);
+    }
+    100%{
+      -webkit-transform:rotateZ(30deg);
+    }
+  }
+
+@keyframes box-move09-10{
+    0%{
+      transform:rotateZ(0);
+    }
+    50%{
+      transform:rotateZ(30deg);
+    }
+    100%{
+      transform:rotateZ(30deg);
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="demo">
+  <div class="demo-row">
+        <h3 class="demo-row-tit"><span>1-1(2d).</span>rotate---以中心点旋转，正度数为顺时针方向，负度数为逆时针方向。在无3d透视的情况效果如下。</h3>
+        <div class="demo-row-con">
+            <div class="box box1">
+                rotate(30deg)
+                顺时针
+            </div>
+
+            <div class="box box2">
+                rotate(-30deg)
+                逆时针
+            </div>
+
+            <div class="box box-move01-02">
+                实例变化过程(正数)
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+    <div class="demo-row demo-row-3d">
+        <h3 class="demo-row-tit"><span>1-2(3d).</span>rotate---以中心点旋转，正度数为顺时针方向，负度数为逆时针方向。在有3d透视的情况如下，可见与无3d透视时表现一致。</h3>
+        <div class="demo-row-con">
+            <div class="box box1">
+                rotate(30deg)
+                顺时针
+            </div>
+
+            <div class="box box2">
+                rotate(-30deg)
+                逆时针
+            </div>
+
+            <div class="box box-move01-02">
+                实例变化过程(正数)
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+    <div class="demo-row">
+        <h3 class="demo-row-tit"><span>2-1(2d).</span>rotateX---以X轴旋转，正度数与负度数效果一样，可以看到元素在高度上变小。在无3d透视的情况效果如下。</h3>
+        <div class="demo-row-con">
+            <div class="box box3">
+                rotateX(30deg)
+            </div>
+
+            <div class="box box4">
+                rotateX(-30deg)
+            </div>
+
+            <div class="box box-move03-04">
+                实例变化过程(正数)
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+    <div class="demo-row demo-row-3d">
+        <h3 class="demo-row-tit"><span>2-2(3d).</span>rotateX---以X轴旋转，在有3d透视的情况下，正度数是元素顶部向屏幕里面旋转，底部向屏幕外面旋转。负度数则相反。另外rotateX(30deg)与rotate3D(1,0,0,30deg)效果相同...</h3>
+        <div class="demo-row-con">
+            <div class="box box3">
+                rotateX(30deg)
+                或者<br/>
+                rotate3d(1,0,0,30deg)
+            </div>
+
+            <div class="box box4">
+                rotateX(-30deg)
+                或者<br/>
+                rotate3d(1,0,0,-30deg)
+            </div>
+
+            <div class="box box-move03-04">
+                实例变化过程(正数)
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+  <div class="demo-row">
+        <h3 class="demo-row-tit"><span>3-1(2d).</span>rotateY---以Y轴旋转，正度数与负度数效果一样，可以看到元素在宽度上变小。在无3d透视情况效果如下。</h3>
+        <div class="demo-row-con">
+            <div class="box box5">
+                rotateY(30deg)
+            </div>
+
+            <div class="box box6">
+                rotateY(-30deg)
+            </div>
+
+            <div class="box box-move05-06">
+                实例变化过程(正数)
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+    <div class="demo-row demo-row-3d">
+        <h3 class="demo-row-tit"><span>3-2(3d).</span>rotateY---以Y轴旋转，另外rotateY(30deg)与rotate3D(0,1,0,30deg)效果相同...在有3d透视的情况下，正度数是元素左边向屏幕外旋转，右边向屏幕里面旋转。负度数则相反。</h3>
+        <div class="demo-row-con">
+            <div class="box box5">
+                rotateY(30deg)
+                或者<br/>
+                rotate3d(0,1,0,30deg)
+            </div>
+
+            <div class="box box6">
+                rotateY(-30deg)
+                或者<br/>
+                rotate3d(0,1,0,-30deg)
+            </div>
+
+            <div class="box box-move05-06">
+                实例变化过程(正数)
+            </div>
+            <b class="line">中心线</b>
+        </div>
+        <p class="note">如果要对称，必须设置父元素的宽高，并居中<p>
+        <div class="demo-row-con demo-row-dc">
+            <div class="box box7">
+                rotateY(30deg)
+            </div>
+
+            <div class="box box8">
+                rotateY(-30deg)
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+
+    <div class="demo-row">
+        <h3 class="demo-row-tit"><span>4-1(2d).</span>rotateZ---以Z轴旋转，正度数为顺时针方向，负度数为逆时针方向。此效果与第一个rotate效果是一样。在无3d透视情况效果如下。</h3>
+        <div class="demo-row-con">
+            <div class="box box9">
+                rotateZ(30deg)
+            </div>
+
+            <div class="box box10">
+                rotateZ(-30deg)
+            </div>
+
+            <div class="box box-move09-10">
+                实例变化过程(正数)
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+    <div class="demo-row demo-row-3d">
+        <h3 class="demo-row-tit"><span>4-2(3d).</span>rotateZ---以Z轴旋转，另外rotateZ(30deg)与rotate3D(0,0,1,30deg)效果相同...在有3d透视的情况如下，可见与无3d透视时表现一致。</h3>
+        <div class="demo-row-con">
+            <div class="box box9">
+                rotateZ(30deg)
+                或者<br/>
+                rotate3d(0,0,1,30deg)
+            </div>
+
+            <div class="box box10">
+                rotateZ(-30deg)
+                或者<br/>
+                rotate3d(0,0,1,-30deg)
+            </div>
+
+            <div class="box box-move09-10">
+                实例变化过程(正数)
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+
+</div>
+
+</body>
+</html>

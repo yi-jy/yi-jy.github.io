@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="漫谈DOM | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="DOM DOM历史 DOM性能 DOM方法和属性">
+  
+
+  
+
+  <title>漫谈DOM | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">漫谈DOM</h1>
+
+  <time class="post-time">2014-05-30</time>
+
+  <div class="post-content">
+    <p>从 DOM的来源 说起。</p>
+<p>上世纪九十年代，在浏览器争夺战中，微软为了霸占更多的浏览器市场，于是山寨了Netscape的Javascript而开发了Jscript ，并且还在其自身的浏览器IE中加入一些私有事务，这也正是导致javascript在浏览器兼容性问题的主要原因。为了统一web的开发标准，于是，W3C在1998年发布了一套网页编程接口，即为DOM。</p>
+<p>那么，究竟什么是DOM。</p>
+<a id="more"></a>
+<p>DOM 是一组用来描述脚本怎样与结构化文档进行交互和访问的web标准。DOM定义了一系列对象、方法和属性，用于访问、操作和创建文档中的内容、结构、样式和行为。</p>
+<p>其实HTML，XML，SVG这些语言都是支持DOM的，而且正是通过DOM我们才能操纵这些文档结构。简而言之，DOM赋予了javascript操作结构化文档的能力。应该明白的是，DOM 不是javascript,，它是由W3C定义的一组规范。</p>
+<h2 id="DOM的级别"><a href="#DOM的级别" class="headerlink" title="DOM的级别"></a>DOM的级别</h2><h3 id="DOM-0级"><a href="#DOM-0级" class="headerlink" title="DOM 0级"></a>DOM 0级</h3><p>在严格意义上来说，是没有DOM0级和0级规范的。如果有人提到 0 级，那很可能是指一组专有的DHTML方法、对象和集合。而这些专有特性在成为标准的规范之前，在不同浏览器中实现是不一致。</p>
+<h3 id="DOM1级"><a href="#DOM1级" class="headerlink" title="DOM1级"></a>DOM1级</h3><p>DOM1级于1998年10月发布，是作为推进标准发布的第一DOM标准版本。DOM1级是一个规范，由如下两部分组成。</p>
+<p>DOM core：为XML文档规定了一般性的树形节点结构的内部运行机制，同时给出了创建、编辑和操纵这个树形结构的必要属性和方法。</p>
+<p>DOM HTML：为与HTML文档、标签集合以及个别的HTML标签相关的具体元素定义了对象、属性和方法。</p>
+<p>DOM1级规范包含诸如Document、Node、Attr、Element、Text、HtmlDocument、HtmlElement和HtmlCollection等对象的定义。</p>
+<h3 id="DOM2-级"><a href="#DOM2-级" class="headerlink" title="DOM2 级"></a>DOM2 级</h3><p>DOM2 级于2000年11月发布，更新了核心并增加了其他一些规范。这些规范主要被分为这六部分：</p>
+<ol>
+<li><p>DOM2 Core：类似DOM Core，规定了对DOM文档结构的控制机制，添加了更多的特性。</p>
+</li>
+<li><p>DOM2 Html：类似DOM Html 规定了HTML的DOM文档的控制机制。还包括另外一些属性。</p>
+</li>
+<li><p>DOM2 Events：规定了与鼠标相关的事件。</p>
+</li>
+<li><p>DOM2 Style： 提供了访问和操作所有与css相关的样式及规则的能力。</p>
+</li>
+<li><p>DOM2 Traversal and Range：这两个规范使你能够迭代访问DOM，以便根据需要对文档进行遍历或操作。</p>
+</li>
+<li><p>DOM2 Views：提供了访问和更新文档表现的能力。</p>
+</li>
+</ol>
+<h3 id="DOM3-级"><a href="#DOM3-级" class="headerlink" title="DOM3 级"></a>DOM3 级</h3><p>DOM3级包含更新之后的核心，总共包含三个推荐规范：</p>
+<ol>
+<li><p>DOM3 Core：向原有核心添加了更多的新方法和新属性，同时修改了已有的一些方法。</p>
+</li>
+<li><p>DOM3 Load and Save：提供将XML文档的内容加载到DOM文档中和将DOM文档序列化为XML文档的能力。</p>
+</li>
+<li><p>DOM3 Validation：提供了确保动态生成的文档的有效性的能力。</p>
+</li>
+</ol>
+<h3 id="检测是否支持DOM（或DOM几级）"><a href="#检测是否支持DOM（或DOM几级）" class="headerlink" title="检测是否支持DOM（或DOM几级）"></a>检测是否支持DOM（或DOM几级）</h3><p>document.implementation 检测是否支持DOM</p>
+<p>document.implementation.hasFeature()检测支持DOM几级，它有两个参数：</p>
+<p>第一个参数可以是以下的其中一个：Core、XML、HTML、Views、StyleSheets、css、css2、Events、UIEvents等</p>
+<p>第二个参数是DOM的级别：即1.0,2.0,3.0；</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">document</span>.implementation) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">document</span>.implementation.hasFeature(<span class="string">'Core'</span>, <span class="string">'2.0'</span>)) &#123;</span><br><span class="line">    alert(<span class="string">"支持DOM2级"</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    alert(<span class="string">"不支持DOM2级"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  alert(<span class="string">"不支持DOM"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="DOM的属性"><a href="#DOM的属性" class="headerlink" title="DOM的属性"></a>DOM的属性</h2><h3 id="nodeName"><a href="#nodeName" class="headerlink" title="nodeName"></a>nodeName</h3><p>nodeName属性返回的是节点的名称。此属性只读；</p>
+<ul>
+<li><p>元素节点的 nodeName 与标签名相同</p>
+</li>
+<li><p>属性节点的 nodeName 与属性名相同</p>
+</li>
+<li><p>文本节点的 nodeName 始终是 #text</p>
+</li>
+<li><p>文档节点的 nodeName 始终是 #document</p>
+</li>
+</ul>
+<h3 id="nodeValue"><a href="#nodeValue" class="headerlink" title="nodeValue"></a>nodeValue</h3><p>nodeValue属性返回的是节点的值。</p>
+<ul>
+<li><p>元素节点的 nodeValue 是 undefined 或 null</p>
+</li>
+<li><p>文本节点的 nodeValue 是文本本身</p>
+</li>
+<li><p>属性节点的 nodeValue 是属性值</p>
+</li>
+</ul>
+<h3 id="nodeType"><a href="#nodeType" class="headerlink" title="nodeType"></a>nodeType</h3><p>nodeType属性返回的是节点的类型。此属性只读的；这里列出了几个比较常用的节点对应的类型值：</p>
+<ul>
+<li><p>元素 — 1</p>
+</li>
+<li><p>属性 — 2</p>
+</li>
+<li><p>文本 — 3</p>
+</li>
+<li><p>注释 — 8</p>
+</li>
+<li><p>文档 — 9</p>
+</li>
+</ul>
+<h2 id="DOM的方法"><a href="#DOM的方法" class="headerlink" title="DOM的方法"></a>DOM的方法</h2><h3 id="获取DOM"><a href="#获取DOM" class="headerlink" title="获取DOM"></a>获取DOM</h3><ul>
+<li><p>getElementById(id) — 返回指定id的元素</p>
+</li>
+<li><p>getElementsByName(nameVal) — 返回匹配所有name属性值的元素节点列表（NodeList）</p>
+</li>
+<li><p>getElementsByTagName(tagName) — 返回所有匹配tagName标签名的元素节点列表（NodeList）</p>
+</li>
+<li><p>getElementsByClassName(class) — 返回所有匹配class类名的元素节点列表（NodeList）</p>
+</li>
+<li><p>parentNode — 返回相关元素的父节点</p>
+</li>
+<li><p>childNodes — 返回指定元素的子元素集合    ，注意只是子元素（第一级），并不包含子元素的后代元素</p>
+</li>
+<li><p>firstChild — 返回指定元素的第一个子节点</p>
+</li>
+<li><p>lastChild — 返回指定元素的最后一个子节点</p>
+</li>
+<li><p>previousSibling — 返回指定元素的上一节点</p>
+</li>
+<li><p>nextSibling — 返回指定元素的下一节点</p>
+</li>
+<li><p>children — 返回指定元素的子元素集合，注意只是子元素（第一级），并不包含子元素的后代元素</p>
+</li>
+<li><p>querySelector() — 以css选择符作为参数，获取第一个匹配的元素</p>
+</li>
+<li><p>querySelectorAll() — 以css选择符作为参数，获取匹配的一个nodelist集合</p>
+</li>
+<li><p>rows(pos) — 获取第pos行的tr的内容</p>
+</li>
+<li><p>rows(pos) — 获取第pos行的tr的内容</p>
+</li>
+<li><p>cells(pos) — 获取第pos个td的内容</p>
+</li>
+</ul>
+<h3 id="插入和操作DOM"><a href="#插入和操作DOM" class="headerlink" title="插入和操作DOM"></a>插入和操作DOM</h3><ul>
+<li><p>appendChild(elem) — 在父级元素的最后插入elem元素</p>
+</li>
+<li><p>removeChild(elem) — 从父级元素中移除elem元素</p>
+</li>
+<li><p>insertBefore(newElem,curElem) — 在curElem元素前面插入newElem元素</p>
+</li>
+<li><p>replaceChild(newElem,oldElem) — 使用newElem元素替换oldElem元素</p>
+</li>
+<li><p>insertRow(pos) — tbody的第pos行插入tr，如 tbody.insertRow(1)</p>
+</li>
+<li><p>insertCell(pos) — tr的第pos个位置插入td，如tr.insertCell(1)</p>
+</li>
+</ul>
+<h3 id="创建DOM"><a href="#创建DOM" class="headerlink" title="创建DOM"></a>创建DOM</h3><ul>
+<li><p>createElement(tagName) — 创建元素节点</p>
+</li>
+<li><p>createAttribute(attr) — 创建属性节点</p>
+</li>
+<li><p>createTextNode(text) — 创建文本节点</p>
+</li>
+<li><p>createDocumentFragment — 创建文档碎片</p>
+</li>
+</ul>
+<h3 id="操作属性"><a href="#操作属性" class="headerlink" title="操作属性"></a>操作属性</h3><ul>
+<li><p>getAttribute(attr) — 获取元素的attr属性值</p>
+</li>
+<li><p>removeAttribute(attr) — 移除元素的attr属性</p>
+</li>
+<li><p>setAttribute(attr,val) — 设置元素的attr属性为val</p>
+</li>
+</ul>
+<h3 id="内容操作"><a href="#内容操作" class="headerlink" title="内容操作"></a>内容操作</h3><ul>
+<li><p>innerHTML — 获取元素内（不含本身标签）所有的HTML(IE下标签名为大写)</p>
+</li>
+<li><p>outerHTML — 获取元素本身以及元素内（包含本身）所有的HTML(IE下标签名为大写)</p>
+</li>
+<li><p>innerText(或者 textContent) — 获取元素的所有文本内容（FF不支持，返回undefined，可用textContent代替）</p>
+</li>
+<li></li>
+<li>outerText(或者 textContent) — 获取元素的所有文本内容</li>
+</ul>
+<h3 id="样式操作"><a href="#样式操作" class="headerlink" title="样式操作"></a>样式操作</h3><ul>
+<li><p>style.cssText — 获取标签中style属性里css属性</p>
+</li>
+<li><p>getComputedStyle(或者 currentStyle) — 获取标签在样式表中的相关css属性</p>
+</li>
+</ul>
+<h2 id="DOM的性能"><a href="#DOM的性能" class="headerlink" title="DOM的性能"></a>DOM的性能</h2><p>“把DOM和javascript分别比喻成一个岛屿，它们两者要联系起来，必须缴纳过桥费。因此访问DOM次数越多，则过桥的费用就越高”。同时修改任何DOM元素的样式都会导致页面重绘(repaint)和重排(reflow)。如果你要提高网页DOM性能，可以从以下几方面着手：</p>
+<h3 id="存储局部变量更快些"><a href="#存储局部变量更快些" class="headerlink" title="存储局部变量更快些"></a>存储局部变量更快些</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//效率低</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">loop1</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">10000</span>,i++)&#123;</span><br><span class="line">        <span class="built_in">document</span>.getElementById(“div1”).innerHTML+=”a”;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//效率高</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">loop2</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> content=””;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">10000</span>,i++)&#123;</span><br><span class="line">        content+=”a”;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">document</span>.getElementById(“div2”).innerHTML+=content;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>很明显，第一次需要在每次循环都访问div1，而第二种方法就类似创建文档碎片，把每次循环的内容都添加到变量content中，最后只需要访问一次div2(DOM)，就可以完成插入内容。</p>
+<h3 id="innerHTML对比原生DOM"><a href="#innerHTML对比原生DOM" class="headerlink" title="innerHTML对比原生DOM"></a>innerHTML对比原生DOM</h3><p>在为一个DOM元素添加内容时，我们可以使用innerHTML直接插入，也可以先创建子元素，再插入子元素。大量实验证明，在普通情况下两者执行效率相差无几。但某些情况下，innerHTML还是比元素DOM方法效率更高些。</p>
+<h3 id="使用API去获取元素"><a href="#使用API去获取元素" class="headerlink" title="使用API去获取元素"></a>使用API去获取元素</h3><p>因为API是高效封装的，而且通过原生的DOM获取相应的元素通常需要复杂的匹配。因此可以使用querySelector和querySelectorAll来代替原生的获取方法，同时一些新的属性也直接返回是元素节点。以下列出便利的DOM属性：</p>
+<table>
+<thead>
+<tr>
+<th>属性名</th>
+<th>被替换属性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>children</td>
+<td>childNodes</td>
+</tr>
+<tr>
+<td>childElementCount</td>
+<td>childNodes.length</td>
+</tr>
+<tr>
+<td>firstElementChild</td>
+<td>firstChild</td>
+</tr>
+<tr>
+<td>lastElementChild</td>
+<td>lastChild</td>
+</tr>
+<tr>
+<td>nextElementSibling</td>
+<td>nextSibling</td>
+</tr>
+<tr>
+<td>previousElementSibling</td>
+<td>previousSibling</td>
+</tr>
+</tbody>
+</table>
+<h3 id="重绘和重排"><a href="#重绘和重排" class="headerlink" title="重绘和重排"></a>重绘和重排</h3><p>前面说到，任何改变DOM样式的情况都加重浏览器的计算去重绘或重排网页，我们不能不让网页重排，因为网页交互是建立在操作DOM的基础上，但我们可以尽量减少重绘和重排的次数，通常情况下，我们可以采用如下方法：</p>
+<ol>
+<li><p>使用ele.stye.cssText+=””来代替多次改变样式</p>
+</li>
+<li><p>改变DOM元素的class来代替修改内联样式。但此方法只能是固定某种样式，而不能反复修改DOM的样式属性</p>
+</li>
+<li><p>固定某些模块的宽、高</p>
+</li>
+<li><p>css放在顶部</p>
+</li>
+<li><p>让需要改变属性的元素脱离文档流，当该元素发生样式改变时，不会影响到页面的其他元素（最多重绘）</p>
+</li>
+</ol>
+<h3 id="事件委托"><a href="#事件委托" class="headerlink" title="事件委托"></a>事件委托</h3><p>当我们要操作一组元素时，我们一般采用循环的方式，对每个元素添加事件，但是这样会导致事件处理程序过多而影响性能。事件委托是利用元素事件的冒泡，将事件添加到父级元素上，然后通过事件源判断目标元素，从而减少事件对DOM的引用。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"list"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>111<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>222<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>333<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> oList=<span class="built_in">document</span>.getElementById(<span class="string">"list"</span>),</span></span><br><span class="line"><span class="actionscript">    arr=[<span class="string">"background:green;color:#fff;"</span>,<span class="string">"color:#000;"</span>];</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">oList.onmouseover=<span class="function"><span class="keyword">function</span><span class="params">(e)</span></span>&#123;</span></span><br><span class="line"><span class="undefined">    changeFn(arr[0]);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="actionscript">oList.onmouseout=<span class="function"><span class="keyword">function</span><span class="params">(e)</span></span>&#123;</span></span><br><span class="line"><span class="undefined">    changeFn(arr[1]);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">changeFn</span><span class="params">(str)</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> e=<span class="built_in">window</span>.event||e,</span></span><br><span class="line"><span class="undefined">        target=e.target||e.srcElement;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">if</span>(target.nodeName.toLowerCase=<span class="string">"li"</span>)&#123;</span></span><br><span class="line"><span class="undefined">        target.style.cssText=str;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>javascript高级程序设计</li>
+<li>javascript DOM高级程序设计</li>
+<li>DOM百科</li>
+<li>高性能的javascript</li>
+</ul>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

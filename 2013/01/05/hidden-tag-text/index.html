@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="隐藏标签内部的文字 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css隐藏文字">
+  
+
+  
+
+  <title>隐藏标签内部的文字 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">隐藏标签内部的文字</h1>
+
+  <time class="post-time">2013-01-05</time>
+
+  <div class="post-content">
+    <p>在制作一些类似按钮的标签时，我们经常用到的标签无非是a或者input，当然也可以用span，var ，i 等html标签。效果如下图，我们为了方便机器阅读和搜索引擎的抓取，会对标签进行必要的文字说明。在给标签设置宽高的同时，还需要设置背景，最重要的是需要让文字隐藏，这也是我们这篇文章所要阐述的，下面说明主要的方法：</p>
+<a id="more"></a>
+<img src="/2013/01/05/hidden-tag-text/btn_20130105.png" title="隐藏文字一">
+<h3 id="万能的方法一：text-indent-9999em（这里的数字可变）"><a href="#万能的方法一：text-indent-9999em（这里的数字可变）" class="headerlink" title="万能的方法一：text-indent:-9999em（这里的数字可变）"></a>万能的方法一：text-indent:-9999em（这里的数字可变）</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.btn</span>&#123;<span class="attribute">display</span>:block;<span class="attribute">width</span>:<span class="number">125px</span>;<span class="attribute">height</span>:<span class="number">40px</span>;<span class="attribute">background</span>:<span class="built_in">url</span>(images/btn_20130105.png) no-repeat;<span class="attribute">overflow</span>:hidden;<span class="attribute">text-indent</span>:-<span class="number">9999em</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.btn_b</span>&#123;<span class="attribute">border</span>:none;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"btn_a btn"</span>&gt;</span>我要咨询<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"我要咨询"</span> <span class="attr">class</span>=<span class="string">"btn_b btn"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>方法说明：适合a，input等各标签。但此种方法只能设置标签的display:block，而不能采用<br>display:inline-block，否则在ie6下标签会消失不见。</p>
+<h3 id="万能方法二：line-height-500px-（这里的数字可变）font-size-0"><a href="#万能方法二：line-height-500px-（这里的数字可变）font-size-0" class="headerlink" title="万能方法二：line-height:500px;（这里的数字可变）font-size:0;"></a>万能方法二：line-height:500px;（这里的数字可变）font-size:0;</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.btn</span>&#123;<span class="attribute">display</span>:block;<span class="attribute">width</span>:<span class="number">125px</span>;<span class="attribute">height</span>:<span class="number">40px</span>;<span class="attribute">background</span>:<span class="built_in">url</span>(images/btn_20130105.png) no-repeat;<span class="attribute">overflow</span>:hidden;<span class="attribute">line-height</span>:<span class="number">500px</span>;<span class="attribute">font-size</span>:<span class="number">0</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.btn_b</span>&#123;<span class="attribute">border</span>:none;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"btn_a btn"</span>&gt;</span>我要咨询<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"我要咨询"</span>  <span class="attr">class</span>=<span class="string">"btn_b btn"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>方法说明：适合a，input等各标签。此种方法咋看上去font-size:0是多余，因为line-height:500px已经超过标签的高度，然后我们设置了overflow:hidden，按理说不用font-size:0也不会出现文字的。但是在ff中，无法设置input里面的行高（line-height）,所以在此加了font-size:0属性，才使得文字效果与别的浏览器表现一致。</p>
+<h3 id="小瑕疵方法：font-size-0-line-height-0"><a href="#小瑕疵方法：font-size-0-line-height-0" class="headerlink" title="小瑕疵方法：font-size:0;line-height:0;"></a>小瑕疵方法：font-size:0;line-height:0;</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.btn</span>&#123;<span class="attribute">display</span>:block;<span class="attribute">width</span>:<span class="number">125px</span>;<span class="attribute">height</span>:<span class="number">40px</span>;<span class="attribute">background</span>:<span class="built_in">url</span>(images/btn_20130105.png) no-repeat;<span class="attribute">overflow</span>:hidden;<span class="attribute">font-size</span>:<span class="number">0</span>;<span class="attribute">line-height</span>:<span class="number">0</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.btn_b</span>&#123;<span class="attribute">border</span>:none;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"btn_a btn"</span>&gt;</span>我要咨询<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"我要咨询"</span> <span class="attr">class</span>=<span class="string">"btn_b btn"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>方法说明：适合a等各标签，几乎支持 input标签。这里说几乎支持是因为input在ie6或者7下会出现小黑点的情况。如图是放大网页4倍的情况：</p>
+<img src="/2013/01/05/hidden-tag-text/btn_20130105_bug1.jpg" title="隐藏文字二">
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

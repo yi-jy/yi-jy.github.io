@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="透明度引发的层级关系 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="透明度与层级关系">
+  
+
+  
+
+  <title>透明度引发的层级关系 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">透明度引发的层级关系</h1>
+
+  <time class="post-time">2012-10-20</time>
+
+  <div class="post-content">
+    <p>我们知道，在正常的文档流中，越往后的元素，层级越高、而子元素也比父元素的层级高。但当元素脱离文档流时，我们可以通过设置元素的z-index来定义元素的层级，而无需再顾忌元素的前后顺序。</p>
+<p>以上都是很理所当然的，但如果给元素设置透明度，没有脱离文档流，各元素的层级还会这样吗？</p>
+<a id="more"></a>
+<h3 id="Demo1"><a href="#Demo1" class="headerlink" title="Demo1"></a>Demo1</h3><p>不如我们做个demo来测试一下吧！在demo中，我们设置三个元素（依次a,b,c），我们把b元素的透明度设置0.8。因win7的ie6不支持透明度，我们利用browserstack来在线测试。相关代码和效果图如下：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.box</span>&#123;<span class="attribute">width</span>:<span class="number">100px</span>;<span class="attribute">height</span>:<span class="number">100px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.a</span>&#123;<span class="attribute">background</span>:<span class="number">#390</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.b</span>&#123;<span class="attribute">margin-left</span>:<span class="number">20px</span>;<span class="attribute">margin-top</span>:-<span class="number">20px</span>;<span class="attribute">background</span>:<span class="number">#966</span>;<span class="attribute">opacity</span>:<span class="number">0.8</span>;<span class="attribute">filter</span>:<span class="built_in">alpha</span>(opacity=80);&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.c</span>&#123;<span class="attribute">margin-left</span>:<span class="number">40px</span>;<span class="attribute">margin-top</span>:-<span class="number">40px</span>;<span class="attribute">background</span>:<span class="number">#F30</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box a"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box b"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box c"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在普通浏览器下：</p>
+<img src="/2012/10/20/transparency-and-zindex/opacity-zIndex01.jpg" title="透明度与层级关系-demo1-1">
+<p>在ie6下：</p>
+<img src="/2012/10/20/transparency-and-zindex/opacity-zIndex02.jpg" title="透明度与层级关系-demo1-2">
+<p>我们发现，b元素的层级会比c元素高，但ie6却无此现象。</p>
+<h3 id="Demo2"><a href="#Demo2" class="headerlink" title="Demo2"></a>Demo2</h3><p>如果我们把元素a也设置透明度，并且透明值0.9呢？</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.a</span>&#123;<span class="attribute">background</span>:<span class="number">#390</span>;<span class="attribute">opacity</span>:<span class="number">0.9</span>;<span class="attribute">filter</span>:<span class="built_in">alpha</span>(opacity=90);&#125;</span><br></pre></td></tr></table></figure>
+<img src="/2012/10/20/transparency-and-zindex/opacity-zIndex03.jpg" title="透明度与层级关系-demo2">
+<p>我们发现元素a仍然被元素b覆盖。于是我们可以猜想透明度可以引发层级关系改变，并且这种改变与透明度的值无关。</p>
+<h3 id="Demo3"><a href="#Demo3" class="headerlink" title="Demo3"></a>Demo3</h3><p>因为在正常情况下，只有定位元素才能控制层级关系。于是我们取消元素a的透明度，设置它为定位元素：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.a</span>&#123;<span class="attribute">background</span>:<span class="number">#390</span>;<span class="attribute">position</span>:relative;&#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下：</p>
+<img src="/2012/10/20/transparency-and-zindex/opacity-zIndex04.jpg" title="透明度与层级关系-demo3-1">
+<p>我们可以看到，元素a仍然在b的下方。可是当我们将元素a的z-indx设置为1.</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.a</span>&#123;<span class="attribute">background</span>:<span class="number">#390</span>;<span class="attribute">position</span>:relative;<span class="attribute">z-indx</span>:<span class="number">1</span>;&#125;</span><br></pre></td></tr></table></figure>
+<p>却出现下图的效果：</p>
+<img src="/2012/10/20/transparency-and-zindex/opacity-zIndex05.jpg" title="透明度与层级关系-demo3-2">
+<p>最后我们可以总结，若元素的透明度设置为小于1，它的层级关系将发生改变，并且这种层级的高低与透明的值无关（无论是0.9还是0.8）。这种层级效果类似元素设置了定位属性，但未设置z-index，或者说它的z-index为默认值0或auto。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

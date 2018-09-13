@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="ie6 bug小结 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css ie6的bug">
+  
+
+  
+
+  <title>IE6 bug小结 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">IE6 bug小结</h1>
+
+  <time class="post-time">2012-12-02</time>
+
+  <div class="post-content">
+    <p>要说网页呈现的bug，当属 IE6 最多了，毕竟是最古老的浏览器，很多属性的应用在其他版本的浏览器正常，但在 IE6 中却出现各种各样难以解释的问题。大多数情况下，我们只能使用IE6的专属hack来处理。这篇文章列出了一些常见的bug：</p>
+<a id="more"></a>
+<p><strong>1.问题：ie6, ie7绝对定位元素不显示？</strong>    </p>
+<p>解决方案：在绝对定位元素外层加一空白div，不应用任何样式，方可让定位元素显示。</p>
+<p><strong>2.问题：ie6 在绝对定位元素上，z-index不起作用？</strong></p>
+<p>解决方案：给绝对定位元素的整个DOM跟节点加z-index。</p>
+<p><strong>3.问题：ie6 下浮动的li 在中间的排产生错位？</strong></p>
+<p>解决方案：给li加一个min-height，当然这里不支持。下回会说道。</p>
+<p><strong>4.问题：ie6如何支持max-height ，min-height ?</strong></p>
+<p>解决方案 ： 使用最大高度和最小高度</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.box</span>&#123;<span class="attribute">max-height</span>:<span class="number">1000px</span>;<span class="attribute">_height</span>:<span class="built_in">expression</span>((document.documentElement.clientHeight||document.body.clientHeight)&lt;<span class="number">1000</span>?<span class="string">"1000px"</span>:<span class="string">""</span>);<span class="attribute">overflow</span>:hidden;&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.box</span>&#123;<span class="attribute">min-height</span>:<span class="number">1000px</span>;<span class="attribute">_height</span>:<span class="built_in">expression</span>((document.documentElement.clientHeight||document.body.clientHeight)&gt;<span class="number">1000</span>?<span class="string">"1000px"</span>:<span class="string">""</span>);<span class="attribute">overflow</span>:hidden;&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>5.问题：ie6 如何支持 fixed ？</strong></p>
+<p>解决方案：详见：<a href="http://yixba.com/2013/02/23/css-fixed-applications/" target="_blank" rel="noopener">fixed在网页的一些应用</a></p>
+<p><strong>6.问题：ie6 下的双倍margin ？</strong></p>
+<p>解决方案：给有双倍margin的标签加 ｛display: inline;｝</p>
+<p><strong>7.问题：ie6的著名3像素bug 是什么？</strong></p>
+<p>解决方案：当有两个div在一个容器中，一个左浮动，一个不浮动时，他们中间有三像素空白。此时，只要让右浮动的元素向左浮动，或者左浮动元素margin-right:-3px;</p>
+<p><strong>8.问题： 各浏览器的hack的写法？</strong></p>
+<p>解决方案：</p>
+<p><code>_</code> : 除IE6支持_ 外,  FF+IE8+IE7都不支持_;</p>
+<p><code>*</code>: IE6+IE7都能识别<em>,而标准浏览器FF+IE8是不能识别</em>的;</p>
+<p><code>\9</code>: 所有IE浏览器都识别(IE6、IE7、IE8、IE9)</p>
+<p><code>!important</code>: 除IE6不能识别 !important外,  FF+IE8+IE7都能识别!important ;</p>
+<p><strong>9.问题：各浏览器的hack的书写顺序？</strong></p>
+<p>解决方案：先写FF，chorme等非IE内核的浏览器，然后再写IE9,IE8，接着写IE7的，最后才写IE6！</p>
+<p><strong>10.问题：模拟的弹出滤镜DIV无法在ie6的浏览器百分百撑开？</strong></p>
+<p>解决方案：加上样式：body,html{height:100%;width:100%;}</p>
+<p><strong>11.问题：ie6, ie7 a元素不显示？</strong></p>
+<p>解决方案：a标签可能设置了 display:inline-block ,然 ie6，ie7 不支持 inline-block 这个属性</p>
+<p><strong>12.问题：ie6最后一行或者最后几个文字重叠，或者重复最后一行？</strong></p>
+<p>解决方案：给所在的问题标签加position:relative ;或者是由于在各个浮动元素之间加了中文注视引起的。</p>
+<p><strong>13.问题：ie6下a 标签鼠标经过时，背景变化失效？</strong></p>
+<p>解决方案：给所在的a标签加一个href的链接属性即可！（比如href=””,href=”#”,href=”javascript”等）</p>
+<p><strong>14.问题：ie6下input=button 标签设置png背景时，有时会出现不显示的情况？</strong></p>
+<p>解决方案：给所在的input=button标签加一个display:block属性即可！</p>
+<p><strong>15.问题：ie6下图片底部有多余的空白（大概5个像素）？</strong></p>
+<p>解决方案：给img 设置 display:block，或者给img设置vertical-align:bottom</p>
+<p><strong>16.问题：相同标签相同文字，在ie6显示的高度和另外的浏览器显示不同？</strong></p>
+<p>解决方案：可能该标签未设置行高。</p>
+<p><strong>17.问题：当标签设置了text-indent:-9999em，并且它的属性含有display:inline-block时，该标签在ie6会不显示？</strong></p>
+<p>解决方案：原因：text-indent:-9999px会影响 display:inline-block的展现形式。这个还需要深入理解…..</p>
+<p>方法一：直接给该标签设置display:block；方法二：标签里面的text-indent:-9999px；改为font-size:0; line-height:0; 。。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

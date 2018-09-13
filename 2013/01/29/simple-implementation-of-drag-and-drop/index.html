@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="拖拽的简易实现 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="js拖拽">
+  
+
+  
+
+  <title>拖拽的简易实现 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">拖拽的简易实现</h1>
+
+  <time class="post-time">2013-01-29</time>
+
+  <div class="post-content">
+    <p>经常在各大网站看到一些模块可以让用户自由拖拽，把网页的可操作性交给了用户。比如百度的登陆层，是可以实现拖拽的…那么这种拖拽是如何实现的呢？</p>
+<p>现在，我们把拖拽特效的分解成几个动作。分别是鼠标按下，鼠标拖动过程，鼠标释放三个步骤，以下是它们的分部介绍：</p>
+<a id="more"></a>
+<h3 id="onmousedown-鼠标按下"><a href="#onmousedown-鼠标按下" class="headerlink" title="onmousedown 鼠标按下"></a>onmousedown 鼠标按下</h3><p>鼠标按下时（当然鼠标按着的时候也包括鼠标拖着div块在移动，还有就是在div上松开鼠标。），我们需要记录光标和div的距离。假设拖动的div是obj。则代码可以整理为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">obj.onmousedown=<span class="function"><span class="keyword">function</span>(<span class="params">ev</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> e=event||ev,</span><br><span class="line">        disX=e.clientX-obj.offsetLeft,</span><br><span class="line">        disY=e.clientY-obj.offsetTop;</span><br><span class="line">    …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="onmousemove-鼠标拖动过程中…"><a href="#onmousemove-鼠标拖动过程中…" class="headerlink" title="onmousemove 鼠标拖动过程中…"></a>onmousemove 鼠标拖动过程中…</h3><p>拖拽的过程中，光标和div的距离是保持不变的，这样才能产生拖拽的效果。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">obj.onmousedown=<span class="function"><span class="keyword">function</span>(<span class="params">ev</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> e=event||ev,</span><br><span class="line">        disX=e.clientX-obj.offsetLeft,</span><br><span class="line">        disY=e.clientY-obj.offsetTop;</span><br><span class="line">    obj.onmousemove=<span class="function"><span class="keyword">function</span>(<span class="params">ev</span>)</span>&#123;</span><br><span class="line">       <span class="keyword">var</span> e=ev||event;</span><br><span class="line">           obj.style.left=e.clientX-disX+<span class="string">"px"</span>;  <span class="comment">//重新定位obj的位置</span></span><br><span class="line">           obj.style.top=e.clientY-disY+<span class="string">"px"</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="onmouseup-鼠标释放"><a href="#onmouseup-鼠标释放" class="headerlink" title="onmouseup 鼠标释放"></a>onmouseup 鼠标释放</h3><p>当拖拽完成时，我们需要把onmousemove和onmouseup清空。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">obj.onmousedown=<span class="function"><span class="keyword">function</span>(<span class="params">ev</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> e=event||ev,</span><br><span class="line">        disX=e.clientX-obj.offsetLeft,</span><br><span class="line">        disY=e.clientY-obj.offsetTop;</span><br><span class="line">    obj.onmousemove=<span class="function"><span class="keyword">function</span>(<span class="params">ev</span>)</span>&#123;</span><br><span class="line">       <span class="keyword">var</span> e=ev||event;</span><br><span class="line">           obj.style.left=e.clientX-disX+<span class="string">"px"</span>;<span class="comment">//重新定位obj的位置</span></span><br><span class="line">           obj.style.top=e.clientY-disY+<span class="string">"px"</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    obj.onmouseup=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        obj.onmousemove=<span class="literal">null</span>;</span><br><span class="line">        obj.onmouseup=<span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完整代码如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">obj</span>)</span>&#123;</span><br><span class="line">    obj.onmousedown=<span class="function"><span class="keyword">function</span>(<span class="params">ev</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> e=ev||event,disX=e.clientX-obj.offsetLeft,disY=e.clientY-obj.offsetTop;</span><br><span class="line">        <span class="keyword">if</span>(obj.setCapture)&#123;</span><br><span class="line">            obj.onmousemove=fnMove;</span><br><span class="line">            obj.onmouseup=fnUp;</span><br><span class="line">            obj.setCapture();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="built_in">document</span>.onmousemove=fnMove;</span><br><span class="line">            <span class="built_in">document</span>.onmouseup=fnUp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">fnMove</span>(<span class="params">ev</span>)</span>&#123;</span><br><span class="line">            <span class="keyword">var</span> e=ev||event;</span><br><span class="line">            obj.style.left=e.clientX-disX+<span class="string">"px"</span>;</span><br><span class="line">            obj.style.top=e.clientY-disY+<span class="string">"px"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">fnUp</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.onmousemove=<span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">this</span>.onmouseup=<span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">if</span>(obj.setCapture)&#123;</span><br><span class="line">                obj.releaseCapture();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)(obj);</span><br></pre></td></tr></table></figure>
+<p>因为ie下存在捕获，即当拖动obj时，如果网页中还存在其他内容，则会造成其他内容被选中，而且obj拖动时不够流畅。所以这里，需要进行判断，并且在拖拽完成后需要释放捕获：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(obj.setCapture)&#123;  </span><br><span class="line">    obj.onmousemove=fnMove;</span><br><span class="line">    obj.onmouseup=fnUp;</span><br><span class="line">    obj.setCapture();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">if</span>(obj.setCapture)&#123;</span><br><span class="line">    obj.releaseCapture();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外，由于在火狐浏览器也存在默认的bug。所以最后还要加上 return false;</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,279 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+*{margin:0;padding:0;}
+.demo{position: relative;padding:30px;}
+.demo-row{padding-bottom:30px;zoom:1;font-family:"microsoft yahei";}
+.demo-row:after,.demo-row-con:after{content:'';display:block;height:0;clear:both;}
+.demo-row-tit{margin-bottom:30px;font:16px/30px "microsoft yahei";}
+.demo-row-tit span{margin-right:5px;color:#F30;font-size:20px;}
+.demo-row-con{position:relative;}
+.demo-row-con .line{position:absolute;left:0;top:50%;z-index:10000;width:100%;height:1px;text-align:right;font-size:12px;color:#666;background:#ccc;}
+.demo-row-3d{-webkit-perspective:500px;perspective:500px;}
+.demo-row-3d .demo-row-con{-webkit-transform-style:preserve-3d;transform-style:preserve-3d;}
+.box{float:left;width:80px;height:80px;margin-right:100px;padding:10px;color:#fff;font-size:12px;line-height:20px;word-break:break-all;-wekit-transition:0.5s all;transition:0.5s all;background:green;}
+.translate-demo .box{width:100px;height:100px;padding:0;}
+.translate-demo .box-con{width:80px;height:80px;padding:10px;background:#F33;-wekit-transition:0.5s all;transition:0.5s all;}
+.box{-webkit-transform-style:preserve-3d;transform-style:preserve-3d;}
+.box1 .box-con{-webkit-transform:translateX(10px);transform:translateX(10px);}
+.box2 .box-con{-webkit-transform:translateY(10px);transform:translateY(10px);}
+.box3 .box-con{-webkit-transform:translateZ(100px);transform:translateZ(100px);}
+.box4 .box-con{-webkit-transform:translateZ(-100px);transform:translateZ(-100px);}
+
+.box-move01 .box-con{-webkit-animation:box-move01 2s 0s linear infinite;animation:box-move01 2s 0s linear infinite;}
+
+@-webkit-keyframes box-move01{
+    0%{
+      -webkit-transform:translateX(0);
+    }
+    50%{
+      -webkit-transform:translateX(10px);
+    }
+    100%{
+      -webkit-transform:translateX(10px);
+    }
+  }
+
+@keyframes box-move01{
+    0%{
+      transform:translateX(0);
+    }
+    50%{
+      transform:translateX(10px);
+    }
+    100%{
+      transform:translateX(10px);
+    }
+  }
+
+.box-move02 .box-con{-webkit-animation:box-move02 2s 0s linear infinite;animation:box-move02 2s 0s linear infinite;}
+
+@-webkit-keyframes box-move02{
+    0%{
+      -webkit-transform:translateY(0);
+    }
+    50%{
+      -webkit-transform:translateY(10px);
+    }
+    100%{
+      -webkit-transform:translateY(10px);
+    }
+  }
+
+@keyframes box-move02{
+    0%{
+      transform:translateY(0);
+    }
+    50%{
+      transform:translateY(10px);
+    }
+    100%{
+      transform:translateY(10px);
+    }
+  }
+
+.box-move03 .box-con{-webkit-animation:box-move03 2s 0s linear infinite;animation:box-move03 2s 0s linear infinite;}
+
+@-webkit-keyframes box-move03{
+    0%{
+      -webkit-transform:translateZ(0);
+    }
+    50%{
+      -webkit-transform:translateZ(100px);
+    }
+    100%{
+      -webkit-transform:translateZ(100px);
+    }
+  }
+
+@keyframes box-move03{
+    0%{
+      transform:translateZ(0);
+    }
+    50%{
+      transform:translateZ(100px);
+    }
+    100%{
+      transform:translateZ(100px);
+    }
+  }
+
+.box-move04 .box-con{-webkit-animation:box-move04 2s 0s linear infinite;animation:box-move04 2s 0s linear infinite;}
+
+@-webkit-keyframes box-move04{
+    0%{
+      -webkit-transform:translateZ(0);
+    }
+    50%{
+      -webkit-transform:translateZ(-100px);
+    }
+    100%{
+      -webkit-transform:translateZ(-100px);
+    }
+  }
+
+@keyframes box-move04{
+    0%{
+      transform:translateZ(0);
+    }
+    50%{
+      transform:translateZ(-100px);
+    }
+    100%{
+      transform:translateZ(-100px);
+    }
+  }
+
+</style>
+</head>
+
+<body>
+
+<div class="demo translate-demo">
+  <div class="demo-row">
+        <h3 class="demo-row-tit"><span>1-1(2d).</span>translateX(x)---以x轴为方向，移动xpx或者百分比。translateX(x)也可以用translate(x)来表示。无3d透视的情况效果如下。</h3>
+        <div class="demo-row-con">
+            <div class="box box1">
+              <div class="box-con">
+                    translateX(10px)
+                    或者<br/>
+                    translate3d(10px,0,0)
+                </div>
+            </div>
+
+            <div class="box box-move01">
+              <div class="box-con">
+                    实例变化过程
+                </div>
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+    <div class="demo-row demo-row-3d">
+       <h3 class="demo-row-tit"><span>1-2(3d).</span>translateX(x)---以x轴为方向，移动xpx或者百分比。translateX(x)也可以用translate(x)来表示。在有3d透视的情况如下，可见与无3d透视时表现一致。</h3>
+        <div class="demo-row-con">
+           <div class="box box1">
+              <div class="box-con">
+                    translateX(10px)
+                    或者<br/>
+                    translate3d(10px,0,0)
+                </div>
+            </div>
+
+            <div class="box box-move01">
+              <div class="box-con">
+                    实例变化过程
+                </div>
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+    <div class="demo-row">
+        <h3 class="demo-row-tit"><span>2-1(2d).</span>translateY(y)---以y轴为方向，移动ypx或者百分比。无3d透视的情况效果如下。</h3>
+        <div class="demo-row-con">
+            <div class="box box2">
+              <div class="box-con">
+                    translateY(10px)
+                    或者<br/>
+                    translate(0,10px,0)
+                </div>
+            </div>
+
+            <div class="box box-move02">
+              <div class="box-con">
+                    实例变化过程
+                </div>
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+    <div class="demo-row demo-row-3d">
+       <h3 class="demo-row-tit"><span>2-2(3d).</span>translateY(y)---以y轴为方向，移动ypx或者百分比。在有3d透视的情况如下，可见与无3d透视时表现一致。</h3>
+        <div class="demo-row-con">
+           <div class="box box2">
+              <div class="box-con">
+                    translateY(10px)
+                    或者<br/>
+                    translate(0,10px,0)
+                </div>
+            </div>
+
+            <div class="box box-move02">
+              <div class="box-con">
+                    实例变化过程
+                </div>
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+   <div class="demo-row">
+        <h3 class="demo-row-tit"><span>3-1(2d).</span>translateZ(z)---以z轴为方向，移动zpx或者百分比。无3d透视的情况效果如下，无任何效果。</h3>
+        <div class="demo-row-con">
+            <div class="box box3">
+              <div class="box-con">
+                    translateZ(10px)
+                    或者<br/>
+                    translate(0,0,10px)
+                </div>
+            </div>
+
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+    <div class="demo-row demo-row-3d">
+       <h3 class="demo-row-tit"><span>3-2(3d).</span>translateZ(z)---以z轴为方向，移动zpx，不能百分比。有3d透视的情况如下，正数向屏幕外移动（放大）</h3>
+        <div class="demo-row-con">
+           <div class="box box3" style="margin-left:100px;">
+              <div class="box-con">
+                    translateZ(100px)
+                    或者<br/>
+                    translate(0,0,100px)
+                </div>
+            </div>
+
+            <div class="box box-move03">
+              <div class="box-con">
+                   实例变化过程
+                </div>
+            </div>
+
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+
+    <div class="demo-row demo-row-3d">
+       <h3 class="demo-row-tit"><span>3-3(3d).</span>translateZ(z)---以z轴为方向，移动zpx,不能为百分比。有3d透视的情况如下，负数则向屏幕内移动（缩小）</h3>
+        <div class="demo-row-con">
+
+            <div class="box box4" style="margin-right:100px;">
+              <div class="box-con">
+                    translateZ(-100px)
+                    或者<br/>
+                    translate(0,0,-100px)
+                </div>
+            </div>
+
+            <div class="box box-move04">
+              <div class="box-con">
+                    实例变化过程
+                </div>
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+
+
+</div>
+
+</body>
+</html>

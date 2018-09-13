@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="javascript 鼠标滚轮事件 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="javascript鼠标滚轮 DOMMouseScroll mousewheel wheelDelta">
+  
+
+  
+
+  <title>javascript 鼠标滚轮事件 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">javascript 鼠标滚轮事件</h1>
+
+  <time class="post-time">2013-02-24</time>
+
+  <div class="post-content">
+    
+<p>周末，今天阳光明媚的，周围也都呈现万物复苏的景象。坐在家里写代码着实有些浪费这大好天气。可是后来想想，没人陪一个人在外瞎逛也倒无趣。哎，孤家寡人呀。</p>
+<p>手握鼠标，这篇文章就是说的是javascript 鼠标滚轮事件。为了这篇文章，我还在首页的轮播图放了一张自己做的关于鼠标滚轮事件的图，没有美术功底，图虽然不好看，但为了更加清晰的描述和强调本文的内容，后来还是硬着头皮放了上来。</p>
+<a id="more"></a>
+<p>OK，话入正题。鼠标滚轮事件是我遇到在javascript事件里面最为恶劣的一个事件，因为它充满着各种不兼容，几乎每种浏览器都有一种属于自己的滚轮属性，而且属性的值还可能是相反的。无语中…… 不过话说这个事件还是蛮实用的，所以掌握它还是有必要的。下面主要从两个方面来讲述鼠标滚轮事件：</p>
+<h2 id="一、事件函数"><a href="#一、事件函数" class="headerlink" title="一、事件函数"></a>一、事件函数</h2><p>滚轮事件函数因为浏览器的不同，所以有着不同的函数。</p>
+<ul>
+<li>IE（chrome）方式：mousewheel</li>
+<li>DOM（firefox）方式：DOMMouseScroll</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">addEvent</span><span class="params">(obj, sEvent, fn)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">if</span>(obj.attachEvent)&#123;</span></span><br><span class="line"><span class="actionscript">      obj.attachEvent(<span class="string">"on"</span>+sEvent, fn);</span></span><br><span class="line"><span class="actionscript">    &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="actionscript">      obj.addEventListener(sEvent, fn, <span class="literal">false</span>);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> oDemo=<span class="built_in">document</span>.getElementById(<span class="string">"demo"</span>);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">addEvent(oDemo,<span class="string">"mousewheel"</span>,mouse);</span></span><br><span class="line"><span class="actionscript">addEvent(oDemo,<span class="string">"DOMMouseScroll"</span>,mouse);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">mouse</span><span class="params">( )</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">"滚动！"</span>);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"demo"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="二、滚轮方向"><a href="#二、滚轮方向" class="headerlink" title="二、滚轮方向"></a>二、滚轮方向</h2><p>鼠标滚动方向主要有向上和向下，现在来介绍浏览器的滚轮方向的属性：</p>
+<ul>
+<li><p>IE（chrome）方式：wheelDelta；向下是-120，向上是120</p>
+</li>
+<li><p>DOM（firefox）方式：detail；向下是3，向上是 -3 。</p>
+</li>
+</ul>
+<p>注意需要绑定事件才能使用：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">addEvent</span><span class="params">(obj, sEvent, fn)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">if</span>(obj.attachEvent)&#123;</span></span><br><span class="line"><span class="actionscript">        obj.attachEvent(<span class="string">"on"</span>+sEvent, fn);</span></span><br><span class="line"><span class="actionscript">    &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="actionscript">        obj.addEventListener(sEvent, fn, <span class="literal">false</span>);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> oDemo=<span class="built_in">document</span>.getElementById(<span class="string">"demo"</span>);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">addEvent(oDemo,<span class="string">"mousewheel"</span>,mouse);</span></span><br><span class="line"><span class="actionscript">addEvent(oDemo,<span class="string">"DOMMouseScroll"</span>,mouse);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">mouse</span><span class="params">(ev)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">var</span> oEvent=ev||event;</span></span><br><span class="line"><span class="actionscript">    <span class="comment">//alert(oEvent.wheelDelta); // wheelDelta 上滚 120 ，下滚 -120 兼容ie , chrome</span></span></span><br><span class="line"><span class="actionscript">    <span class="comment">//alert(oEvent.detail); //detail 上滚 -3， 下滚 3 兼容 firefox</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">    <span class="keyword">var</span> bDown=<span class="literal">true</span>;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">    bDown=oEvent.wheelDelta?oEvent.wheelDelta&lt;<span class="number">0</span>:oEvent.detail&gt;<span class="number">0</span>; <span class="comment">// 先判断是否支持wheelDelta，然后再判断鼠标滚轮是往上滚，还是往下滚？ 下滚为-120 oEvent.wheelDelta&lt;0 为真 …..</span></span></span><br><span class="line"><span class="actionscript">    <span class="keyword">var</span> action=bDown?<span class="string">"向下"</span>:<span class="string">"向上"</span>;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="undefined">    alert(action);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">    <span class="keyword">if</span>(oEvent.preventDefault)&#123; <span class="comment">// 当页面高度超过一屏时，鼠标滚动失效，变为浏览器默认滚动，所以要阻止默认行为；</span></span></span><br><span class="line"><span class="undefined">        oEvent.preventDefault();</span></span><br><span class="line"><span class="actionscript">    &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">return</span> <span class="literal">false</span>;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"demo"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>到此为止，鼠标滚轮事件就全部讲完了，下篇文章将要说到它的一个很酷的应用。现在出门咯。。。听说上元节有很多美丽的邂逅哦，嘿嘿！</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

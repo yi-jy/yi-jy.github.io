@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="webpack打包 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="webpack，前端打包，前端自动化">
+  
+
+  
+
+  <title>webpack | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">webpack</h1>
+
+  <time class="post-time">2017-06-08</time>
+
+  <div class="post-content">
+    <p>本文有些内容会前后穿插，需仔细阅读 loader 和 plugin 部分。</p>
+<p>说到前端自动化工具，我们总会想到它的这些功能：</p>
+<h4 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h4><p>将sass、less这类css预处理语言，编译成浏览器可识别的css，如： <strong>sass less -&gt; css</strong></p>
+<p>将es6，es7这类下一带JavaScript标准或者react的jsx模板，编译成浏览器可识别的 es5，如：<strong>es6,es7,coffee，ts，jsx -&gt; es5</strong></p>
+<a id="more"></a>
+<p>将各类html引擎模板，编译成浏览器可识别的普通html页面，如：<strong>jade ejs -&gt; html</strong></p>
+<h4 id="服务搭建（引用包），文件监听（组件热更新）"><a href="#服务搭建（引用包），文件监听（组件热更新）" class="headerlink" title="服务搭建（引用包），文件监听（组件热更新）"></a>服务搭建（引用包），文件监听（组件热更新）</h4><p>现在前端工作基本都采用前后端分离的模式，很多项目的开发都基于 ajax 请求数据。</p>
+<p>因此，在项目开发时，你需要一个运行服务平台，而很多自动化工具都内置服务，倘若没有内置服务，你也可以安装相应的模块。</p>
+<p>另外，你还可以借助相关插件插件，来实现文件监听的功能，当项目下的文件被修改，浏览器会自动刷新。</p>
+<h4 id="资源压缩、合并以及打包"><a href="#资源压缩、合并以及打包" class="headerlink" title="资源压缩、合并以及打包"></a>资源压缩、合并以及打包</h4><p>项目开发完，发布上线前，为减少单个文件的大小，你需要对文件代码进行压缩。为减少页面请求数，你需要合并两个或多个js或css文件，即： <strong>css，js 压缩、合并</strong></p>
+<p>而当修改了某个文件时，为避免浏览器缓存，每次打包需要更新修改文件的后缀名（这种后缀一般通过md5）、或者对文件重命名，即： <strong>更新文件的md5、或重命名</strong></p>
+<p>对于一些特殊的静态资源，比如说图片，小尺寸的图我们希望以 <code>data url</code> 的形式嵌入到页面HTML中，进一步减少请求数。而大图则使用普通的引入方式，即：<strong>图片优化</strong></p>
+<p>通常而言，我们项目有这么两个目录，<code>src</code> 和 <code>dist</code> (可能有其他命名)，分别表示开发目录、打包目录。当开发完成，我们将 <code>src</code> 下的文件打包处理后，塞进 <code>dist</code> 目录。即：<strong>src -&gt; dist等 文件与目录变化</strong></p>
+<p>和其他前端自动化工具一样，webpack 也具备了上述功能。</p>
+<p>webpack 的理念是将所有的资源，无论是图片、还是页面、又或者 css、js，都把它们当成模块来处理。来看看它是怎么做的，首先安装它：</p>
+<p>以下为全局安装：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install -g webpack</span><br></pre></td></tr></table></figure>
+<p>通过 <code>webpack -h</code> 查看相关信息。</p>
+<h2 id="一、基本操作"><a href="#一、基本操作" class="headerlink" title="一、基本操作"></a>一、基本操作</h2><p>新建项目目录，然后 <code>npm init</code>，生成对应的 <code>package.json</code> 文件。</p>
+<p>针对单个项目，再进行本地安装，将依赖包信息写入配置文件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install --save-dev webpack</span><br></pre></td></tr></table></figure>
+<p>一般而言，项目都有两个基本文件夹，即 <code>src</code> 和 <code>dist</code>，开发目录 和 打包目录。</p>
+<p>我们在项目根目录创建这两个文件夹，接着，在 <code>src</code> 文件里，新建 <code>index.html</code> 和 <code>main.js</code> 文件。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- index.html --&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"bundle.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.js</span></span><br><span class="line"><span class="keyword">var</span> hello = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>);</span><br><span class="line">hello.innerHTML = <span class="string">'hello webpack!'</span>;</span><br><span class="line"><span class="built_in">document</span>.body.appendChild(hello);</span><br></pre></td></tr></table></figure>
+<p>从上面的代码，我们可以看到，页面引用了 <code>bundle.js</code> 这个文件，它并非我们新建的，而是后面由webpack将 <code>main.js</code> 打包后的 JavaScript 文件。</p>
+<p>要将 <code>main.js</code> 打包成 <code>bundle.js</code>。只要通过以下命令：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; webpack src/main.js dist/bundle.js</span><br></pre></td></tr></table></figure>
+<p>注意：如果提示 <code>bash: webpack: command not found</code>，你可能没全局安装 webpack。如果你实在不想全局安装也行，但需要通过如下命令：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; node_modules/.bin/webpack src/main.js dist/bundle.js</span><br></pre></td></tr></table></figure>
+<p>编译完成后，在 <code>dist</code> 目录里会新生成 <code>bundle.js</code> 文件，直接打开 <code>index.html</code> 页面，你会在页面里看到 <code>hello webpack!</code> 。</p>
+<p>因为 webpack 被称之为 模块打包器，所以，接着用它来处理模块。我们希望把 <code>main.js</code> 里的文字信息抽离出来，独立成一个模块。</p>
+<p>于是，我们在 <code>src</code> 文件夹里新建 <code>text.js</code> 文件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// text.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="string">'hello webpack!'</span>;</span><br></pre></td></tr></table></figure>
+<p>而 <code>main.js</code> 也更新如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.js</span></span><br><span class="line"><span class="keyword">var</span> text = <span class="built_in">require</span>(<span class="string">'./text.js'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> hello = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>);</span><br><span class="line">hello.innerHTML = text;</span><br><span class="line"><span class="built_in">document</span>.body.appendChild(hello);</span><br></pre></td></tr></table></figure>
+<p>再次运行 <code>webpack src/main.js dist/bundle.js</code>，刷新 <code>index.html</code> 页面，你会发现里面的内容仍然可以正常显示。</p>
+<p>上面用到了 webpack 最基本的命令：</p>
+<figure class="highlight fsharp"><table><tr><td class="code"><pre><span class="line">&gt; webpack &lt;entry&gt; <span class="meta">[&lt;entry&gt;]</span> &lt;output&gt;</span><br></pre></td></tr></table></figure>
+<p>具体可详见：<a href="https://webpack.js.org/api/cli/" target="_blank" rel="noopener">webpacl-cli</a></p>
+<p>除了这个命令外，还有其他几个常用的命令：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>webpack &lt;entry&gt; [&lt;entry&gt;] &lt;output&gt;</code></td>
+<td>启动 </td>
+</tr>
+<tr>
+<td><code>webpack --config</code></td>
+<td>默认是指定 webpack.config.js，你可指定其它的配置文件 </td>
+</tr>
+<tr>
+<td><code>webpack -watch</code> 或 <code>webpack -w</code></td>
+<td>观察文件系统的变化，不用输入 webpack 去重新编译</td>
+</tr>
+<tr>
+<td><code>webpack -p</code></td>
+<td>打包并压缩文件 </td>
+</tr>
+<tr>
+<td><code>webpack -d</code></td>
+<td>打开SourceMap调试代码 </td>
+</tr>
+<tr>
+<td><code>webpack -colors</code></td>
+<td>开启/关闭控制台的颜色 </td>
+</tr>
+<tr>
+<td><code>webpack -profile</code></td>
+<td>查看每一步耗时</td>
+</tr>
+</tbody>
+</table>
+<p>通过上面的命令表，我们可以知道，如果要打包后的 <code>bundle.js</code> 是压缩过的，只需要如下命令：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; webpack -p src/main.js dist/bundle.js</span><br></pre></td></tr></table></figure>
+<h2 id="二、webpack-config-js"><a href="#二、webpack-config-js" class="headerlink" title="二、webpack.config.js"></a>二、webpack.config.js</h2><p>当我们每次开发完项目，打包每次都需要在命令行里输入类似如下命令：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; webpack -p src/main.js dist/bundle.js</span><br></pre></td></tr></table></figure>
+<p>打包东西少还好，但一旦内容多了起来，是否会觉得繁琐，而且也有诸多不便？还好，webpack 早就为你考虑好了，默认情况下，我们可以在项目的根目录，新建一个叫 <code>webpack.config.js</code> 的配置文件，因为 webpack 把所有的文件都当成模块，因此，这个配置文件，你也可以把它理解为一个模块。</p>
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line">// webpack.<span class="built_in">config</span>.js</span><br><span class="line">var <span class="built_in">path</span> = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  entry: <span class="built_in">path</span>.resolve(__dirname, <span class="string">'./src/main.js'</span>),</span><br><span class="line">  <span class="built_in">output</span>: &#123;</span><br><span class="line">    <span class="built_in">path</span>: <span class="built_in">path</span>.resolve(__dirname, <span class="string">'./dist'</span>),</span><br><span class="line">    filename: <span class="string">'bundle.js'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>都说要用好 webpack，关键在于配置文件，webpack 会依照配置文件的内容进行打包处理。而配置文件又涉及到四个概念，即：入口文件(Entry)、出口文件(Output)、加载器(loader)、插件(plugin)。</p>
+<p>这意味着，要操作 webpack，理解这四个概念非常重要。 </p>
+<p>当新增完配置文件，你在命令行中，只需要输入如下命令，便可完成打包：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; webpack -p</span><br></pre></td></tr></table></figure>
+<p>如果我们希望打包的文件名保持不变，可以使用 webpack 中提供的关键词 <code>[name]</code>：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  entry: path.resolve(__dirname, <span class="string">'./src/main.js'</span>),</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'./dist'</span>),</span><br><span class="line">    filename: <span class="string">'[name].js'</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>此时，打包后在 <code>dist</code> 目录便会生成 <code>main.js</code> 文件。</p>
+<p>前面文章提到了，为了解决缓存问题，自动化工具都会给有修改过的文件应用 md5 后缀机制。webpack 也不例外，它还提供了两种方案，即： <code>[hash]</code> 与 <code>[chunkhash]</code> 。</p>
+<p>配置文件可修改为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">    filename: <span class="string">'[name].[hash].js'</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>或 </p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">    filename: <span class="string">'[name].[chunkhash].js'</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><code>[hash]</code> 是 webpack 每次打包编译后的版本号，通过下面的界面（假设打包main.js 和 page.js 这两个文件），可以看出，打包后的文件，都是采用相同的 md5 后缀。</p>
+<img src="/2017/06/08/webpack/webpack-hash.png" title="webpack-hash">
+<p>这就导致了一个问题，如果有些文件没有修改，而 md5 却改变了，这会使得这些文件在浏览器的缓存失效。</p>
+<p>因此，你需要用到 <code>[chunkhash]</code>。</p>
+<p><code>[chunkhash]</code> 则是基于模块内容计算出的hash值，是针对单个模块。每次打包后，只有修改的文件，才更新md5后缀，下图是我修改 page.js 前后编译打包的对比结果：</p>
+<img src="/2017/06/08/webpack/webpack-chunkhash.png" title="webpack-chunkhash">
+<p>可以看到，只要有文件发生变化，webpack 每次打包后版本号都不一样，另外，修改的 page.js 的md5也发生了改变。</p>
+<p>不过，主要注意的是，因为打包后文件名发生了变化，此时页面里引用的 js 文件就不再是打包后的文件了，怎么让页面自动引用打包的文件呢？文章后面会谈到，可通过插件解决。</p>
+<h3 id="hash-与-chunkhash-的异同"><a href="#hash-与-chunkhash-的异同" class="headerlink" title="[hash] 与 [chunkhash] 的异同"></a>[hash] 与 [chunkhash] 的异同</h3><ul>
+<li><code>[hash]</code> 与 <code>[chunkhash]</code> 默认都是20位字符串，你可以手动设置位数，如8位：<code>[hash:8]</code></li>
+<li><code>[hash]</code> 是针对webpack打包的所有文件，是整体的。<code>[chunkhash]</code> 是针对单个模块，是独立的</li>
+<li>webpack 建议不要在开发环境使用 <code>[chunkhash]</code>，因为会增加编译时间。我们可以将开发和生产环境的配置环境分开，在开发环境使用 [name].js 的文件名，而生产环境使用 [name].[chunkhash].js 文件名</li>
+</ul>
+<p>上面的配置文件中，涉及到 <code>entry</code> 和 <code>output</code> 这两部分，下面就对这两部分做简要介绍。</p>
+<h3 id="入口文件-Entry"><a href="#入口文件-Entry" class="headerlink" title="入口文件(Entry)"></a>入口文件(Entry)</h3><p>入口文件的作用是告知 webpack 从哪里开始处理，打包哪些文件。入口文件可以有单个，也可以有多个。表现为以下几种形式：</p>
+<p>单个形式输入，单个输出：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">  entry: path.resolve(__dirname, <span class="string">'./src/main.js'</span>),</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>多个数组形式输入，合并单个输出：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">  entry: [path.resolve(__dirname, <span class="string">'./src/main.js'</span>), path.resolve(__dirname, <span class="string">'./src/page.js'</span>)]</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>多个对象形式输入，对应多个输出：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">  entry: &#123;</span><br><span class="line">    main: path.resolve(__dirname, <span class="string">'./src/main.js'</span>),</span><br><span class="line">    page: path.resolve(__dirname, <span class="string">'./src/page.js'</span>),</span><br><span class="line">	jquery: path.resolve(__dirname, <span class="string">'./src/jquery.js'</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>不过，我觉得对于工具库(比如 jquery)，鉴于我们基本不会去修改它，可以考虑在页面里直接使用 <code>&lt;script src=&quot;src/jquery.js&quot;&gt;&lt;/script&gt;</code> 的形式（只是页面多时，需要每个页面，手动引入），这样，也会大大提升编译速度。</p>
+<p>以上三种形式对应的 <code>output</code> 写法相同，见下面说明。 </p>
+<h3 id="出口文件-Output"><a href="#出口文件-Output" class="headerlink" title="出口文件(Output)"></a>出口文件(Output)</h3><p>从某种程度来说，<code>output</code> 生成的文件数，主要取决于 <code>entry</code> 的结构：</p>
+<ul>
+<li><code>entry</code> 单个文件 -&gt; <code>output</code> 单个文件</li>
+<li><code>entry</code> 数组多个文件 -&gt; <code>output</code> 合并成单个文件</li>
+<li><code>entry</code> 对象多个文件 -&gt; <code>output</code> 对应多个文件</li>
+</ul>
+<p>无论输入是哪种形式，它总是包含 <code>path</code> 和 <code>filename</code> 两部分：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'./dist'</span>),</span><br><span class="line">    filename: <span class="string">'[name].[chunkhash].js'</span>,</span><br><span class="line">    <span class="comment">// publicPath: 'http://www.xx.com/project/res'</span></span><br><span class="line">  &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>除了生成的文件数外，<code>output</code> 的另外一个重点，则是与 <code>[hash]</code>、<code>[chunkhash]</code> 有关，这些内容在上面已着重介绍过。</p>
+<p>这里面还有一个 <code>publicPath</code> 属性，你可能会混淆它与 <code>path</code> 的作用。不过没关系，后面会讲到 <code>publicPath</code> 的用法，当编译打包时，该属性特别有用。</p>
+<h2 id="三、结合-package-json"><a href="#三、结合-package-json" class="headerlink" title="三、结合 package.json"></a>三、结合 package.json</h2><p>到目前为止，我们只使用到了 <code>webpack -p</code> 命令，可以很轻松的 hold 住。但当文件越来越多，项目越来越复杂，我们需要切换各种命令，以及在命令后面加不同参数。</p>
+<p>此时，你会觉得记住各种命令，以及相关参数，是件头疼的事。有没有办法，可以将这些命令和参数全部列出来，形成类似键值对的映射关系，配置在某个文件中。这样，我们只需要对照映射表，运行对应命令即可。</p>
+<p>当然有，你可以借助 <code>package.json</code> 文件。只需要通过里面的 <code>scripts</code> 属性：</p>
+<p>在根目录的 <code>package.json</code> 中加入 <code>start</code> 命令：</p>
+<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line"><span class="comment">// package.json</span></span><br><span class="line">...</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"test"</span>: <span class="string">"echo \"</span><span class="keyword">Error</span>: <span class="keyword">no</span> <span class="keyword">test</span> specified\<span class="string">" &amp;&amp; exit 1"</span>,</span><br><span class="line">    <span class="string">"start"</span>: <span class="string">"webpack -p"</span></span><br><span class="line">  &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>此时，你在命令行面板运行 <code>npm start</code>，你会发现编译打包的结果与 <code>webpack -p</code> 相同。</p>
+<p>但如果你不想用 <code>start</code> 作为属性名，比如，下面使用的是 <code>build</code>：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// package.json</span></span><br><span class="line">...</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"test"</span>: <span class="string">"echo \"Error: no test specified\" &amp;&amp; exit 1"</span>,</span><br><span class="line">    <span class="string">"build"</span>: <span class="string">"webpack -p"</span></span><br><span class="line">  &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>那么你得在命令行面板中，运行 <code>npm run build</code> 才能正常编译打包。因为对于 <code>package.json</code> 文件而言， <code>npm start</code> 是 <code>npm run start</code> 的缩写，所以，中间的 run 可以省略。</p>
+<p>你可以添加更多的命令，如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// package.json</span></span><br><span class="line">...</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"test"</span>: <span class="string">"echo \"Error: no test specified\" &amp;&amp; exit 1"</span>,</span><br><span class="line">    <span class="string">"build"</span>: <span class="string">"webpack -p"</span>,</span><br><span class="line">    <span class="string">"watch"</span>: <span class="string">"webpack -w"</span>,</span><br><span class="line">    <span class="string">"debug"</span>: <span class="string">"webpack -d"</span>,</span><br><span class="line">    <span class="string">"prod"</span>: <span class="string">"webpack -p --config webpack.prod.config.js"</span></span><br><span class="line">  &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h2 id="四、基础服务器-webpack-dev-server"><a href="#四、基础服务器-webpack-dev-server" class="headerlink" title="四、基础服务器 webpack-dev-server"></a>四、基础服务器 webpack-dev-server</h2><p>很多时候，我们开发的项目都是前后端分离，即需要在服务器进行开发，调用相关的接口。并且，同时希望这个服务器能够自动检测到代码的变化，然后自动刷新浏览器。那么，此时你需要 <code>webpack-dev-server</code>。</p>
+<p>据官网介绍，<code>webpack-dev-server</code> 是一个小型的  Node.js Express 服务器，它通过 <a href="https://github.com/sockjs/sockjs-client" target="_blank" rel="noopener">Sock.js</a> 来连接整个服务。</p>
+<p>安装它:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install --save-dev webpack-dev-server</span><br></pre></td></tr></table></figure>
+<h3 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h3><p>要启动 <code>webpack-dev-server</code> 服务器，需要先在 <code>package.json</code> 中设置启动命令：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// package.json</span></span><br><span class="line">...</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"test"</span>: <span class="string">"echo \"Error: no test specified\" &amp;&amp; exit 1"</span>,</span><br><span class="line">    <span class="string">"server"</span>: <span class="string">"webpack-dev-server"</span>,</span><br><span class="line">    <span class="string">"build"</span>: <span class="string">"webpack -p"</span></span><br><span class="line">  &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>在文章前面，页面里引用的js文件都是加 md5，为了避免启动服务器时，页面无法找到引用的js文件而出现报错的情况，我们先将添加 hash 处理的操作去掉，并重新编译下。</p>
+<p>需要修改 <code>index.html</code>、<code>webpack.config.js</code>：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- index.html --&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"../dist/main.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'./dist'</span>),</span><br><span class="line">    filename: <span class="string">'[name].js'</span></span><br><span class="line">  &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>运行 <code>npm run build</code>，再次打包编译。此时，页面里引用的就是 <code>main.js</code> 了。</p>
+<p>然后，我们再运行 <code>npm run server</code>，启动devSever服务器，会看到 <code>http://localhost:8080 ... webpack: Compiled successfully.</code> 之类的提示。打开 <a href="http://localhost:8080/src/" target="_blank" rel="noopener">http://localhost:8080/src/</a> 便可看到 <code>index.html</code> 页面。</p>
+<h3 id="文件监听、热更新"><a href="#文件监听、热更新" class="headerlink" title="文件监听、热更新"></a>文件监听、热更新</h3><p>devServer 提供了很多配置选项，通过这些选项，我们可以使用 devserver 的不同功能。常见选项如下：</p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>说明</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>contentBase</code></td>
+<td>设置启动服务的目录</td>
+<td>项目根目录</td>
+</tr>
+<tr>
+<td><code>port</code></td>
+<td>服务器的端口号</td>
+<td>8080</td>
+</tr>
+<tr>
+<td><code>inline</code></td>
+<td>文件监听，设置 false 时，应用 iframe 模式</td>
+<td>true</td>
+</tr>
+<tr>
+<td><code>historyApiFallback</code></td>
+<td>页面找不到时(404)，是否重定向到 index.html，设置 false 时，不重定向</td>
+<td>true</td>
+</tr>
+</tbody>
+</table>
+<p>其中最值得一提的，当属文件监听。要实现文件监听，必须在 <code>webpack.config.js</code> 中进行设置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">...</span><br><span class="line">  devServer: &#123;</span><br><span class="line">    inline: <span class="literal">true</span>,</span><br><span class="line">    historyApiFallback: <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>值得注意的是，<code>webpack-dev-server</code> 编译后资源（js、css等），在本地目录是无法看到的。因为为了提升编译效率，这些编译后的文件，都被暂存在内存中。你可以理解为文件每次修改后，devSever编译后的文件，都暂存在服务器对应目录下，只是这些文件对开发者不可见而已</strong></p>
+<p>因此，为了使得页面里正确引用到js文件，我们还得修改 <code>index.html</code> 中 <code>main.js</code> 的路径：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- index.html --&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"main.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><code>npm run server</code> 重启服务，然后，修改 <code>main.js</code> 中的内容，你会发现，页面也跟着刷新。有没有瞬间感觉页面开发效率提高了很多？</p>
+<p>但又出现了一些新问题，当我们修改了 <code>index.html</code> 中的内容时，发现浏览器中的页面没跟着刷新。难道它这个监听刷新只针对页面引用的资源？随后，我们又尝试着在页面里引用一个 <code>page.css</code> 文件，修改 <code>page.css</code>，结果页面还是无法自动刷新样式。</p>
+<p>另外，还有前面提到的，当页面重新打包编译时，页面如何跟踪引用更新过md5的资源文件。</p>
+<p>这些问题，就需要借助 插件(plugin) 来完成！</p>
+<h2 id="五、插件-plugin"><a href="#五、插件-plugin" class="headerlink" title="五、插件(plugin)"></a>五、插件(plugin)</h2><p>首先，要明白一点，插件是处理整个项目文件。</p>
+<p>针对上一节无法监控html、css文件，以及页面内资源的正确引入问题，可以使用 <code>html-webpack-plugin</code> 插件。</p>
+<h3 id="html-webpack-plugin"><a href="#html-webpack-plugin" class="headerlink" title="html-webpack-plugin"></a>html-webpack-plugin</h3><p>安装它：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install --save-dev html-webpack-plugin</span><br></pre></td></tr></table></figure>
+<p><code>html-webpack-plugin</code> 提供了很多配置选项，通过这些选项，我们可以使用 <code>html-webpack-plugin</code> 的不同功能。常见选项如下：</p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>说明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>title</code></td>
+<td>生成的html文件的页面标题</td>
+</tr>
+<tr>
+<td><code>filename</code></td>
+<td>生成的html文件名，默认是 <code>index.html</code></td>
+</tr>
+<tr>
+<td><code>template</code></td>
+<td>要求打包的模板</td>
+</tr>
+<tr>
+<td><code>inject</code></td>
+<td>向template或者templateContent中注入所有静态资源，有 <code>true</code>、<code>&#39;head&#39;</code>、<code>&#39;body&#39;</code>、<code>false</code> 四个值。设置 <code>true</code> 或者 <code>body</code> 时，所有JavaScript资源都插入body底部，<code>head</code> 则插入head。</td>
+</tr>
+<tr>
+<td><code>chunks</code></td>
+<td>插入页面模板的thunk文件，它的值是一个数组，表示该模板需要引入 <code>entry</code> 里的哪几个文件 。不配置的话，默认将 <code>entry</code> 里的所有 thunk 注入到模板中。</td>
+</tr>
+</tbody>
+</table>
+<p>了解了这些配置选项后，我们重新对 <code>webpack.config.js</code> 进行调整：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> HtmlWebpackPlugin = <span class="built_in">require</span>(<span class="string">'html-webpack-plugin'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  entry: path.resolve(__dirname, <span class="string">'./src/main.js'</span>),</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'./dist'</span>),</span><br><span class="line">    filename: <span class="string">'[name].[chunkhash].js'</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devServer: &#123;</span><br><span class="line">    inline: <span class="literal">true</span>,</span><br><span class="line">    historyApiFallback: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="keyword">new</span> HtmlWebpackPlugin(&#123;</span><br><span class="line">      template: __dirname + <span class="string">'/src/index.html'</span>,</span><br><span class="line">      <span class="comment">//filename: __dirname + '/dist/index.html',</span></span><br><span class="line">      inject: <span class="string">'body'</span></span><br><span class="line">    &#125;)</span><br><span class="line">  ]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>因为 <code>html-webpack-plugin</code> 会跟踪页面引用的资源文件，所以 <code>output</code> 中的 filename 更新为加 md5 的文件。正因为如此，我们便可删除 <code>index.html</code> 中引用的 js文件（<del><code>&lt;script src=&quot;main.js&quot;&gt;&lt;/script&gt;</code></del>）。</p>
+<p>此外，我们注意到，上面的代码中，还多了 <code>plugins</code> 这么一项。它的值是一个数组，我们可以往里面添加多个插件。</p>
+<p>此时，再重新运行 <code>npm run server</code>，便可看到，无论是修改 html文件、还是 js文件，页面都能自动刷新了。</p>
+<p>而当运行 <code>npm run build</code>，你会看到 <code>dist</code> 目录下会新生成 <code>index.html</code> 以及加了md5后缀的 <code>main.js</code> 文件。</p>
+<p><strong>注意：<code>npm run server</code> 后，即项目开发时，需要将 <code>filename: __dirname + &#39;/dist/index.html&#39;</code> 和 <code>publicPath</code>(如果设置了)进行 注释。如果不注释，会导致服务运行的页面，无法找到相关资源。而打包时，则去除注释</strong></p>
+<p>下面介绍的插件，可以暂时跳过，先去了解 加载器(loader)，之后才会用到以下插件。</p>
+<h3 id="extract-text-webpack-plugin"><a href="#extract-text-webpack-plugin" class="headerlink" title="extract-text-webpack-plugin"></a>extract-text-webpack-plugin</h3><p>之前的 css 都是打包到 js 文件中，这样减少了请求数，当用户打开页面时，通过 <code>&lt;style type=&quot;text/css&quot;&gt;...&lt;/style&gt;</code> 逐个插入到网页头部。</p>
+<p>不过，当css多时，此种做法会导致js体积很大。</p>
+<p>此时，你希望对js文件引入的css或者less文件单独外链，你可以安装 <code>extract-text-webpack-plugin</code>：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install --save-dev extract-text-webpack-plugin</span><br></pre></td></tr></table></figure>
+<p>首先，你在入口js文件里引入 less：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.js</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">import</span> <span class="string">'../css/page.less'</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>然后，你需要在配置文件 webpack.config.js 里引入该插件模块，并且对其中的 <code>module</code> 和 <code>plugins</code> 进行相关设置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">var</span> ExtractTextPlugin = <span class="built_in">require</span>(<span class="string">'extract-text-webpack-plugin'</span>);</span><br><span class="line">...</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    loaders: [</span><br><span class="line">      ...</span><br><span class="line"></span><br><span class="line">      <span class="comment">// &#123;</span></span><br><span class="line">      <span class="comment">//   test: /\.less$/,</span></span><br><span class="line">      <span class="comment">//   loader: 'style-loader!css-loader!less-loader'</span></span><br><span class="line">      <span class="comment">// &#125;,</span></span><br><span class="line"></span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.less$/i</span>,</span><br><span class="line">        loader:  ExtractTextPlugin.extract(&#123;</span><br><span class="line">          fallback: <span class="string">'style-loader'</span>,</span><br><span class="line">          use: [<span class="string">'css-loader'</span>, <span class="string">'less-loader'</span>]</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">	  ...</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br><span class="line">  plugins: [</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">new</span> ExtractTextPlugin(<span class="string">'css/style.[chunkhash].css'</span>)</span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
+<p>这里指定了css生成目录和文件名为 <code>css/style.[chunkhash].css</code>，再次运行 <code>npm run server</code> 或 <code>npm run build</code> 后，你会发现页面的样式被外链了。但不幸的是，样式里的图片不显示。因为css文件里背景图的路径为 <code>url(res/images/big.png?57e396ba)</code>，而css文件在 <code>res/css/</code> 目录，但图片在 <code>res/images/</code>，这显然引用不到，因为 <code>res/css/</code> 压根就没 <code>res/images/</code> 这么一个目录。</p>
+<p>所以，我们需要在 <code>loader</code> 里 ExtractTextPlugin 部分新增一个 <code>publicPath</code> 属性，来覆盖原来 <code>output</code> 里设置的 <code>publicPath</code>。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.less$/i</span>,</span><br><span class="line">        loader:  ExtractTextPlugin.extract(&#123;</span><br><span class="line">          fallback: <span class="string">'style-loader'</span>,</span><br><span class="line">          use: [<span class="string">'css-loader'</span>, <span class="string">'less-loader'</span>],</span><br><span class="line">          publicPath: <span class="string">'../'</span></span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>这样打包后的css文件，里面的背景图就都变成了 <code>url(../images/big.png?57e396ba)</code> 这样的路径了。</p>
+<h3 id="clean-webpack-plugin"><a href="#clean-webpack-plugin" class="headerlink" title="clean-webpack-plugin"></a>clean-webpack-plugin</h3><p>随着我们一次一次的修改文件，又一次次的打包，我们会发现 dist 里的文件越来越多，因为这些文件还包括了之前打包过的。但对于单个项目而言，我们每次打完包，都是将dist里的文件直接上传到服务器。我们希望每次打完包后，dist 里只有本次打包的文件。那就需要在打包前，删除 dist 里的某些文件或清空整个dist文件夹或 dist 文件夹里的文件，打包完后，dist 只剩页面和当前引用的文件及相关资源。</p>
+<p>要在打包前清空 dist 目录，可以通过以下两种方法：</p>
+<h4 id="配置npm"><a href="#配置npm" class="headerlink" title="配置npm"></a>配置npm</h4><p>在配置文件 package.json 的 scripts 中，增加以下两项，其中 clean (npm run clean) 表示只清空目录，而 build (npm run build) 则表示清空目录，并编译打包文件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// package.json</span></span><br><span class="line">...</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="string">"clean"</span>: <span class="string">"rm -r dist/*"</span>,</span><br><span class="line">    <span class="string">"build"</span>: <span class="string">"rm -r dist/* &amp;&amp; webpack -p"</span></span><br><span class="line">  &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>注意，没有 dist，或者 dist下没有文件时，运行 npm run build 会报错，这种方式使用起来可能不那么灵活。</p>
+<h4 id="clean-webpack-plugin-1"><a href="#clean-webpack-plugin-1" class="headerlink" title="clean-webpack-plugin"></a>clean-webpack-plugin</h4><p>如果不想配置使用 npm 这种方式，你还可以安装插件 clean-webpack-plugin：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install --save-dev clean-webpack-plugin</span><br></pre></td></tr></table></figure>
+<p>然后，你需要在配置文件 <code>webpack.config.js</code> 里引入该插件模块，并且对其中的 <code>plugins</code> 进行相关设置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">var</span> CleanWebpackPlugin = <span class="built_in">require</span>(<span class="string">'clean-webpack-plugin'</span>);</span><br><span class="line">...</span><br><span class="line">  plugins: [</span><br><span class="line">	...</span><br><span class="line">    <span class="keyword">new</span> CleanWebpackPlugin(</span><br><span class="line">      [</span><br><span class="line">        <span class="string">'dist'</span>,         <span class="comment">// 移除 'dist' 文件夹</span></span><br><span class="line">        <span class="comment">//'build/*.*',    // 移除 'build' 文件夹里有后缀名的文件</span></span><br><span class="line">        <span class="comment">//'web/*.js'      // 移除 'web' 文件夹中所有的js文件</span></span><br><span class="line">      ]</span><br><span class="line">    )</span><br><span class="line"> ]</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>值得一提的是，CleanWebpackPlugin 除了可以移除指定的文件夹（文件）外，它还有第二个参数（可选），该参数可以指定移除的根目录，移除是否需要打印log等信息。</p>
+<p>可以看到，npm 方式可谓是 简单粗暴，而 clean-webpack-plugin 则是功能丰富。</p>
+<h2 id="六、加载器-Loader"><a href="#六、加载器-Loader" class="headerlink" title="六、加载器(Loader)"></a>六、加载器(Loader)</h2><p>与 plugin 不同，loader 主要是用于处理一类文件。比如说，将 css 通过 js 引入到页面中，或者将 es6、es7、jsx 转换为 es5，又或者将 sass、less 转换为 css，下面就介绍相关的 loader。</p>
+<p>loader 执行的三种方式：命令行、单个文件require、配置文件</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 方式一</span></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"!css-loader!style-loader!./style.css"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 方式一</span></span><br><span class="line">webpack main.js bundle.js --<span class="built_in">module</span>-bind <span class="string">"css=css-loader!style-loader"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 方式三</span></span><br><span class="line"> <span class="built_in">module</span>: &#123;</span><br><span class="line">    loaders: [</span><br><span class="line">	  &#123;</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        loader: <span class="string">'css-loader!style-loader'</span></span><br><span class="line">      &#125;</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="json-loader"><a href="#json-loader" class="headerlink" title="json-loader"></a>json-loader</h3><p>该loader主要处理json文件。</p>
+<p>首先需要说明的是，webpack2.0版本，已经自带 <code>json-loader</code>，因此，你无需安装，也无需在 <code>webpack.config.js</code> 中配置，便可直接使用json文件了。</p>
+<p>但对于1.0的版本，安装它：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install --save-dev json-loader</span><br></pre></td></tr></table></figure>
+<p>然后，在 <code>webpack.config.js</code> 中进行配置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">...</span><br><span class="line">  devServer: &#123;</span><br><span class="line">    inline: <span class="literal">true</span>,</span><br><span class="line">    historyApiFallback: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    loaders: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.json$/</span>,</span><br><span class="line">        loader: <span class="string">'json-loader'</span></span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br><span class="line">&#125;;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>通过上面代码，可以看到。<code>module.exports</code> 中新增了 <code>module</code> 项，它有一个 loaders 属性，该属性值是一个数组，我们可以往里面添加更多的loader。</p>
+<h3 id="css-loader、style-loader"><a href="#css-loader、style-loader" class="headerlink" title="css-loader、style-loader"></a>css-loader、style-loader</h3><p>为了更接近更真实的项目开发，我们更改下项目目录：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">src</span><br><span class="line">  index.html</span><br><span class="line">  res</span><br><span class="line">    css</span><br><span class="line">    images</span><br><span class="line">    js</span><br><span class="line">dist</span><br><span class="line">  ...</span><br><span class="line">package.json</span><br><span class="line">webpack.config.js</span><br></pre></td></tr></table></figure>
+<p>将所有的js文件都放在 <code>res/js</code> 这个目录下，同时更改 <code>webpack.config.js</code> 的路径。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  entry: path.resolve(__dirname, <span class="string">'./src/res/js/main.js'</span>),</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'./dist/res/'</span>),</span><br><span class="line">    filename: <span class="string">'js/[name].[chunkhash].js'</span></span><br><span class="line">  &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>这里 <code>filename</code> 的值前面加了一个 js 目录，目的是希望打包后的js文件都生成在js文件夹。而 <code>path</code> 的值则作为 css、js、images打包后的父级目录。</p>
+<p>然后，我们再在 <code>res/css</code> 目录下新建个css文件 <code>page.css</code>，在里面写点样式：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.css-box</span> &#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">20px</span>;</span><br><span class="line">  <span class="attribute">-webkit-transition</span>: <span class="number">0.5s</span> font-size;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.css-box</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">30px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接着，在 <code>index.html</code> 加入类名为 css-box 的div。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- index.html --&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"css-box"</span>&gt;</span>xxx<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在 <code>main.js</code> 里面引入这个css文件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//main.js</span></span><br><span class="line">...</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'../css/page.css'</span>);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>安装处理css的loader：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install --save-dev css-loader style-loader</span><br></pre></td></tr></table></figure>
+<p><code>css-loader</code> 是让js（require）具备引入css文件（@import）的功能，而 <code>style-loader</code> 则是将计算后样式以 <code>&lt;style type=&quot;text/css&quot;&gt;...&lt;/style&gt;</code> 的方式插入到页面head中。</p>
+<p>同时安装多个包时，用空白隔开即可。</p>
+<p>在 <code>webpack.config.js</code> 中，进行这两个loader设置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    loaders: [</span><br><span class="line">      ...</span><br><span class="line"></span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        loader: <span class="string">'style-loader!css-loader'</span></span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>运行 <code>npm run server</code>，你会发现页面里类名为 css-box 的div，应用了相关样式。打开控制台，你会发现这些样式，以 <code>&lt;style type=&quot;text/css&quot;&gt;...&lt;/style&gt;</code> 的形式被插入到页面的 <code>&lt;head&gt;...&lt;/head&gt;</code> 中。它的原理是先将这些css拼接到 <code>main.js</code> 里的各个模块，当页面打开时，再动态插入到 <code>head</code> 中。</p>
+<p>如果需要将css文件单独外链，可参见 plugin 部分的 <code>extract-text-webpack-plugin</code> 章节。</p>
+<h3 id="less-loader"><a href="#less-loader" class="headerlink" title="less-loader"></a>less-loader</h3><p>处理完 css，我们接着处理 less。首先将 <code>page.css</code> 直接换成 <code>page.less</code>，内容也作如下调整：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.css-box</span> &#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">20px</span>;</span><br><span class="line">  <span class="attribute">-webkit-transition</span>: <span class="number">0.5s</span> font-size;</span><br><span class="line">  &amp;:hover &#123;</span><br><span class="line">    <span class="selector-tag">font-size</span>: 30<span class="selector-tag">px</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后，修改 <code>main.js</code> 里面这个css文件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//main.js</span></span><br><span class="line">...</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'../css/page.less'</span>);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>接着，安装相应的包：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install --save-dev less-loader less</span><br></pre></td></tr></table></figure>
+<p>注意，安装 <code>less-loader</code> 的同时，还要安装 <code>less</code>，否者会出现报错。</p>
+<p>最后，配置 <code>webpack.config.js</code> 文件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    loaders: [</span><br><span class="line">      ...</span><br><span class="line"></span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.less$/</span>,</span><br><span class="line">        loader: <span class="string">'style-loader!css-loader!less-loader'</span></span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>运行 <code>npm run server</code>，在浏览器中，你将看到页面里类名为 css-box 的div，已经应用了相关样式。</p>
+<p>而对于sass，应该也是使用相似的加载器。</p>
+<h3 id="babel-loader"><a href="#babel-loader" class="headerlink" title="babel-loader"></a>babel-loader</h3><p>如果你在 <code>main.js</code> 里写点 es6 的东西：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.js</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">let</span> amount = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">let</span> sum = <span class="function"><span class="params">num</span> =&gt;</span> num * <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(sum(amount));</span><br></pre></td></tr></table></figure>
+<p>再运行 <code>npm run build</code> 去打包编译，你会发现此时命令行里报错了，出现 <code>Unexpected token: name (amount)</code> 之类的提示。因为，没有正确的加载器，webpack 默认是不能识别 es6 的语法。</p>
+<p>你需要 <code>babel-loader</code> 来将 es6 转换为 es5，它包含了几个独立的包，一并安装它：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install --save-dev babel-core babel-preset-es2015 babel-loader</span><br></pre></td></tr></table></figure>
+<p>其中，<code>babel-core</code> 为 babel的核心模块，而 <code>babel-preset-es2015</code> 则是用于编译 es2016（es6）语法。</p>
+<p>再在 <code>webpack.config.js</code> 里进行相关设置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    loaders: [</span><br><span class="line">	  ...</span><br><span class="line"></span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        exclude: <span class="regexp">/node_modules/</span>,</span><br><span class="line">        loader: <span class="string">'babel-loader'</span>,</span><br><span class="line">        query: &#123;</span><br><span class="line">          presets: [<span class="string">'es2015'</span>]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>上面的代码中，<code>exclude</code> 表示不对node_modules这种依赖模块中的js做处理。再次运行 <code>npm run build</code>，页面便可以正常打包编译了。</p>
+<p>前端目前最主流、最热门的框架当属 react，<code>babel-loader</code> 除了可以编译 es6，还能对 react 进行编译。只需要安装 <code>react</code>、<code>react-dom</code> 这两个被拆分的包，以及解析 react 语法的模块：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install --save-dev react react-dom babel-preset-react</span><br></pre></td></tr></table></figure>
+<p>然后设置配置文件 <code>webpack.config.js</code>，由于同属 <code>babel-loader</code> 加载器。因此，只需要在 <code>presets</code> 加入 <code>react</code> 即可：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    loaders: [</span><br><span class="line">	  ...</span><br><span class="line"></span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        exclude: <span class="regexp">/node_modules/</span>,</span><br><span class="line">        loader: <span class="string">'babel-loader'</span>,</span><br><span class="line">        query: &#123;</span><br><span class="line">          presets: [<span class="string">'es2015'</span>, <span class="string">'react'</span>]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>我们在 <code>main.js</code> 里加点 react 的代码，并且在 <code>index.html</code> 页面中加个 id 为 hello-react 的div容器：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.js</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">import</span> React,&#123;Component&#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HelloReact</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render()&#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h1&gt;Hello, React&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>div&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">render(<span class="xml"><span class="tag">&lt;<span class="name">HelloReact</span> /&gt;</span>, document.getElementById('hello-react'));</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- index.html --&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"hello-react"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>运行 <code>npm run server</code> 重启服务，刷新页面便可看到 id 为 hello-react 这个div里面的内容为 <code>&lt;div&gt;&lt;h1&gt;Hello, React&lt;/h1&gt;&lt;/div&gt;</code>。</p>
+<h3 id="file-loader-url-loader"><a href="#file-loader-url-loader" class="headerlink" title="file-loader url-loader"></a>file-loader url-loader</h3><p>除了文字，图片也是网页展示内容一个不可或缺的载体。其中，图片的表示形式又主要分为两种，即 html 中 <code>&lt;img src /&gt;</code> 标签，以及css中的 <code>background</code> 背景图。</p>
+<p>先来看看背景图部分，在 <code>res/images</code> 中新增 <code>small.png</code> 和 <code>big.png</code> 这两张图，并且分别在 <code>index.html</code> 和 <code>page.less</code> 中添加部分内容：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- index.html --&gt;</span></span><br><span class="line">...</span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"bg-box"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"small"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"big"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/** page.less **/</span></span><br><span class="line">...</span><br><span class="line"><span class="selector-class">.bg-box</span> &#123;</span><br><span class="line">  .small &#123;</span><br><span class="line">    <span class="selector-tag">width</span>: 50<span class="selector-tag">px</span>;</span><br><span class="line">    <span class="selector-tag">height</span>: 50<span class="selector-tag">px</span>;</span><br><span class="line">    background: url(../images/small.png);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="selector-class">.big</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">100px</span>;  </span><br><span class="line">    <span class="attribute">background</span>: <span class="built_in">url</span>(../images/big.png);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>npm run server</code> 重启服务，发现编译失败了，提示内容没找到对应的加载器去处理文件类型。此时，你需要 <code>file-loader</code> 和 <code>url-loader</code>。安装它：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install --save-dev file-loader url-loader</span><br></pre></td></tr></table></figure>
+<p>这两者都是用于处理文件的，主要是用于处理图片。url-loader 可以看成是 file-loader的过滤器，小图片(一般不大于8192字节)可以使用 url-loader ，然后将图片以 data uri 的形式嵌入到页面或样式中，这样减少请求数。 而对于大一点的文件，我们则使用 <code>file-loader</code>。</p>
+<p>在 <code>webpack.config.js</code> 里进行设置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    loaders: [</span><br><span class="line">      ...</span><br><span class="line"></span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.(png|jpg|gif)$/</span>,</span><br><span class="line">        loader: <span class="string">'url-loader?limit=8192'</span></span><br><span class="line">　　　&#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>再次运行 <code>npm run server</code> 重启服务，此时，再看浏览器里的页面，这两个背景图都能正常显示。打开控制台中的样式面板，你会发现小图背景被转换为 data uri 格式，而大图背景的图片名则是一个32位md5加密的字符串。</p>
+<p>运行 <code>npm run build</code>，打包编译后，在 <code>dist</code> 目录打开 <code>index.html</code> 页面，此时发现大图无法正常显示。再仔细查看 dist 目录，发现大图被打包到了与 js 同一目录。所以，样式里引用不到这个图，这显然不是我们想要的结果。</p>
+<p>默认情况下，当不对图片的输出路径以及名称进行设置时，图片会直接打包到引用 less 模块（即js文件）所在的目录，并且文件名为32位 md5 的hash值。</p>
+<p>而我们想要的结果是，图片输出路径与 <code>src</code> 一致，为了方便识别，图片的名称也最好是一致，为了防止缓存，还需要在图片名后加md5。</p>
+<p>要想以指定名称、指定图片的生成目录来打包图片，只需要对前面的 module 中的 url-loader 进行修改：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    loaders: [</span><br><span class="line">      ...</span><br><span class="line"></span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.(png|jpg|gif)$/</span>,</span><br><span class="line">        loader: <span class="string">'url-loader?limit=8192&amp;name=images/[name].[ext]?[hash:8]'</span></span><br><span class="line">　　　&#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>其中，<code>name=images/[name].[ext]</code> 遵循 <code>name=[path]/[name].[ext]</code> 规则，<code>[path]</code> 表示打包后图片的目录，<code>[name]</code> 为文件名，<code>[ext]</code> 为扩展名，<code>[hash:8]</code> 为md5处理过的 hash 值，默认为 32位，这里设置了 8位。</p>
+<p>再次运行 <code>npm run build</code>，打开打包后的 <code>index.html</code> 页面，结果发现 <code>&lt;div class=&quot;big&quot;&gt;&lt;/div&gt;</code> 这个元素的背景还是无法显示。</p>
+<p>控制台中显示它背景url的路径为 <code>url(images/big.png?57e396ba)</code>，而打包后图片的目录为 <code>dist/res/images</code>，并且样式是内嵌在 <code>index.html</code> 里的，这显然是引用不到图片。要让图片显示，我们必须得将 <code>url(images/big.png?57e396ba)</code> 转变成 <code>url(res/images/big.png?57e396ba)</code>。</p>
+<p>怎么处理？还记得我们前面提到的 <code>publicPath</code> 吗？这时候就该它大显身手了。</p>
+<p>在 <code>output</code> 中加入 <code>publicPath</code> 属性：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'./dist/res/'</span>),</span><br><span class="line">    filename: <span class="string">'js/[name].[chunkhash].js'</span>,</span><br><span class="line">    publicPath: <span class="string">'res/'</span></span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>运行 <code>npm run build</code>，打开打包后的 <code>index.html</code> 页面，<code>&lt;div class=&quot;big&quot;&gt;&lt;/div&gt;</code> 这个元素的背景正常显示了。</p>
+<p><strong>可以发现，在没设置 <code>publicPath</code> 属性之前，js文件被打包到 <code>output</code> 中 <code>path</code> 属性所指定的目录，而图片被打包到了 <code>url-loader</code> 所指定的目录</strong></p>
+<p><strong>但当设置了 <code>publicPath</code> 这个属性后，打包编译完后，js、images、css 这些静态资源文件夹，都会生成在 <code>publicPath</code> 指定的目录下</strong></p>
+<p>比如，上面的例子，<code>publicPath</code> 的值为 <code>res/</code>。其中 <code>main.js</code> 指定的输出路径为 <code>&#39;js/[name].[chunkhash].js&#39;</code>，那么，打包后页面引用的路径就变成 <code>res/js/main.js</code>。而图片指定的输出路径为 <code>images/[name].[ext]?[hash:8]</code>，那么，打包后css引用的路径就变成 <code>res/images/big.png</code>。</p>
+<p>而如果我们要将打包后的项目发布到线上或引用cdn资源，只需要将 <code>publicPath</code> 的值改成 <code>http://www.xx.com/project/res</code> 即可。</p>
+<p>当然，设置 <code>publicPath</code> 也不是万能的。假设你不想样式内嵌到网页中，而是希望以外链文件的方式引入页面，那也没问题，可通过 插件-ExtractTextPlugin，但由于css是外链的，图片路径又会出现问题，解决方案见 插件-ExtractTextPlugin 章节。</p>
+<h3 id="html-loader"><a href="#html-loader" class="headerlink" title="html-loader"></a>html-loader</h3><p>说完css背景图，我们再来看看 html 页面里，类似 <code>&lt;img src=&quot;res/images/hook.png&quot; alt=&quot;&quot;&gt;</code> 这种图片的引入方式。</p>
+<p>在 <code>index.html</code> 中加入以下内容：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- index.html --&gt;</span></span><br><span class="line">...</span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"img-box"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"res/images/small.png"</span> <span class="attr">alt</span>=<span class="string">""</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"res/images/big.png"</span> <span class="attr">alt</span>=<span class="string">""</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>打包后，发现 <code>big.png</code> 这张大图会根据 url-loader 里定义的规则，打包到了对应目录下，且是 md5、8位hash值名称的图片。</p>
+<p>而 <code>small.png</code> 这张小图（小于8192字节）在页面里不显示。这时候，我们需要结合 <code>html-loader</code> 来进行打包：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; npm install --save-dev html-loader</span><br></pre></td></tr></table></figure>
+<p>然后，在module里进行设置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    loaders: [</span><br><span class="line">      ...</span><br><span class="line"></span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.html$/</span>,</span><br><span class="line">        loader: <span class="string">'html-loader'</span></span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>再次运行 <code>npm run build</code> 进行打包，刷新页面，你会发现 <code>small.png</code> 这张图被转换为 data uri 格式，可以正常显示了。</p>
+<p>而对于 jsx 里引用的图片，使用它们指定的语法即可，它可以是这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.js</span></span><br><span class="line">...</span><br><span class="line">&lt;img src=&#123;<span class="built_in">require</span>(<span class="string">'../images/big.png'</span>)&#125; /&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>也可以是这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.js</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">import</span> big <span class="keyword">from</span> <span class="string">'../images/big.png'</span>;</span><br><span class="line"></span><br><span class="line">&lt;img src=&#123;big&#125; /&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>打包规则也相同，大图仍然是 图片名+md5，小图则是 data uri。</p>
+<h2 id="六、配置优化"><a href="#六、配置优化" class="headerlink" title="六、配置优化"></a>六、配置优化</h2><p>webpack最难的地方在哪？当然是配置文件，尤其是涉及到多个环境的配置。</p>
+<p>一般来说，对于一个项目而言，都有两套对应的环境，即 开发(dev)环境、生产(prod)环境。有时为了项目安全、方便测试，还会配置一套与生产环境相似的 集成(inter)环境。</p>
+<p>通过前面的内容，我们知道，开发环境和生产环境的配置有很多相同的地方，但也存在一切差异。</p>
+<p>比如，<code>devServer</code>、<code>HMR</code> 这些设置只是针对开发环境，而生产环境则需要设置 <code>output</code> 里 <code>publicPath</code> 属性，开发环境却无需配置。</p>
+<p>所以，最简单的方式是建立两个配置文件 <code>webpack.config.dev.js</code> 和 <code>webpack.config.prod.js</code>，独立维护。</p>
+<p>然后再更改 <code>package.json</code> 文件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// package.json</span></span><br><span class="line">...</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="string">"server"</span>: <span class="string">"webpack-dev-server --config webpack.config.dev.js"</span>,</span><br><span class="line">    <span class="string">"build"</span>: <span class="string">"webpack -p --config webpack.config.prod.js"</span></span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>通过不同的命令，设置不同的配置文件。</p>
+<h2 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h2><ul>
+<li><a href="https://segmentfault.com/a/1190000006178770" target="_blank" rel="noopener">入门 Webpack，看这篇就够了</a></li>
+<li><a href="https://doc.webpack-china.org/" target="_blank" rel="noopener">中文官网</a>、<a href="https://webpack.js.org/" target="_blank" rel="noopener">英文官网</a></li>
+<li><a href="http://zhaoda.net/webpack-handbook/" target="_blank" rel="noopener">Webpack 中文指南</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/23595975" target="_blank" rel="noopener">Webpack中hash与chunkhash的区别，以及js与css的hash指纹解耦方案</a></li>
+</ul>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

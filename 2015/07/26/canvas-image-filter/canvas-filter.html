@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>图片处理</title>
+<style>
+body{margin:0;padding:0;}
+.filter-handle{padding:15px;}
+.filter-handle label{border-right:1px dotted #666;margin-right:8px;}
+.filter-handle label:last-child{border-right:none;}
+.canvas-box{margin:5px 20px;padding:10px;box-shadow: 3px 3px 3px #aaa,-3px -3px 3px #aaa;border-radius:5px;}
+.filter-tips{padding:15px;}
+</style>
+</head>
+
+<body>
+    <div class="filter-handle">
+        <label>
+            <input type="radio" name="filter" id="invert">反相（负片）
+        </label>
+
+        <label>
+            <input type="radio" name="filter" id="grayscale">灰化
+        </label>
+
+        <label>
+            <input type="radio" name="filter" id="sepia">复古(怀旧)
+        </label>
+
+        <label>
+            <input type="radio" name="filter" id="brightness">变亮
+        </label>
+
+        <label>
+            <input type="radio" name="filter" id="threshold">阈值
+        </label>
+
+        <label>
+            <input type="radio" name="filter" id="relief">浮雕
+        </label>
+
+        <label>
+            <input type="radio" name="filter" id="reverse">反转
+        </label>
+
+        <label>
+            <input type="radio" name="filter" id="blur">
+            <select name="" id="blur-val">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select> 模糊
+        </label>
+    </div>
+    <div class="canvas-box">
+        <canvas id="canvas" width="500" height="140" >您的浏览器不支持canvas，请换成chrome或者Firefox</canvas>
+    </div>
+    <div class="filter-tips">
+        <input type="file" id="img-upload"/>
+        <p>提示：请先上传图片，设置图片效果后，可直接右键保存！若你想使用原图，刷新页面即可！</p>
+    </div>
+
+
+<script src="js/StackBlur.js"></script>
+<script src="js/filter.js"></script>
+
+</body>
+</html>
+
+

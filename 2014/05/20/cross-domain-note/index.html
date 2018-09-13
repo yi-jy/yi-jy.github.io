@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="跨域操作备忘 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="iframe跨域 jsonp">
+  
+
+  
+
+  <title>跨域操作备忘 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">跨域操作备忘</h1>
+
+  <time class="post-time">2014-05-20</time>
+
+  <div class="post-content">
+    <p>什么是同源策略，同源策略最早是由netscape提出的一个网页安全策略。所谓同源是指域名，协议和端口都相同，在这种情况下，开发者可以从其他页面或文件夹相互引用文件和交换数据，因为同属于一个网站，因此不存在安全性的问题。</p>
+<p>与同源策略相对是跨域，那么什么情况是跨域。从同源策略的定义我们可以知道，当两个url的域名、协议或者端口，甚至二级域名的某一项或多项不同时，则都属于跨域。</p>
+<a id="more"></a>
+<p>因为从属的网站或子域名不同，因此跨域是不允许交换数据的。虽然我们可以通过一些标签的src属性来引用其他网站的文件，但是无法利用从其他站点得到的数据处理本页面。而本文主要讲述跨域的一些特殊操作。</p>
+<h2 id="Iframe"><a href="#Iframe" class="headerlink" title="Iframe"></a>Iframe</h2><p>如你所知，我们可以使用Iframe来引用其他页面，或者是一些模块。虽然很方便，但在一般情况下，我们前端是尽量不使用这个元素，因为它会存在很多问题，而且在高性能的javascript中也有提到iframe是文档中最耗系统资源的元素。</p>
+<p>但在某些特殊情况下，我们必须采用iframe来引用本站或跨域的文件，因此了解javascript对于iframe的相关操作是很有必要的。</p>
+<h3 id="Javascript操作iframe"><a href="#Javascript操作iframe" class="headerlink" title="Javascript操作iframe"></a>Javascript操作iframe</h3><p>先说下iframe的一些属性吧！</p>
+<p>假设本地服务器有一个页面get_iframe.html，该页面使用iframe引用另一个页面b_iframe.html。</p>
+<p>父页面get_iframe要操作b_iframe页面的元素，可以通过iframe的contentWindow属性来获取b_iframe页面的引用，即：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> bIframeEle=iframe.contentWindow.document.getElementById(<span class="string">"element"</span>);</span><br></pre></td></tr></table></figure>
+<p>父页面还可以通过以下方法来获取子页面文档的引用，但iframe的此属性不支持低版本的IE浏览器：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> bIframeEle=iframe.contentDocument.getElementById(<span class="string">"element"</span>);</span><br></pre></td></tr></table></figure>
+<p>好了，既然父页面可以通过iframe的contentWindow属性来获取子页面元素。那么子页面b_iframe当然也可以通过相关属性来操作父页面get_iframe甚至顶级页面的元素。</p>
+<p>获取父页面的元素，可以通过window下的parent属性：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> getIframeEle=<span class="built_in">window</span>.parent.document.getElementById(<span class="string">"element"</span>);</span><br></pre></td></tr></table></figure>
+<p>而获取顶级页面，也就是嵌套iframe最顶层页面的元素，我们则可以使用window下的top属性：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> getIframeEle=<span class="built_in">window</span>.top.document.getElementById(<span class="string">"element"</span>);</span><br></pre></td></tr></table></figure>
+<p>具体的操作方法，可查看此demo：<a href="/2014/05/20/cross-domain-note/get_iframe.html" title="iframe的操作">iframe的操作</a></p>
+<p>另外需要说明的是，加载iframe在IE中是需要绑定才可完成。而且以上操作对于chrome浏览器来说，都需要在服务器环境下。</p>
+<h3 id="Iframe自适应高（同域）"><a href="#Iframe自适应高（同域）" class="headerlink" title="Iframe自适应高（同域）"></a>Iframe自适应高（同域）</h3><p>我们知道，iframe宽高属性在默认情况下是300*150。当我们载入iframe页面时，iframe会出现空白或纵向滚动条。为了页面的美观，我们需要iframe自适应子页面的高度。</p>
+<p>同域页面间引用iframe相对来说还是比较简单，我们可以在页面加载完毕后，结合前面提到的属性，去获取iframe所引用页面的高度，然后再动态的设置iframe的高度。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.onload=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">　<span class="keyword">var</span> oIframe=<span class="built_in">document</span>.getElementById(<span class="string">"iframe"</span>);</span><br><span class="line">　oIframe.height=oIframe.contentWindow.document.body.offsetHeight;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，同域引用iframe的src必须是相对路径。可见demo：<a href="/2014/05/20/cross-domain-note/h1_iframe.html" title="同域iframe高度自适应">同域iframe高度自适应</a></p>
+<p>在一些开发中，我们不免涉及跨域引用，因为其他域传递过来的数值不能改变本地元素的属性，所以跨域问题一直令前端开发们非常头疼，那么如何实现跨域引用iframe自适应高呢？</p>
+<h3 id="Iframe自适应高（跨域）"><a href="#Iframe自适应高（跨域）" class="headerlink" title="Iframe自适应高（跨域）"></a>Iframe自适应高（跨域）</h3><p>iframe跨域高度自适应？如果你的页面只是单纯引入iframe，而没有其他不脱离文档流元素的话，可以考虑下列方案，单纯的css实现，而且页面点击不会跳转url：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-tag">html</span>&#123;<span class="attribute">width</span>:<span class="number">100%</span>;<span class="attribute">height</span>:<span class="number">100%</span>;<span class="attribute">overflow</span>:hidden;&#125; </span></span><br><span class="line"><span class="css"><span class="selector-tag">body</span>&#123;<span class="attribute">height</span>:<span class="number">100%</span>;<span class="attribute">margin</span>:<span class="number">0</span>;<span class="attribute">padding</span>:<span class="number">0</span>;<span class="attribute">overflow-y</span>:hidden;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">"http://www.test.com"</span> <span class="attr">width</span>=<span class="string">100%</span> <span class="attr">height</span>=<span class="string">100%</span> <span class="attr">frameborder</span>=<span class="string">"0"</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>但如果页面原本有很多内容再引入了iframe，并且还要保持引入的iframe高度自适应，则暂时无法实现。网上提供的代理页面都是扯淡，本人试了很多次都无效。</p>
+<h2 id="JSONP"><a href="#JSONP" class="headerlink" title="JSONP"></a>JSONP</h2><h3 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h3><p>JSON(JavaScript Object Notation)是一种轻量级的数据交换格式。作为一种数据格式，它与XML相同，可以跨平台传递，这也意味着其他语言也可以使用JSON。但JSON比XML的数据结构简洁，而且可读性好，JSON的值可以是javascript中的任何数据类型</p>
+<p>在通常的情况下，JSON都是一些键值对，比如以下这么几种形式：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 表示一只猫</span></span><br><span class="line"><span class="keyword">var</span> cat=&#123;</span><br><span class="line">　<span class="string">"name"</span>:<span class="string">"cat01"</span>,</span><br><span class="line">　<span class="string">"age"</span>:<span class="string">"3"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 表示几只猫</span></span><br><span class="line"><span class="keyword">var</span> cats=[</span><br><span class="line">　&#123;<span class="string">"name"</span>:<span class="string">"cat01"</span>,<span class="string">"age"</span>:<span class="string">"3"</span>&#125;,</span><br><span class="line">　&#123;<span class="string">"name"</span>:<span class="string">"cat02"</span>,<span class="string">"age"</span>:<span class="string">"4"</span>&#125;</span><br><span class="line">]</span><br><span class="line"><span class="comment">//表示一群动物</span></span><br><span class="line"><span class="keyword">var</span> animals= &#123;</span><br><span class="line">　<span class="string">"category"</span>:<span class="string">"3"</span>,</span><br><span class="line"></span><br><span class="line">　<span class="string">"cats"</span>:[</span><br><span class="line">　　　&#123;<span class="string">"name"</span>:<span class="string">"cat01"</span>,<span class="string">"age"</span>:”<span class="number">3</span>”&#125;,</span><br><span class="line">　　　&#123;<span class="string">"name"</span>:<span class="string">"cat02"</span>,<span class="string">"age"</span>:”<span class="number">4</span>”&#125;</span><br><span class="line">　],</span><br><span class="line">　<span class="string">"dogs"</span>:[</span><br><span class="line">　　　&#123;<span class="string">"name"</span>:<span class="string">"dog01"</span>,<span class="string">"age"</span>:”<span class="number">2</span>”&#125;</span><br><span class="line">　],</span><br><span class="line">　<span class="string">"duck"</span>:[</span><br><span class="line">　　　&#123;<span class="string">"name"</span>:<span class="string">"duck01"</span>,<span class="string">"age"</span>:”<span class="number">1</span>”&#125;,</span><br><span class="line">　　　&#123;<span class="string">"name"</span>:<span class="string">"duck02"</span>,<span class="string">"age"</span>:”<span class="number">3</span>”&#125;</span><br><span class="line">　]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在前面我们创建了几个json，而读取这些Json我们则可以通过for in 循环，如读取cat：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i <span class="keyword">in</span> cat)&#123;</span><br><span class="line">　alert(i+<span class="string">";"</span>+cat[i]); <span class="comment">// name;cat01  age:3</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>若只是读取json中的值，如我们只需要cats中的每个name和age的值，我们则可以这样读取：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i <span class="keyword">in</span> cats)&#123;</span><br><span class="line">　alert(cats[i].name+<span class="string">";"</span>+cats[i].age); <span class="comment">//cat01;3  cat02;4</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关于JSON就简单的说这么多，然后接下来看JSONP。</p>
+<h3 id="JSONP-1"><a href="#JSONP-1" class="headerlink" title="JSONP"></a>JSONP</h3><p>前面我们也说过，在跨域情况下，a.com页面中的javascript是无法访问b.com页面里的内容。但src没有跨域限制，我们可以通过src引用其他站点的文件，平常我们在使用其他网站的js文件，比如jquery，我们的做法都是直接引用jquery文件的src，然后在本地服务器页面直接调用jquery定义的方法。</p>
+<p>利用这一特性，开发者们就发明了JSONP。JSONP（JSON with Padding）是一种非官方跨域数据交互协议，这种协议是建立在跨域无法获取数据的基础上。第三方网站会提供各种搜索引擎的接口，我们就拿google提供的一个搜索url来分析：</p>
+<p><code>http://ajax.googleapis.com/ajax/services/search/web?v=1.0&amp;q=?&amp;callback=?</code></p>
+<p>因为用户请求的json数据是在远程服务器动态生成的，所以我们采用动态创建script，srcipt的src是像上面说的一个动态地址，其中q的值是用户输入的值，我们可以看到，src中带有一个callback参数，callback的值为一个本地js函数，然后发送这个script请求，当远程服务器响应时，会把生成的json数据“填充”到这个js函数，即作为该方法的参数，最后返回到本地服务器。</p>
+<p>简而言之，JSONP可以归纳成这么一个过程：</p>
+<ol>
+<li><p>本地服务器先准备一个方法dataFn(jsonData)；</p>
+</li>
+<li><p>用户操作页面，开始请求远程服务器</p>
+</li>
+<li><p>然后本地页面根据用户的操作，动态创建script，并且script的src中带有一个callback参数，参数的值为dataFn，即<a href="http://www.a.com/web?q=?&amp;callback=dataFn" target="_blank" rel="noopener">http://www.a.com/web?q=?&amp;callback=dataFn</a></p>
+</li>
+<li><p>将script插入文档，开始请求它的src。</p>
+</li>
+<li><p>远程服务器使用dataFn把它的json数据包括起来作为dataFn的参数，形成一段可运行的js代码，最后返回到本地服务器。</p>
+</li>
+<li><p>dataFn在本地服务器执行。</p>
+</li>
+</ol>
+<p>具体的jsonp实现可见： <a href="/2014/05/20/cross-domain-note/jsonp.html" title="jsonp实现搜索">jsonp实现搜索</a>。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

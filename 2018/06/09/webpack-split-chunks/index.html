@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="webpack分离第三方库、公用文件、工具函数 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="webpack ProvidePlugin expose-loader externals CommonsChunkPlugin splitChunks">
+  
+
+  
+
+  <title>webpack分离第三方库及公用文件 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">webpack分离第三方库及公用文件</h1>
+
+  <time class="post-time">2018-06-09</time>
+
+  <div class="post-content">
+    <p>我们开发的项目中，具体代码文件主要包含三种类型，有 第三方库、工具函数、业务代码。在这篇文章，你会看到使用 webpack 处理这些文件的一些方法。</p>
+<a id="more"></a>
+<p>为了便于说明，首先，安装需要用到的第三方库，这里，以 <code>jQuery</code> 为例：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm i -S jquery</span><br></pre></td></tr></table></figure>
+<h2 id="一、直接引入"><a href="#一、直接引入" class="headerlink" title="一、直接引入"></a>一、直接引入</h2><p>我们最常用的引入方式，就是用 AMD 或者 ES6 模块导入的形式在具体的业务模块中直接引入：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// header.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> $ <span class="keyword">from</span> <span class="string">'jquery'</span>; <span class="comment">// 或者 const $ = require('jquery');</span></span><br><span class="line"></span><br><span class="line">$(<span class="string">'h1'</span>).hide();</span><br></pre></td></tr></table></figure>
+<p>如果webpack配置文件没有做其他相关设置，那么在这种情况下，jQuery 源码会和业务代码最终会打包到一个文件中。</p>
+<p>倘若多个业务模块都引用了 jQuery，则在打包时，webpack很机智，不会对 jQuery 源码进行多次打包。即最终打包的文件，只包含一份 jQuery 源码。</p>
+<h2 id="二、webpack-ProvidePlugin"><a href="#二、webpack-ProvidePlugin" class="headerlink" title="二、webpack.ProvidePlugin"></a>二、webpack.ProvidePlugin</h2><p>如果想要使用 jQuery，但又不想在业务代码中反复使用 <code>import $ from &#39;jquery&#39;</code> 来引入 jQuery，你可以使用 <code>ProvidePlugin</code> 。它属于webpack的内置API，我们可以在 webpack 配置文件进行如下设置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  plugins: &#123;</span><br><span class="line">    <span class="keyword">new</span> webpack.ProvidePlugin(&#123;</span><br><span class="line">      $: <span class="string">'jquery'</span>,</span><br><span class="line">      jQuery: <span class="string">'jquery'</span></span><br><span class="line">    &#125;)  </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样，我们甚至不用通过 <code>require(&#39;jquery&#39;)</code> 或者 <code>import $ from &#39;jquery&#39;</code> 这种形式引入 jQuery，就能在开发模块中使用 jQuery 的 API 了，如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// header.js</span></span><br><span class="line"></span><br><span class="line">$(<span class="string">'h1'</span>).hide(); <span class="comment">// 或者 jQuery('h1').hide();</span></span><br></pre></td></tr></table></figure>
+<p>在使用 <code>webpack-dev-server</code> 插件启动本地服务开发的环境下，应用上面的设置，会把 jQuery 源码和其他模块一起打包成一个文件，假设打包后的文件为 <code>main.js</code>，当打开 <code>main.js</code>，你会发现，jQuery 的源码处于 <code>main.js</code> 的顶部，有关 jQuery 操作的代码，则是在后面的一个独立模块。</p>
+<p>当打包发布生产环境时，<code>jQuery</code> 源码也会和其他模块一起打包成一个文件，也是位于文件的顶部，不同的是，有关 jQuery 操作的代码，是和 jQuery 源码处于同一模块。</p>
+<p>由于在开发环境和生产环境，jQuery 都是以模块的形式呈现，因此，你在浏览器的控制台，无法使用 jQuery 的API。即只能是在开发模块中，使用在 <code>ProvidePlugin</code> 中定义好的 <code>$</code> 或者 <code>jQuery</code>。</p>
+<p>如果要使用 <code>jQuery</code> 的第三方插件，也是非常方便的，比如绘制圆环的插件，安装npm包后，直接引入：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// header.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">'jquery-circle-progress'</span>;</span><br><span class="line"></span><br><span class="line">$(<span class="string">'#circle'</span>).circleProgress(&#123;</span><br><span class="line">  value: <span class="number">0.75</span>,</span><br><span class="line">  size: <span class="number">80</span>,</span><br><span class="line">  fill: &#123;</span><br><span class="line">    gradient: [<span class="string">"red"</span>, <span class="string">"orange"</span>]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="三、expose-loader"><a href="#三、expose-loader" class="headerlink" title="三、expose-loader"></a>三、expose-loader</h2><p>通过前面的方式，我们知道，打包后 jQuery 源码以模块的形式呈现。因此，对于一些依赖它的文件，或者希望在Chrome开发者工具中，调试 jQuery API等情况并不友好。</p>
+<p>针对这个问题，我们放弃使用 <code>webpack.ProvidePlugin</code> 方案（移除配置中的相关代码）。而是采用另外一种方案 - <code>expose-loader</code>。它的功能主要是将第三方库（本文指的是 jQuery）暴露给全局变量环境中，这样一来，无论是调试页面，还是依赖它的其他js文件，都能很方便的使用到它的API。</p>
+<p>首先，我们安装它：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm i expose-loader -D</span><br></pre></td></tr></table></figure>
+<p>然后，我们对 webpack 配置文件进行如下更新（前提是你已安装 jQuery）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      ...</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="built_in">require</span>.resolve(<span class="string">'jquery'</span>),</span><br><span class="line">        use: [&#123;</span><br><span class="line">          loader: <span class="string">'expose-loader'</span>,</span><br><span class="line">          options: <span class="string">'$'</span></span><br><span class="line">        &#125;]</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后，需要在业务代码中引入第三方库，才能将它暴露到全局变量中：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// header.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> $ <span class="keyword">from</span> <span class="string">'jquery'</span>; <span class="comment">// 或者 require('jquery');</span></span><br></pre></td></tr></table></figure>
+<p>倘若你希望对这个第三方库设置多个全局变量，则可以继续新增：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      ...</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="built_in">require</span>.resolve(<span class="string">'jquery'</span>),</span><br><span class="line">        use: [&#123;</span><br><span class="line">          loader: <span class="string">'expose-loader'</span>,</span><br><span class="line">          options: <span class="string">'$'</span></span><br><span class="line">        &#125;, &#123;</span><br><span class="line">          loader: <span class="string">'expose-loader'</span>,</span><br><span class="line">          options: <span class="string">'jQuery'</span></span><br><span class="line">        &#125;]</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码，除了原来的 <code>$</code>，现在还增加了 <code>jQuery</code> 作为 jQuery 的全局变量。如此一来，在 Chrome 开发者工具控制台中，无论是使用变量 <code>$</code> 还是使用 <code>jQuery</code>，它们都能正常访问 jQuery 的 API。</p>
+<p>如果项目中希望对其他第三方库（比如 lodash、react 等）暴露全局变量，那你只需要在安装好这些第三方库后，再在打包配置文件中，做相关新增类似配置即可。</p>
+<p>可以看到，虽然在采用了 <code>webpack.ProvidePlugin</code> 方案后，模块无需在业务代码中引入第三方库，就能使用相关 API，但它无法全局，对依赖包不友好。而 <code>expose-loader</code> 则需要在业务代码中引入第三方库 ，它解决 <code>webpack.ProvidePlugin</code> 存在的问题。</p>
+<h2 id="四、externals"><a href="#四、externals" class="headerlink" title="四、externals"></a>四、externals</h2><p>说到这里，其实对于上面的两种方案，我们都忽略一个重要的问题。</p>
+<p>按理来说，对于第三方库而言，我们几乎不会修改它的源码。因此，并非每次修改完业务代码，都需要每次都将第三方库也重新打包一遍。</p>
+<p>而上述的 <code>webpack.ProvidePlugin</code> 和 <code>expose-loader</code> 方案，都存在第三方库重新打包或者说需要打包的问题，这就直接导致了打包效率慢。同时，这也导致了第三方库和业务代码打包在了一起，所以，打包后的文件通常都比较大。</p>
+<p>而对于这两个问题，我们可以通过配置 <code>externals</code> 选项来解决。</p>
+<p>首先，在webpack配置文件进行相关设置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  ...</span><br><span class="line">  externals: &#123;</span><br><span class="line">    jquery: <span class="string">'$'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后，针对第三方库，我们一般用相对路径或者类似 CDN 这种绝对路径的形式，以 <code>&lt;script&gt;</code> 标签在页面里直接引入。这里我们拿 CDN 上的 jQuery 做演示：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- index.html --&gt;</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/jquery-3.1.0.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>最后，无需在业务代码中引入第三方库，就能直接使用 jQuery 的 API：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// header.js</span></span><br><span class="line"></span><br><span class="line">$(<span class="string">'h1'</span>).hide();</span><br></pre></td></tr></table></figure>
+<p>再次打包，你会发现打包效率变高了，因为第三方库不参与打包。你会发现打包后的文件变小了，因为第三方库与业务代码分离了。你会发现 jQuery 被暴露为全局变量，因为第三方库引用的是 CDN，而非webpack模块。另外，即使你没在业务代码中引入第三方库，你也在这个业务模块使用 jQuery 的 API。</p>
+<p>但如果你不在 <code>index.html</code> 页面中 jQuery 文件（即移除上面的 <code>script</code> 连接），而是采用在业务代码中引入它（即 <code>import $ from &#39;jquery&#39;</code>），则会直接导致报错。毕竟这也违背了 <code>externals</code> 分离第三方库的初衷。</p>
+<p>可以说，<code>externals</code> 方案满足了我们大多数功能！</p>
+<h2 id="五、将第三方库从业务文件分离-Entry-CommonsChunkPlugin"><a href="#五、将第三方库从业务文件分离-Entry-CommonsChunkPlugin" class="headerlink" title="五、将第三方库从业务文件分离 - Entry + CommonsChunkPlugin"></a>五、将第三方库从业务文件分离 - Entry + CommonsChunkPlugin</h2><p>前面说到，由于第三方库几乎不怎么会变动，所以，我们通常希望这样处理它：</p>
+<ul>
+<li>打包时，不对第三方库进行打包（加快打包速度）</li>
+<li>将第三方库与业务代码分离，让第三方库充分利用浏览器缓存</li>
+</ul>
+<h3 id="5-1-最初打包"><a href="#5-1-最初打包" class="headerlink" title="5.1 最初打包"></a>5.1 最初打包</h3><p>为方便说明，我们首先安装了两个工具库，分别是 jQuery 和 lodash：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm i -S jquery lodash</span><br></pre></td></tr></table></figure>
+<p>假设有公共函数模块：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// utils.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">dataType</span>(<span class="params">argument</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Object</span>.prototype.toString.call(argument).replace(<span class="regexp">/\[object\s/</span>, <span class="string">''</span>).replace(<span class="regexp">/\]/</span>, <span class="string">''</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再假设有以下两个业务js文件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app1.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> $ <span class="keyword">from</span> <span class="string">'jquery'</span>;</span><br><span class="line"><span class="keyword">import</span> _ <span class="keyword">from</span> <span class="string">'lodash'</span>;</span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> utils <span class="keyword">from</span> <span class="string">'./utils'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'app1'</span>, _.chunk([<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>, <span class="string">'d'</span>], <span class="number">1</span>)); <span class="comment">// ['a'] ['b'] ['c'] ['d']</span></span><br><span class="line"></span><br><span class="line">$(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  $(<span class="string">'.app1'</span>).css(<span class="string">'color'</span>, <span class="string">'red'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'app1'</span>, utils.dataType([])); <span class="comment">// Array</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app2.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> $ <span class="keyword">from</span> <span class="string">'jquery'</span>;</span><br><span class="line"><span class="keyword">import</span> _ <span class="keyword">from</span> <span class="string">'lodash'</span>;</span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> utils <span class="keyword">from</span> <span class="string">'./utils'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'app2'</span>, _.chunk([<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>, <span class="string">'d'</span>], <span class="number">2</span>)); <span class="comment">// ['a', 'b'] ['c', 'd']</span></span><br><span class="line"></span><br><span class="line">$(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  $(<span class="string">'.app2'</span>).css(<span class="string">'color'</span>, <span class="string">'blue'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'app2'</span>, utils.dataType(&#123;&#125;)); <span class="comment">// Object</span></span><br></pre></td></tr></table></figure>
+<p>让我们调整下配置文件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  entry: &#123;</span><br><span class="line">    app1: <span class="string">'./src/app1.js'</span>,</span><br><span class="line">    app2: <span class="string">'./src/app2.js'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'./dist'</span>),</span><br><span class="line">    filename: <span class="string">'[name].[chunkhash].js'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后，打包后生成了 <code>app1.min.js</code> 和 <code>app2.min.js</code> 两个文件，页面也正常引用了这两个js文件，功能也都正常。</p>
+<p>但是，当打开 <code>app1.min.js</code> 和 <code>app2.min.js</code>，你会发现，这两个文件都包含了 jQuery、lodash 以及 utils.js 的源码，也就是说，webpack对于不同业务模块引用的公用文件（工具库）会重复打包，这显然是不对的。我们希望的理想情况是，所有的公用文件，只打包一次，在页面里也只引入一次。</p>
+<p>那我们就要使用到 <code>Entry + CommonsChunkPlugin</code>。</p>
+<h3 id="5-2-公用资源的分离"><a href="#5-2-公用资源的分离" class="headerlink" title="5.2 公用资源的分离"></a>5.2 公用资源的分离</h3><p>再次调整配置文件，在入口文件中新增第三方库的配置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> packagejson = <span class="built_in">require</span>(<span class="string">'./package.json'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  entry: &#123;</span><br><span class="line">    vendor: <span class="built_in">Object</span>.keys(packagejson.dependencies), <span class="comment">// 或者 vendor: ['jquery', 'lodash']</span></span><br><span class="line">    app1: path.resolve(__dirname, <span class="string">'./src/app1.js'</span>),</span><br><span class="line">    app2: path.resolve(__dirname, <span class="string">'./src/app2.js'</span>)</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</span><br><span class="line">      name: [<span class="string">'vendor'</span>],</span><br><span class="line">      filename: <span class="string">'[name].js'</span></span><br><span class="line">    &#125;),</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再次打包，生成了 <code>vendor.js</code>、<code>app1.min.js</code> 、<code>app2.min.js</code> 这三个文件。此时，再打开 <code>app1.min.js</code> 、<code>app2.min.js</code>，会发现里面只包含我们自己写的业务代码，而 jQuery、lodash 以及 utils.js 的源码则被打进了 <code>vendor.js</code> 这个文件中。</p>
+<p>使用这种方式打包，除了可以分离公用资源、避免重复打包以外。对第三方库（这里指的是 jQuery、lodash），在业务代码中还可以无需引入模块，便能使用第三方库的API。比如，<code>app1.js</code> 可以调整为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// app1.js  无需在此文件中引入 jquery 和 lodash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> utils <span class="keyword">from</span> <span class="string">'./utils'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'app2'</span>, _.chunk([<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>, <span class="string">'d'</span>], <span class="number">2</span>)); <span class="comment">// ['a', 'b'] ['c', 'd']</span></span><br><span class="line"></span><br><span class="line">$(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  $(<span class="string">'.app2'</span>).css(<span class="string">'color'</span>, <span class="string">'blue'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'app2'</span>, utils.dataType(&#123;&#125;)); <span class="comment">// Object</span></span><br></pre></td></tr></table></figure>
+<h3 id="5-3-第三方库、工具函数模块，业务代码的分离"><a href="#5-3-第三方库、工具函数模块，业务代码的分离" class="headerlink" title="5.3 第三方库、工具函数模块，业务代码的分离"></a>5.3 第三方库、工具函数模块，业务代码的分离</h3><p>到这里为止，我们基本达到了公用资源与业务代码分离的需求。但是，由于公用资源又包含 第三方库 和 工具函数模块。可以肯定的是，第三方库我们几乎不改，但 工具函数模块 则可能会不定时的修改。因此，最理想的情况是，把 第三方模块 和 工具函数模块 也分离开来。</p>
+<p>这个也好办，只需要利用 <code>chunks</code> 再指定引用了 工具函数模块 的js文件即可。再次调整配置文件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</span><br><span class="line">      name: <span class="string">'common'</span>,</span><br><span class="line">      filename: <span class="string">'[name].[chunkhash].js'</span>,</span><br><span class="line">      chunks: [<span class="string">'app1'</span>, <span class="string">'app2'</span>]</span><br><span class="line">    &#125;),</span><br><span class="line">    <span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</span><br><span class="line">      name: [<span class="string">'vendor'</span>],</span><br><span class="line">      filename: <span class="string">'[name].js'</span></span><br><span class="line">    &#125;)</span><br><span class="line">    ...</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再次打包，则生成了 <code>vendor.js</code>、<code>common.js</code>、<code>app1.min.js</code> 、<code>app2.min.js</code> 这四个文件。它们的内容分别如下：</p>
+<ul>
+<li><code>vendor.js</code>: 第三方库代码（这里指 jQuery + lodash）</li>
+<li><code>common.js</code>: 工具函数模块</li>
+<li><code>app1.min.js</code>: 业务代码1</li>
+<li><code>app2.min.js</code>: 业务代码2</li>
+</ul>
+<p>这样，便达到我们最终的目的。打开这四个文件，你会发现，后面三个都是以 <code>webpackJsonp([0], ...)</code>、<code>webpackJsonp([1], ...)</code>  … 这样开头的webpack运行模块。</p>
+<p>并且，由于我们是将第三方库单独打包在一个文件里，因此，你可以在该文件后面或者浏览器控制台使用第三方库的API。</p>
+<p><strong>不过注意，在 webpack4.x 中，<code>CommonsChunkPlugin</code> 这种形式已经被废弃了。</strong></p>
+<p>当你尝试在 webpack4.x 中使用 <code>CommonsChunkPlugin</code>，在命令面板会出现报错，并提示我们用 <code>optimization.splitChunks</code>：</p>
+<img src="/2018/06/09/webpack-split-chunks/CommonsChunkPlugin-error.png" title="CommonsChunkPlugin错误">
+<h2 id="六、webpack4-x-模块分离-optimization-splitChunks"><a href="#六、webpack4-x-模块分离-optimization-splitChunks" class="headerlink" title="六、webpack4.x 模块分离 - optimization + splitChunks"></a>六、webpack4.x 模块分离 - optimization + splitChunks</h2><p>在 webpack4.x 中，我们使用 <code>optimization.splitChunks</code> 来分离公用的代码块。</p>
+<p>这里说的分离，当然只是针对一些第三方库（一般来自 node_modules），以及我们自己定义的工具库（或公用方法）。不然，还分离啥呢？</p>
+<p>不知如何下手？首先，我们来看官网给的一份默认配置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">optimization: &#123;</span><br><span class="line">  splitChunks: &#123;</span><br><span class="line">    chunks: <span class="string">'async'</span>,</span><br><span class="line">    minSize: <span class="number">30000</span>,</span><br><span class="line">    maxSize: <span class="number">0</span>,</span><br><span class="line">    minChunks: <span class="number">1</span>,</span><br><span class="line">    maxAsyncRequests: <span class="number">5</span>,</span><br><span class="line">    maxInitialRequests: <span class="number">3</span>,</span><br><span class="line">    automaticNameDelimiter: <span class="string">'~'</span>,</span><br><span class="line">    name: <span class="literal">true</span>,</span><br><span class="line">    cacheGroups: &#123;</span><br><span class="line">      vendors: &#123;</span><br><span class="line">        test: <span class="regexp">/[\\/]node_modules[\\/]/</span>,</span><br><span class="line">        priority: <span class="number">-10</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="keyword">default</span>: &#123;</span><br><span class="line">        minChunks: <span class="number">2</span>,</span><br><span class="line">        priority: <span class="number">-20</span>,</span><br><span class="line">        reuseExistingChunk: <span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接着，我们再来看下它们的含义：</p>
+<ul>
+<li><strong>chunks：</strong> 该属性值的数据类型可以是 字符串 或者 函数。如果是字符串，那它的值可能为 initial | async | all 三者之一。默认值的数据类型为 字符串，默认值为 async，但推荐用 all。它表示将哪种类型的模块分离成新文件。字符串参数值的作用分别如下：<ul>
+<li>initial：表示对异步引入的模块不处理</li>
+<li>async：表示只处理异步模块</li>
+<li>all：无论同步还是异步，都会处理</li>
+</ul>
+</li>
+<li><strong>minSize：</strong> 该属性值的数据类型为数字。它表示将引用模块分离成新代码文件的最小体积，默认为 <code>30000</code>，单位为字节，即 30K（指min+gzip之前的体积）。这里的 30K 应该是最佳实践，因为如果引用模块小于 30K 就分离成一个新代码文件，那页面打开时，势必会多增加一个请求。</li>
+<li><strong>maxSize：</strong> 该属性值的数据类型为数字。它表示？</li>
+<li><strong>minChunks：</strong> 该属性值的数据类型为数字。它表示将引用模块如不同文件引用了多少次，才能分离生成新代码文件。默认值为 1</li>
+<li><strong>maxAsyncRequests：</strong> 该属性值的数据类型为数字，默认值为 <code>5</code>。它表示按需加载最大的并行请求数，针对异步。</li>
+<li><strong>maxInitialRequests：</strong> 该属性值的数据类型为数字，默认值为 <code>3</code>。它表示单个入口文件最大的并行请求数，针对同步。</li>
+<li><strong>automaticNameDelimiter：</strong> 该属性值的数据类型为字符串，默认值为 <code>~</code>。它表示分离后生成新代码文件名称的链接符，比如说 app1.js 和 app2.js 都引用了 <code>utils.js</code> 这个工具库，那么，最后打包后分离生成的公用文件名可能是 <code>xx~app1~app2.js</code> 这样的，即以 <code>~</code> 符号连接。</li>
+<li><strong>name：</strong> 该属性值的数据类型可以是 布尔值 或者 函数（返回值为字符串），其中布尔值得为 <code>true</code>，此时，分离文件后生成的文件名将基于 <code>cacheGroups</code> 和 <code>automaticNameDelimiter</code>。如果设置为 <code>false</code>，则不会进行模块分离。 </li>
+<li><strong>cacheGroups：</strong> 该属性值的数据类型为对象，它的值可以继承 <code>splitChunks.*</code> 中的内容。如果 <code>cacheGroups</code>存在与 <code>splitChunks.*</code> 同名的属性，则 <code>cacheGroups</code> 的属性值则直接覆盖 <code>splitChunks.*</code> 中设置的值。</li>
+<li><strong>test：</strong> 该属性值的数据类型可以为 字符串 或 正则表达式，它规定了哪些文件目录的模块可以被分离生成新文件。</li>
+<li><strong>priority：</strong> 该属性值的数据类型可以为数字，默认值为 <code>0</code>。它表示打包分离文件的优先级。</li>
+<li><strong>reuseExistingChunk：</strong> 该属性值的数据类型可以为布尔值。它表示针对已经分离的模块，不再重新分离。</li>
+</ul>
+<p>那么问题来了，我们该如何理解这些属性配置？并且利用它们实现更加高效的打包？</p>
+<p>其实没有什么，要验证这些配置参数，只不过是反复打包验证的过程。</p>
+<h3 id="6-1-默认配置"><a href="#6-1-默认配置" class="headerlink" title="6.1 默认配置"></a>6.1 默认配置</h3><p>在开始验证之前，我们准备三个入口文件（app1、app2、app3）以及它们各自引用的模块（jQuery、Lodash、React均来自 node_modules，utils 则是本地定义的工具函数文件），其中分离打包采用默认的配置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  entry: &#123;</span><br><span class="line">    app1: <span class="string">'./src/js/app1.js'</span>, <span class="comment">// 引用了 jQuery、Lodash、utils</span></span><br><span class="line">    app2: <span class="string">'./src/js/app2.js'</span>, <span class="comment">// 引用了 jQuery、Lodash、utils</span></span><br><span class="line">    app3: <span class="string">'./src/js/app3.js'</span> <span class="comment">// 引用了 React、React-dom</span></span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  optimization: &#123;</span><br><span class="line">    splitChunks: &#123;</span><br><span class="line">      chunks: <span class="string">'async'</span>,</span><br><span class="line">      minSize: <span class="number">30000</span>,</span><br><span class="line">      maxSize: <span class="number">0</span>,</span><br><span class="line">      minChunks: <span class="number">1</span>,</span><br><span class="line">      maxAsyncRequests: <span class="number">5</span>,</span><br><span class="line">      maxInitialRequests: <span class="number">3</span>,</span><br><span class="line">      automaticNameDelimiter: <span class="string">'~'</span>,</span><br><span class="line">      name: <span class="literal">true</span>,</span><br><span class="line">      cacheGroups: &#123;</span><br><span class="line">        vendors: &#123;</span><br><span class="line">          test: <span class="regexp">/[\\/]node_modules[\\/]/</span>,</span><br><span class="line">          priority: <span class="number">-10</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">default</span>: &#123;</span><br><span class="line">          minChunks: <span class="number">2</span>,</span><br><span class="line">          priority: <span class="number">-20</span>,</span><br><span class="line">          reuseExistingChunk: <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打包后，得到：</p>
+<img src="/2018/06/09/webpack-split-chunks/splitchunk1-default.png" title="默认配置的分离打包">
+<p>可以看到，由于采用默认分离打包配置，即 <code>chunks: &#39;async&#39;</code>。而我们代码中没用使用到异步加载模块，此时打包，并没有分离出单独的模块文件。所以输出的文件是下面这三个。它们的内容分别为：</p>
+<ul>
+<li>app1.min.js：jQuery、Lodash、utils 的源码和 app1.js 的业务代码</li>
+<li>app2.min.js：jQuery、Lodash、utils 的源码和 app2.js 的业务代码</li>
+<li>app3.min.js：React、React-dom 的源码和 app3.js 的业务代码</li>
+</ul>
+<h3 id="6-2-分离第三方库"><a href="#6-2-分离第三方库" class="headerlink" title="6.2 分离第三方库"></a>6.2 分离第三方库</h3><p>要将第三方库分离出来，我们需要调整配置文件，设置 <code>chunks: &#39;all&#39;</code>，即表示让所有加载类型的模块在某些条件下都能打包：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  optimization: &#123;</span><br><span class="line">    splitChunks: &#123;</span><br><span class="line">      chunks: <span class="string">'all'</span>,</span><br><span class="line">      minSize: <span class="number">30000</span>,</span><br><span class="line">      maxSize: <span class="number">0</span>,</span><br><span class="line">      minChunks: <span class="number">1</span>,</span><br><span class="line">      maxAsyncRequests: <span class="number">5</span>,</span><br><span class="line">      maxInitialRequests: <span class="number">3</span>,</span><br><span class="line">      automaticNameDelimiter: <span class="string">'~'</span>,</span><br><span class="line">      name: <span class="literal">true</span>,</span><br><span class="line">      cacheGroups: &#123;</span><br><span class="line">        vendors: &#123;</span><br><span class="line">          test: <span class="regexp">/[\\/]node_modules[\\/]/</span>,</span><br><span class="line">          priority: <span class="number">-10</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">default</span>: &#123;</span><br><span class="line">          minChunks: <span class="number">2</span>,</span><br><span class="line">          priority: <span class="number">-20</span>,</span><br><span class="line">          reuseExistingChunk: <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打包后，得到：</p>
+<img src="/2018/06/09/webpack-split-chunks/splitchunk2-chunks-all.png" title="chunks-all">
+<p>由于 jQuery、Lodash、React、React-dom 未压缩之前的源码都超过了30K，所以它们被分离成独立的文件。由于它们都来自 <code>node_modules</code>，所以这些分离文件的名称前缀是我们的配置 <code>vendors</code>， 接着使用 <code>automaticNameDelimiter</code> 的值（符号 ‘~’）来连接共同引入它们的业务文件名，如 <code>vendors~app1~app2.min.js</code> 和 <code>vendors~app3.min.js</code>。</p>
+<p>它们的内容分别为：</p>
+<ul>
+<li>vendors~app1~app2.min.js：jQuery、Lodash的源码</li>
+<li>app1.min.js：utils 的源码和 app1.js 的业务代码</li>
+<li>app2.min.js：utils 的源码和 app2.js 的业务代码</li>
+<li>vendors~app3.min.js：React、React-dom 的源码</li>
+<li>app3.min.js：app3.js 的业务代码</li>
+</ul>
+<h3 id="6-3-分离工具函数"><a href="#6-3-分离工具函数" class="headerlink" title="6.3 分离工具函数"></a>6.3 分离工具函数</h3><p>在上面的打包中，我们发现，工具函数模块（utils）的源码被分别打包到了 app1.min.js 和 app2.min.js 这两个文件中，这显然是不对。之所以出现这种情况，是因为我们设置了 <code>minSize: 30000</code>，即分离成独立文件的最小体积为 30K，而这里的 工具函数（utils.js）只有几KB，所以，没被分离成单独的文件。</p>
+<p>我们在 <code>cacheGroups</code> 中重新设置 <code>minSize</code> 的值，这样，就能覆盖 <code>splitChunks.*</code> 里面 <code>minSize</code> 的默认值：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  optimization: &#123;</span><br><span class="line">    splitChunks: &#123;</span><br><span class="line">      chunks: <span class="string">'all'</span>,</span><br><span class="line">      minSize: <span class="number">30000</span>,</span><br><span class="line">      maxSize: <span class="number">0</span>,</span><br><span class="line">      minChunks: <span class="number">1</span>,</span><br><span class="line">      maxAsyncRequests: <span class="number">5</span>,</span><br><span class="line">      maxInitialRequests: <span class="number">3</span>,</span><br><span class="line">      automaticNameDelimiter: <span class="string">'~'</span>,</span><br><span class="line">      name: <span class="literal">true</span>,</span><br><span class="line">      cacheGroups: &#123;</span><br><span class="line">        vendors: &#123;</span><br><span class="line">          test: <span class="regexp">/[\\/]node_modules[\\/]/</span>,</span><br><span class="line">          priority: <span class="number">-10</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">default</span>: &#123;</span><br><span class="line">          minSize: <span class="number">0</span>,</span><br><span class="line">          minChunks: <span class="number">2</span>,</span><br><span class="line">          priority: <span class="number">-20</span>,</span><br><span class="line">          reuseExistingChunk: <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打包后，得到：</p>
+<img src="/2018/06/09/webpack-split-chunks/splitchunk3-minsize.png" title="最小分离体积">
+<p>这样就分离出了 工具函数模块。它们的内容分别为：</p>
+<ul>
+<li>vendors~app1~app2.min.js：jQuery、Lodash的源码</li>
+<li>default~app1~app2.min.js：utils 的源码</li>
+<li>app1.min.js：app1.js 的业务代码</li>
+<li>app2.min.js：app2.js 的业务代码</li>
+<li>vendors~app3.min.js：React、React-dom 的源码</li>
+<li>app3.min.js：app3.js 的业务代码</li>
+</ul>
+<h3 id="6-4-第三方库合并打包并重命名"><a href="#6-4-第三方库合并打包并重命名" class="headerlink" title="6.4 第三方库合并打包并重命名"></a>6.4 第三方库合并打包并重命名</h3><p>有的时候，我们希望将所有来自 <code>node_modules</code> 的第三方库都打包到同一个文件中。显然，上面的打包配置并没有满足这个条件。并且，我们还希望可以对打包后的文件名进行重命名。</p>
+<p>要完成，只需要在 <code>cacheGroups</code> 设置 <code>name</code> 属性即可。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  optimization: &#123;</span><br><span class="line">    splitChunks: &#123;</span><br><span class="line">      chunks: <span class="string">'all'</span>,</span><br><span class="line">      minSize: <span class="number">30000</span>,</span><br><span class="line">      maxSize: <span class="number">0</span>,</span><br><span class="line">      minChunks: <span class="number">1</span>,</span><br><span class="line">      maxAsyncRequests: <span class="number">5</span>,</span><br><span class="line">      maxInitialRequests: <span class="number">3</span>,</span><br><span class="line">      automaticNameDelimiter: <span class="string">'~'</span>,</span><br><span class="line">      name: <span class="literal">true</span>,</span><br><span class="line">      cacheGroups: &#123;</span><br><span class="line">        vendors: &#123;</span><br><span class="line">          test: <span class="regexp">/[\\/]node_modules[\\/]/</span>,</span><br><span class="line">          priority: <span class="number">-10</span>,</span><br><span class="line">          name: <span class="string">'lib'</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">default</span>: &#123;</span><br><span class="line">          minSize: <span class="number">0</span>,</span><br><span class="line">          minChunks: <span class="number">2</span>,</span><br><span class="line">          priority: <span class="number">-20</span>,</span><br><span class="line">          reuseExistingChunk: <span class="literal">true</span>,</span><br><span class="line">          name: <span class="string">'utils'</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打包后，得到：</p>
+<img src="/2018/06/09/webpack-split-chunks/splitchunk3-name.png" title="分离打包文件合并并重命名">
+<p>这样不仅合并了所有来自 <code>node_modules</code> 的第三方库，还自定义了打包后的文件名称。它们的内容分别为：</p>
+<ul>
+<li>lib.min.js：jQuery、Lodash、React、React-dom 的源码 （由于包含的库都比较大，所有直接黄色了！！）</li>
+<li>utils.min.js：utils 的源码</li>
+<li>app1.min.js：app1.js 的业务代码</li>
+<li>app2.min.js：app2.js 的业务代码</li>
+<li>app3.min.js：app3.js 的业务代码</li>
+</ul>
+<p>如果你嫌打包后的业务文件大，还可以结合 <code>optimization.runtimeChunk</code>。它可以提取 entry chunk 中的 runtime函数部分，生成一个单独的文件:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  optimization: &#123;</span><br><span class="line">    splitChunks: &#123;</span><br><span class="line">      ...</span><br><span class="line">    &#125;,</span><br><span class="line">    runtimeChunk: &#123;</span><br><span class="line">      name: <span class="string">'manifest'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<img src="/2018/06/09/webpack-split-chunks/optimization-runtimechunk.png" title="runtimechunk">
+<p>可以看到，打包后的业务文件（app1、app2、app3）体积都变小了。</p>
+<p>另外， <code>cacheGroups</code> 中还有一个关于优先级 <code>priority</code> 的属性，由于一个模块可以被分配到多个缓存组中，优化策略会将模块分配至跟高优先级别的缓存组，这对于将这个模块分离到更大体积的js文件，减少请求数特别有用。</p>
+<p>最后，需要说明的是，<code>test</code>、<code>priorty</code> 和 <code>reuseExistingChunk</code> 只能用于配置缓存组。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

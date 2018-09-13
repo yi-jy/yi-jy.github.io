@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="历史记录与 HTML5 history | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="history.pushState  HTML5 history  onhashchange  window.onpopstate">
+  
+
+  
+
+  <title>历史记录与 HTML5 history | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">历史记录与 HTML5 history</h1>
+
+  <time class="post-time">2014-08-30</time>
+
+  <div class="post-content">
+    
+<p>我们知道，在javascript中history作为BOM的一部分提供了浏览器的历史记录。我们可以通过方法history.back()返回上一页，history.forward()前进一页，history.go()跳转到任何页。</p>
+<p>我们还知道，ajax可以不重载页面刷新网页局部，频繁的ajax操作让它有一个缺陷，即无法记录浏览器的历史记录，很自然我们就无法使用前进或后退键回到上一个操作的界面。像下面给出的例子，“ajax载入新闻列表”，当我们浏览了每页新闻，希望通过回到上一页，但是通过后退键是无法做到，这就是问题的所在，如何解决这个问题？</p>
+<a id="more"></a>
+<a href="/2014/08/30/h5-history/demo01.html" title="ajax载入新闻列表">ajax载入新闻列表</a>
+<p>关于网页的刷新，如果只是改变当前页面url的hash则并不会造成网页的刷新，比如我们经常使用锚点跳转到网页的固定位置。所以这将是解决问题的一个切入点，而ajax局部刷新页面频繁的操作并不会改变url的hash值，这时你需要onhashchange。</p>
+<h2 id="onhashchange"><a href="#onhashchange" class="headerlink" title="onhashchange"></a>onhashchange</h2><p>onhashchange这个方法主要检测url的hash，一旦hash发生改变则会触发这个事件，虽然它只能兼容到ie8。对于低版本的ie，则可以采用轮询检测url的hash值然后做相应处理。</p>
+<p>当我们切换页面链接，可以设置一个变量，然后将其作为一个对象的属性每次去存储当前页面变化区域的内容。当我们使用后退或前进键时，则url会切换到对应的hash值，hash的变化触发onhashchange这个事件，最后我们只需根据hash值获取之前对象存储的对应属性值即可。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span>  $box = $(<span class="string">".box"</span>), <span class="comment">// 变化内容容器</span></span><br><span class="line">　　　$page = $(<span class="string">".page"</span>),</span><br><span class="line">     $pageA = $(<span class="string">".page a"</span>),</span><br><span class="line">　　　iNum　＝　<span class="number">0</span>,</span><br><span class="line">　　  tempCon = &#123;&#125;;	</span><br><span class="line">$pageA.on(<span class="string">"click"</span>,$page,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> index = $pageA.index($(<span class="keyword">this</span>));</span><br><span class="line">　　　　　<span class="comment">// num 为page值</span></span><br><span class="line">　　　　　iNum = num == <span class="number">0</span>? <span class="number">0</span> : <span class="number">3</span>*num;</span><br><span class="line">　　　　 <span class="comment">// 存hash值对应的数据</span></span><br><span class="line">	tempCon[iNum/<span class="number">3</span>+<span class="number">1</span>] = $box.html();</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;)</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment">// hash发生改变，读取相应的数据</span></span><br><span class="line"><span class="built_in">window</span>.location.hash = iNum/<span class="number">3</span>+<span class="number">1</span>;</span><br><span class="line">$(<span class="built_in">window</span>).bind(<span class="string">"hashchange"</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	$box.html(tempCon[<span class="built_in">window</span>.location.hash.substring(<span class="number">1</span>)]);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<a href="/2014/08/30/h5-history/demo02.html" title="ajax载入新闻列表–onhashchange">ajax载入新闻列表–onhashchange</a>
+<h2 id="HTML5-history"><a href="#HTML5-history" class="headerlink" title="HTML5  history"></a>HTML5  history</h2><p>除了onhashchange，在html5中还定义url历史记录的api–history，简单介绍它的三个方法：</p>
+<p><strong>一、history.pushState(data, title, para)</strong></p>
+<p>这个方法主要是用户操作时，将数据存入history对象中。它有三个参数，第一个为存入history里的数据内容，第二个为新页面的标题，但测试时浏览器们都无效，因此默认填写空字符，第三个可以传入一个字符串，表示切换网页内容时url是否显示参数，如果你不想在url显示参数，则可以省略此参数。</p>
+<p><strong>二、replaceState(data, title, url)</strong></p>
+<p>此函数的操作与pushState类似，唯一的区别最后一个参数，作用为替换当前的历史记录。</p>
+<p><strong>三、window.onpopstate</strong></p>
+<p>当用户操作后退或者前进键时，会触发onpopstate事件，然后我们可以通过history.state获取对应的页面信息，方法与onhashchange类似。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> $box = $(<span class="string">".box"</span>), <span class="comment">// 变化内容容器</span></span><br><span class="line">	$page = $(<span class="string">".page"</span>),</span><br><span class="line">	$pageA = $(<span class="string">".page a"</span>);	</span><br><span class="line">$pageA.on(<span class="string">"click"</span>,$page,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> index = $pageA.index($(<span class="keyword">this</span>));</span><br><span class="line">	<span class="comment">// 存数据</span></span><br><span class="line">	history.pushState($box.html(),<span class="string">''</span>,index);</span><br><span class="line">	dataChange(index);</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;)</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读数据</span></span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">"popstate"</span>,<span class="function"><span class="keyword">function</span>(<span class="params">ev</span>)</span>&#123;</span><br><span class="line">	$box.html(ev.state);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>要注意的是，若是本地文件，html5的history api必须运行本地服务器上，并且以上操作都要在同域的情况下。而相关页面数据的改变，不仅仅针对ajax，这种技术也可以使用在用户单纯的界面操作。</p>
+<a href="/2014/08/30/h5-history/demo03.html" title="ajax载入新闻列表–html5-history">ajax载入新闻列表–html5-history</a>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

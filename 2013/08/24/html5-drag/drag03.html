@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+body{font-size:12px;}
+#drag_box{float:left;width:100px;height:100px;-moz-user-select:none;}
+#drag_box li{line-height:30px;list-style:none;}
+#target_box{width:86px;height:128px;margin-left:150px;background:url(ashcan-close.png);}
+#target_des{display:block;padding-top:150px;color:red;}
+</style>
+</head>
+
+<body>
+<audio src="Windows-Recycle.wav" id="audio"></audio>
+<h2>元素拖放，删除数据 ---dataTransfer</h2>
+<ul id="drag_box" onselectstart="return false;">
+    <li draggable="true">111</li>
+    <li draggable="true">222</li>
+    <li draggable="true">333</li>
+    <li draggable="true">444</li>
+    <li draggable="true">555</li>
+</ul>
+<div id="target_box"><span id="target_des">动作描述</span></div>
+</body>
+</html>
+
+<script type="text/javascript">
+(function(){
+    function $(id){
+        return document.getElementById(id);
+    }
+    var oDrag=$("drag_box"),
+		oTarget=$("target_box"),
+		oDes=$("target_des"),
+		aLi=oDrag.getElementsByTagName("li"),
+		removeEle=null,
+		oImg=document.createElement("img"),
+		audio=$("audio");
+
+    oImg.src="mail.gif";
+
+    for(var i=0;i<aLi.length;i++){
+        aLi[i].ondragstart=function(ev){
+			this.style.background="#F60";
+			this.style.color="#fff";
+			ev.dataTransfer.effectAllowed="move";
+			ev.dataTransfer.setData("Text",ev.target.id);
+			removeEle=ev.target;
+			if(navigator.userAgent.toLowerCase().indexOf("msie")==-1){
+                ev.dataTransfer.setDragImage(oImg,0,0);   // ie 不支持 , 类似 css中的 cursor:url(../big.cur),auto;
+            }
+        }
+		aLi[i].ondragend=function(){
+			this.style.background="";
+			this.style.color="";
+		}
+    }
+
+    oTarget.ondragenter=function(){
+        this.style.background="#fc0";
+		oDes.innerHTML="进入了目标元素";
+		oTarget.style.background="url(ashcan-open.png)";
+    }
+
+    oTarget.ondragover=function(ev){
+		ev.dataTransfer.effectAllowed = "all";
+        ev.preventDefault(); //在这个过程一定，要加阻止默认事件，否则不能触发drop
+    }
+
+	 oTarget.ondragleave=function(){
+        oTarget.style.background="url(ashcan-close.png)";
+    }
+
+    oTarget.ondrop=function(ev){
+		oTarget.style.background="url(ashcan-close.png)";
+        oDes.innerHTML="元素已被删除！";
+        oDrag.removeChild(removeEle);
+		audio.play();
+		ev.preventDefault(); // 阻止firefox打开新链接
+    }
+})();
+</script>

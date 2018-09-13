@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="css混合模式之background-blend-mode | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="background-blend-mode">
+  
+
+  
+
+  <title>css混合模式之background-blend-mode | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">css混合模式之background-blend-mode</h1>
+
+  <time class="post-time">2015-02-27</time>
+
+  <div class="post-content">
+    <p>我们在对图片进行色彩处理时，通常会用ps里的蒙版加色彩模式（如图），我们可以通过下拉去选择不同的模式种类，从而形成一张图片的不同效果。而如今随着css3的发展，这种只有在软件中的色彩模式也被应用到了css3的属性中，即background-blend-mode。</p>
+<a id="more"></a>
+<img src="/2015/02/27/css-background-blend-mode/ps-blend-mode.jpg" title="ps-blend-mode">
+<p>不如，先来看下demo： <a href="/2015/02/27/css-background-blend-mode/demo.html" title="background-blend-mode的演示">background-blend-mode的演示</a>。你可以在底部切换不同的背景色来查看之间的差异。</p>
+<h2 id="定义与用法"><a href="#定义与用法" class="headerlink" title="定义与用法"></a>定义与用法</h2><p>从字面上理解，我们可以知道background-blend-mode就是背景混合模式。我们在给元素设置背景后，按如下添加颜色模式：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">background-blend-mode: value;</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，倘若你只给元素添加背景图，而没有加背景色的话，即便你设置了background-blend-mode，也不会看到有任何变化。毕竟它是背景图与背景色的混合作用 ，不同的背景色，会产生不同的效果，当然采用多背景也可以看到效果。</p>
+<p>value的取值有16种，因此在文章开头的demo中，我们才看到图片不同模式下的效果。这16种模式分别是：normal、multiply、screen、overlay、darken、lighten、color-dodge、color-burn、hard-light、soft-light、difference、exclusion、hue、saturation、color、luminosity。下表列出了各模式的信息：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>normal</td>
+<td>正常模式</td>
+</tr>
+<tr>
+<td>multiply</td>
+<td>正片叠底模式</td>
+</tr>
+<tr>
+<td>screen</td>
+<td>屏幕模式/滤色</td>
+</tr>
+<tr>
+<td>overlay</td>
+<td>叠加模式</td>
+</tr>
+<tr>
+<td>darken</td>
+<td>变暗模式</td>
+</tr>
+<tr>
+<td>lighten</td>
+<td>变亮模式</td>
+</tr>
+<tr>
+<td>color-dodge</td>
+<td>颜色减淡</td>
+</tr>
+<tr>
+<td>color-burn</td>
+<td>颜色加深</td>
+</tr>
+<tr>
+<td>hard-light</td>
+<td>强光模式</td>
+</tr>
+<tr>
+<td>soft-light</td>
+<td>柔光模式</td>
+</tr>
+<tr>
+<td>difference</td>
+<td>差值/差异模式</td>
+</tr>
+<tr>
+<td>exclusion</td>
+<td>排除模式</td>
+</tr>
+<tr>
+<td>hue</td>
+<td>色相/色调模式</td>
+</tr>
+<tr>
+<td>saturation</td>
+<td>饱和度模式</td>
+</tr>
+<tr>
+<td>color</td>
+<td>颜色模式</td>
+</tr>
+<tr>
+<td>luminosity</td>
+<td>亮度/明度模式</td>
+</tr>
+</tbody>
+</table>
+<h2 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h2><p>因为background-blend-modecss3属于css3的新特性，自然支持它的都是现代浏览器，尽管如此，但作为一个知识储备还是不错的。其兼容性具体可查看caniuse，<a href="http://caniuse.com/#search=css-backgroundblendmode" target="_blank" rel="noopener">http://caniuse.com/#search=css-backgroundblendmode</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

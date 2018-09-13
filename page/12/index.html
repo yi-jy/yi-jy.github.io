@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="前端技术空间">
+  
+
+  
+  <meta name="keywords" content="前端技术，web开发，技术空间">
+  
+
+  
+
+  <title>前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="posts">
+  
+    <div class="post">
+
+  <h2 class="post-title"><a href="/2014/12/22/color-take/">做一个调色板</a></h2>
+
+  <time class="post-time">2014-12-22</time>
+
+  <div class="post-content">
+    
+        <p>或者你和我一样，一开始对于如何去做一个调色板毫无思路。尤其在看到网上以及工具中各种形形色色的调色板后，更加不知所措。其实说到调色板，在html5中已经新增了获取颜色类型的文本框，即只需要一个 <code>&lt;input type=”color”/&gt;</code>，然后再获取input的值即可，你可以 <a href="http://www.yi-jy.com/documents/html5/new_input_type/color.html" target="_blank" rel="noopener">点此</a> 来更多的了解这个新增元素，由于是html5元素，因此只有chrome和firefox能支持。自然，这个颜色文本框不是本篇所讨论的内容。</p>
+        
+          <div class="post-more-link">
+            <a href="/2014/12/22/color-take/#more">全文»</a>
+          </div>
+        
+    
+  </div>
+
+  
+    <div class="post-tag">
+      <a class="tag-link" href="/tags/色板活/">色板活<span class="tag-count">1</span></a>
+    </div>
+  
+
+</div>
+  
+    <div class="post">
+
+  <h2 class="post-title"><a href="/2014/11/30/chrome-emulation/">chrome开发工具中emulation的详解</a></h2>
+
+  <time class="post-time">2014-11-30</time>
+
+  <div class="post-content">
+    
+        <p>对于web开发者来说，或许chrome开发工具并不陌生。编辑或copy html代码、修改或新增样式、又或者调试js代码，这些修改都能实时的在页面看到，这无疑是非常方便。但这些都不是本篇的重点，今天的主角是emulation，它也是开发工具中最重要的一项，主要是用于模拟手机浏览器页面的显示以及各种行为，随着chrome版本的不断升级，emulation也变得越来越健全，chrome39以后更是新增了标尺和快捷选项。emulation主要包含device、media、network和sensors四大项，以下介绍它们的详细用法：</p>
+        
+          <div class="post-more-link">
+            <a href="/2014/11/30/chrome-emulation/#more">全文»</a>
+          </div>
+        
+    
+  </div>
+
+  
+    <div class="post-tag">
+      <a class="tag-link" href="/tags/css-media/">css media<span class="tag-count">1</span></a>, <a class="tag-link" href="/tags/deviceorientation/">deviceorientation<span class="tag-count">1</span></a>, <a class="tag-link" href="/tags/emulation/">emulation<span class="tag-count">1</span></a>, <a class="tag-link" href="/tags/orientationchange/">orientationchange<span class="tag-count">1</span></a>
+    </div>
+  
+
+</div>
+  
+    <div class="post">
+
+  <h2 class="post-title"><a href="/2014/11/11/h5-battery/">电池API之H5 battery</a></h2>
+
+  <time class="post-time">2014-11-11</time>
+
+  <div class="post-content">
+    
+        <p>H5有很多不错的api，比如有关电池的api就是其中一个，它能实时反映设备当前电量。记得今年锤子手机发布会上，当时老罗说电池的工业技术完全没有跟上智能手机的发展，越来越大的屏幕，越来越丰富的手机应用，这些都是极其费电的。尽管现在的智能手机在电池电量显示或提示功能方面都做得不错了，但如果单从我们web技术来说，或许也能做点什么，其实可以把H5 battery当做在网页中显示设备电量的标志，我们可以根据H5 battery返回的不同状态对用户的行为作出提示，比如电量不足时，切换成省电的网页模式。</p>
+        
+          <div class="post-more-link">
+            <a href="/2014/11/11/h5-battery/#more">全文»</a>
+          </div>
+        
+    
+  </div>
+
+  
+    <div class="post-tag">
+      <a class="tag-link" href="/tags/HTML5-Battery/">HTML5 Battery<span class="tag-count">1</span></a>
+    </div>
+  
+
+</div>
+  
+    <div class="post">
+
+  <h2 class="post-title"><a href="/2014/10/31/modal-popup/">模态弹出框</a></h2>
+
+  <time class="post-time">2014-10-31</time>
+
+  <div class="post-content">
+    
+        <p>最近比较忙，私事公事都比较多，好久没上来。</p>
+<p>网厅改版时，遇到弹出框模块复用的问题，于是在此记录一番。为了良好的用户体验，所以我们经常用好的UI来模拟默认的alert，一般而言，一个网页有一两个弹出框很正常的，但也存在一个网页有多个弹出框的情况。那么问题来了，是用多个不同的弹出框以及多个半透明遮罩层，每一个独立起来呢，还是只用一个透明层，切换多种情况弹出框的隐藏。我们都知道，为了网站弹框的统一，因此很自然的采用同一样式。同一页面里，不同的弹出框的弹出，只是改变了 弹出框的标题 和 弹出框中间的内容，即图中的 弹出框标题（可变） 和 红色框里的三个或以上的黑色框 的显示和隐藏 。</p>
+        
+          <div class="post-more-link">
+            <a href="/2014/10/31/modal-popup/#more">全文»</a>
+          </div>
+        
+    
+  </div>
+
+  
+    <div class="post-tag">
+      <a class="tag-link" href="/tags/通用弹出框/">通用弹出框<span class="tag-count">1</span></a>
+    </div>
+  
+
+</div>
+  
+    <div class="post">
+
+  <h2 class="post-title"><a href="/2014/09/19/web-worker/">js多线程运行之web worker</a></h2>
+
+  <time class="post-time">2014-09-19</time>
+
+  <div class="post-content">
+    
+        <p>众所周知，Js是单线程运行的，也就是运行完前一个函数之后，才能运行后一个函数。犹如单行道的车辆，其实这是js的一个短板，同时也导致了运行阻塞。虽然有时候我们可以通过定时器来并向执行代码，但这并不能真正解决问题。</p>
+<p>在html5中有一个名为Web worker的api，它的产生就犹如人们发明了立交桥，使得js支持多线程运行。假设当前页面的代码为主线程，而创建Web worker则是为主线程开辟了另外一个新的子线程，因为是并行运行的，所以这个子线程不会阻塞主线程的执行。</p>
+        
+          <div class="post-more-link">
+            <a href="/2014/09/19/web-worker/#more">全文»</a>
+          </div>
+        
+    
+  </div>
+
+  
+    <div class="post-tag">
+      <a class="tag-link" href="/tags/web-worker/">web worker<span class="tag-count">1</span></a>, <a class="tag-link" href="/tags/多进程运行/">多进程运行<span class="tag-count">1</span></a>
+    </div>
+  
+
+</div>
+  
+</div>
+
+<div class="pagination">
+  <a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a>
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>
+

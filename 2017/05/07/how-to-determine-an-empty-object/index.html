@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="判断空对象的N种方法 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="空对象 Object.getOwnPropertyNames Object.keys JSON.stringify">
+  
+
+  
+
+  <title>判断空对象的N种方法 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">判断空对象的N种方法</h1>
+
+  <time class="post-time">2017-05-07</time>
+
+  <div class="post-content">
+    <p>有的时候，我们会在页面初始化时，定义一个空对象。当用户进行了某项操作，就给该对象添加对应的属性。最后，当用户完成一系列操作后，将该对象的数据提交给后台，然后作相应反馈。</p>
+<a id="more"></a>
+<p>但是，可能在提交时，用户可能并未作任何操作。为防止这种情况，我们得先判断该对象是否为空，再给出相应的逻辑处理。</p>
+<p>那么问题来了，如何判断一个空对象呢？据统计，有这么几种方法：</p>
+<h3 id="循环对象自身属性"><a href="#循环对象自身属性" class="headerlink" title="循环对象自身属性"></a>循环对象自身属性</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isEmptyObj</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> attr <span class="keyword">in</span> obj) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">isEmptyObj(&#123;&#125;); <span class="comment">// true</span></span><br><span class="line">isEmptyObj(&#123;<span class="attr">name</span>: <span class="string">'user1'</span>&#125;); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<p>这里通过遍历一个对象的属性，若存在某个属性，则为非空对象。</p>
+<p>但是要知道，<code>for in</code> 只遍历可枚举属性（包括原型链上的），所以如果对象的属性是通过 <code>Object.defineProperty</code> 方法来添加的，可能会不准确，因为该方法添加的属性，默认是不可枚举的。</p>
+<p>但本文所讲的给对象添加的属性，都是通过 <code>obj.attr = value</code> 这种形式。</p>
+<h3 id="Object-getOwnPropertyNames"><a href="#Object-getOwnPropertyNames" class="headerlink" title="Object.getOwnPropertyNames"></a>Object.getOwnPropertyNames</h3><p><code>Object.getOwnPropertyNames()</code> 方法返回一个由指定对象的所有自身属性的属性名组成的数组。</p>
+<p>这些属性包含不可枚举属性，但是不包含原型链的属性。</p>
+<p>进而，我们可以用它来判断其对应的数组长度：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isEmptyObj</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Object</span>.getOwnPropertyNames(obj).length === <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">isEmptyObj(&#123;&#125;); <span class="comment">// true</span></span><br><span class="line">isEmptyObj(&#123;<span class="attr">name</span>: <span class="string">'user1'</span>&#125;); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<h3 id="Object-keys"><a href="#Object-keys" class="headerlink" title="Object.keys"></a>Object.keys</h3><p><code>Object.keys()</code> 方法会返回一个指定对象的自身可枚举属性组成的数组。</p>
+<p>这些属性包含自身属性，但不包含原型链的属性。</p>
+<p>因此，我们也可以用它生成数组的长度来判断：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isEmptyObj</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Object</span>.keys(obj).length === <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">isEmptyObj(&#123;&#125;); <span class="comment">// true</span></span><br><span class="line">isEmptyObj(&#123;<span class="attr">name</span>: <span class="string">'user1'</span>&#125;); <span class="comment">// false</span></span><br><span class="line"><span class="string">`</span></span><br></pre></td></tr></table></figure>
+<h3 id="JSON-stringify"><a href="#JSON-stringify" class="headerlink" title="JSON.stringify"></a>JSON.stringify</h3><p>由于一开始我们给定的是空对象 <code>{}</code>，倘若未在该对象上添加任何属性，那么以下方法也可用于判断：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isEmptyObj</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">JSON</span>.stringify(obj) === <span class="string">'&#123;&#125;'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">isEmptyObj(&#123;&#125;); <span class="comment">// true</span></span><br><span class="line">isEmptyObj(&#123;<span class="attr">name</span>: <span class="string">'user1'</span>&#125;); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<h3 id="isEmptyObject"><a href="#isEmptyObject" class="headerlink" title="$.isEmptyObject"></a>$.isEmptyObject</h3><p>如果你的项目引入了 jQuery，那么你可以使用它现成的方法，<code>$.isEmptyObject</code>:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$.isEmptyObject(&#123;&#125;) <span class="comment">// true</span></span><br><span class="line">$.isEmptyObject(&#123;<span class="attr">name</span>: <span class="string">'user1'</span>&#125;) <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<h3 id="isEmpty"><a href="#isEmpty" class="headerlink" title="_.isEmpty"></a>_.isEmpty</h3><p>如果你的项目引入了 Underscore，那么你也可以使用它现成的方法，<code>_.isEmpty</code>:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">_.isEmpty(&#123;&#125;) <span class="comment">// true</span></span><br><span class="line">_.isEmpty(&#123;<span class="attr">name</span>: <span class="string">'user1'</span>&#125;) <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

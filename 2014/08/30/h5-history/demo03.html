@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+  *{margin:0;padding:0;}
+  .box{width:358px;margin:30px auto;font-size:12px;line-height:20px;}
+  .page{padding:15px 0;}
+  .page a{border:1px solid #666;margin-right:10px;padding:3px 5px;text-decoration:none;color:#333;line-height:22px;overflow: hidden;}
+  .page .cur{border:none;font-weight:bold;color:red;}
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <div class="news">
+    <ul></ul>
+  </div>
+
+  <div class="page"></div>
+
+</div>
+
+</body>
+</html>
+<script src="http://www.yi-jy.com/js/jquery-1.8.0.min.js"></script>
+<script>
+  $(function(){
+    var $box = $(".box"),
+      $newsUl = $(".news ul"),
+      $page = $(".page"),
+      iNum = 0 ,
+      tempLi = "";
+
+    function dataChange(num){
+      $newsUl.html("");
+      iNum = num == 0? 0 : 3*num;
+      $.getJSON("data.js",function(data){
+        var len = data.size,
+          tempPage = "";
+        for(var i=0 ; i<(len/3) ; i++){
+          if(i==num){
+            tempPage +="<a class='cur' href='javascript:;'>"+(i+1)+"</a>";
+          }
+          else{
+            tempPage +="<a href='javascript:;'>"+(i+1)+"</a>";
+          }
+        }
+        $page.html(tempPage);
+
+        var $pageA = $(".page a");
+        $pageA.on("click",$page,function(){
+          var index = $pageA.index($(this));
+          tempLi = "";
+          dataChange(index);
+          return false;
+        })
+
+        $.each(data.newsTit,function(index,item){
+          if(index>=iNum && index<=(num+1)*3-1){
+            tempLi +="<li>"+item.title+"</li>";
+          }
+          if(index==(num+1)*3-1){
+            $newsUl.html(tempLi);
+            return false;
+          }
+        })
+
+        // history.pushState存数据
+        history.pushState($box.html(),'',"?page="+(num+1));
+      })
+
+      // history.state读数据
+      window.addEventListener("popstate",function(ev){
+        $box.html(ev.state);
+        var $pageA = $(".page a"),
+          $newsUl = $(".news ul");
+        $pageA.on("click",$page,function(){
+          var b = $pageA.index($(this));
+          tempLi = "";
+          $newsUl.html("");
+          $(this).addClass("cur").siblings().removeClass();
+          $.getJSON("data.js",function(data){
+            $.each(data.newsTit,function(index,item){
+              if(index>=(b == 0? 0 : 3*b) && index<=(b+1)*3-1){
+                tempLi +="<li>"+item.title+"</li>";
+              }
+              if(index==(b+1)*3-1){
+                $newsUl.html(tempLi);
+                history.pushState($box.html(),'',"?page="+(b+1));
+                return false;
+              }
+            })
+          })
+
+          return false;
+        })
+      })
+    }
+
+    dataChange(0);
+  })
+</script>

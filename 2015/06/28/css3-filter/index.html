@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="css3 里的图片滤镜 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css3 filter 图片滤镜">
+  
+
+  
+
+  <title>css3 里的图片滤镜 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">css3 里的图片滤镜</h1>
+
+  <time class="post-time">2015-06-28</time>
+
+  <div class="post-content">
+    
+<p>css3中filter俗称滤镜效果。它可以调整元素的色调（灰化、亮化、对比度、饱和度）、也能使元素产生模糊和反相的等效果。通常，我们使用filter的各种功能函数来处理图片，如果你将它应用于html页面，也会获得不一般的效果。这个特性支持最新版的chrome和firefox，接下来，我们来介绍filter下的八种功能：</p>
+<a id="more"></a>
+<h2 id="hue-rotate-色调"><a href="#hue-rotate-色调" class="headerlink" title="hue-rotate 色调"></a>hue-rotate 色调</h2><p>hue-rotate 色调 -webkit-filter: hue-rotate(50deg); 取值为 0 – 360（可为负数），默认值为0，即没有任何效果。当值大于360，或者小于0时，会重复 0 – 360所产生的效果，即如同transform 中 rotate的取值效果。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">-webkit-filter</span>: <span class="selector-tag">hue-rotate</span>(50<span class="selector-tag">deg</span>);</span><br><span class="line"><span class="selector-tag">filter</span>: <span class="selector-tag">hue-rotate</span>(50<span class="selector-tag">deg</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/2015/06/28/css3-filter/test.jpg" alt="" class="img hue-rotate" data-filter="hue-rotate"></p>
+<p><input type="range" value="50" min="0" max="360" step="10" id="hue-rotate"> <span id="hue-rotate-value">50deg</span></p>
+<h2 id="blur-模糊"><a href="#blur-模糊" class="headerlink" title="blur 模糊"></a>blur 模糊</h2><p>取值为 0 – 某个数值，默认值为0，不模糊。随着模糊半径的增大，而逐渐模糊</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">-webkit-filter</span>: <span class="selector-tag">blur</span>(1<span class="selector-tag">px</span>);</span><br><span class="line"><span class="selector-tag">filter</span>: <span class="selector-tag">blur</span>(1<span class="selector-tag">px</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="/2015/06/28/css3-filter/test.jpg" alt="" class="img blur" data-filter="blur"></p>
+<p><input type="range" value="1" min="0" max="10" step="1" id="blur"> <span id="blur-value">1px</span></p>
+<h2 id="grayscale-灰化"><a href="#grayscale-灰化" class="headerlink" title="grayscale 灰化"></a>grayscale 灰化</h2><p>取值为 0 – 100%，默认值为0。将图片灰化</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">-webkit-filter</span>: <span class="selector-tag">grayscale</span>(70%);</span><br><span class="line"><span class="selector-tag">filter</span>: <span class="selector-tag">grayscale</span>(70%);</span><br></pre></td></tr></table></figure>
+<p><img src="/2015/06/28/css3-filter/test.jpg" alt="" class="img grayscale" data-filter="grayscale"></p>
+<p><input type="range" value="70" min="0" max="100" step="10" id="grayscale"> <span id="grayscale-value">70%</span></p>
+<h2 id="sepia-怀旧"><a href="#sepia-怀旧" class="headerlink" title="sepia 怀旧"></a>sepia 怀旧</h2><p>取值为 0 – 100%，默认值为0 。使图片带有旧旧的（淡黄色）感觉</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">-webkit-filter</span>: <span class="selector-tag">sepia</span>(60%);</span><br><span class="line"><span class="selector-tag">filter</span>: <span class="selector-tag">sepia</span>(60%);</span><br></pre></td></tr></table></figure>
+<p><img src="/2015/06/28/css3-filter/test.jpg" alt="" class="img sepia" data-filter="sepia"></p>
+<p><input type="range" value="60" min="0" max="100" step="10" id="sepia"> <span id="sepia-value">60%</span></p>
+<h2 id="brightness-亮度"><a href="#brightness-亮度" class="headerlink" title="brightness 亮度"></a>brightness 亮度</h2><p>取值为 0 – 100% ，默认值为100%，即没有对图片做任何处理，当为0时，则整个图片变为黑色。在此之前，要实现图片半透明，通常的做法是在图片上覆盖一个半透明的层！现在却可以轻而易的实现：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">-webkit-filter</span>: <span class="selector-tag">brightness</span>(50%);</span><br><span class="line"><span class="selector-tag">filter</span>: <span class="selector-tag">brightness</span>(50%);</span><br></pre></td></tr></table></figure>
+<p><img src="/2015/06/28/css3-filter/test.jpg" alt="" class="img brightness" data-filter="brightness"></p>
+<p><input type="range" value="50" min="0" max="100" step="10" id="brightness"> <span id="brightness-value">50%</span></p>
+<h2 id="contrast-对比度"><a href="#contrast-对比度" class="headerlink" title="contrast 对比度"></a>contrast 对比度</h2><p>取值为0 – 某个百分比，默认值为100%，即没有对图片做任何处理。值得注意的是，contrast的值不仅可以是百分之，也可以是非负整数，其中取值为1图像无任何变化。据测试，百分比到500%左右就没有什么太大变化了</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">-webkit-filter</span>: <span class="selector-tag">contrast</span>(300%);</span><br><span class="line"><span class="selector-tag">filter</span>: <span class="selector-tag">contrast</span>(300%); </span><br><span class="line">// 或者 </span><br><span class="line"><span class="selector-tag">-webkit-filter</span>: <span class="selector-tag">contrast</span>(3);</span><br><span class="line"><span class="selector-tag">filter</span>: <span class="selector-tag">contrast</span>(3);</span><br></pre></td></tr></table></figure>
+<p><img src="/2015/06/28/css3-filter/test.jpg" alt="" class="img contrast" data-filter="contrast"></p>
+<p><input type="range" value="3" min="0" max="10" step="1" id="contrast"> <span id="contrast-value">3</span></p>
+<h2 id="saturate-饱和度"><a href="#saturate-饱和度" class="headerlink" title="saturate 饱和度"></a>saturate 饱和度</h2><p>取值为 0 – 100% ，默认值为100%，即没有对图片做任何处理</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">-webkit-filter</span>: <span class="selector-tag">saturate</span>(30%);</span><br><span class="line"><span class="selector-tag">filter</span>: <span class="selector-tag">saturate</span>(30%);</span><br></pre></td></tr></table></figure>
+<p><img src="/2015/06/28/css3-filter/test.jpg" alt="" class="img saturate" data-filter="saturate"></p>
+<p><input type="range" value="30" min="0" max="100" step="10" id="saturate"> <span id="saturate-value">30%</span></p>
+<h2 id="invert-反相"><a href="#invert-反相" class="headerlink" title="invert 反相"></a>invert 反相</h2><p>取值为 0 – 100% ，默认值为0，即图片无任何效果。值为50%时，图片为纯灰色。当大于50%时，则图片的色调逐渐过度到反色</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">-webkit-filter</span>: <span class="selector-tag">invert</span>(70%);</span><br><span class="line"><span class="selector-tag">filter</span>: <span class="selector-tag">invert</span>(70%);</span><br></pre></td></tr></table></figure>
+<p><img src="/2015/06/28/css3-filter/test.jpg" alt="" class="img invert" data-filter="invert"></p>
+<p><input type="range" value="70" min="0" max="100" step="10" id="invert"> <span id="invert-value">70%</span></p>
+<style type="text/css">
+.hue-rotate{-webkit-filter: hue-rotate(50deg);filter: hue-rotate(50deg);}
+.blur{-webkit-filter: blur(1px);filter: blur(1px);}
+.grayscale{-webkit-filter: grayscale(70%);filter: grayscale(70%);}
+.sepia{-webkit-filter: sepia(60%);filter: sepia(60%);}
+.brightness{-webkit-filter: brightness(50%);filter: brightness(50%);}
+.contrast{-webkit-filter: contrast(3);filter: contrast(3);}
+.saturate{-webkit-filter: saturate(30%);filter: saturate(30%);}
+.invert{-webkit-filter: invert(70%);filter: invert(70%);}
+</style>
+
+<script>
+;~function(){
+    var filterImg = document.querySelectorAll(".img"),
+        filterInput = document.getElementsByTagName("input");
+    for(var i = 0 ; i < filterInput.length ; i++){
+        filterInput[i].addEventListener( "change" , function(){
+            var thisId = this.id,
+                thisVal = this.value;
+             for(var j = 0 ; j < filterImg.length ; j++){
+                var dataFilter = filterImg[j].getAttribute("data-filter");
+                if(dataFilter === thisId){
+                    if(thisId === "hue-rotate"){
+                        setStyleAndInfo(filterImg[j] , thisId , thisVal ,"deg");
+                    }
+                    else if(thisId === "blur"){
+                        setStyleAndInfo(filterImg[j] , thisId , thisVal ,"px");
+                    }
+                    else if(thisId === "contrast"){
+                        setStyleAndInfo(filterImg[j] , thisId , thisVal ,"");
+                    }
+                    else{
+                        setStyleAndInfo(filterImg[j] , thisId , thisVal ,"%");
+                    }
+                }
+             }
+        } , false );
+    }
+    function setStyleAndInfo(obj , filterStyle , filterVal , unit){
+        obj.style["-webkit-filter"] = filterStyle + "(" + filterVal + unit + ")";
+        obj.style["filter"] = filterStyle + "(" + filterVal + unit + ")";
+        document.getElementById(filterStyle+"-value").innerHTML = filterVal + unit ;
+    }
+}();  
+</script>
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

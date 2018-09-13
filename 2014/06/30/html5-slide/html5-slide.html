@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>html5 slide 幻灯片</title>
+  <style type="text/css">
+  *{margin:0;padding:0;}
+  html,body{position:relative;height:100%;}
+  .container{position: relative;width:800px;height:500px;margin:0 auto;-webkit-perspective: 1000px;
+  perspective: 1000px;}
+  .page-box{width:100%;height:100%;-webkit-transform-style:preserve-3d;transform-style:preserve-3d;}
+  .page-part{position: absolute;left:0;top:70px;display:block;width:100%;height:100%;font-family: "microsoft yahei";border-radius: 20px;color:#333;background:#ddd;opacity:0;box-shadow:10px 10px 20px #ccc;-webkit-transition:1s all;transition:1s all;
+    transform-style:preserve-3d;
+    -webkit-transform: translate3d(50%, 0, 0) rotateY(60deg) scale(0.5);
+      transform: translate3d(50%, 0, 0) rotateY(60deg) scale(0.5);
+      z-index:1;
+  }
+  .page-part-tit{padding:100px 0 50px;text-align:center;font-size:22px;}
+  .page-part-con{padding-left:30px;padding-right:30px;line-height:26px;}
+  .page-part-cur{opacity:1;
+    -webkit-transform: translate3d(0, 0, 0) rotateY(0) scale(1);
+      transform: translate3d(0, 0, 0) rotateY(0) scale(1);
+      z-index:3;
+  }
+  .page-part-prev{
+    -webkit-transform: translate3d(-50%, 0, 0) rotateY(-60deg) scale(0.5);
+      transform: translate3d(-50%, 0, 0) rotateY(-60deg) scale(0.5);
+  }
+  .page-part-next{
+    -webkit-transform: translate3d(50%, 0, 0) rotateY(60deg) scale(0.5);
+      transform: translate3d(50%, 0, 0) rotateY(60deg) scale(0.5);
+  }
+  .guide{position:absolute;right:30px;bottom:10px;width:84px;}
+  .guide span,.guide em{float:left;width:33.33333%;line-height:20px;text-align:center;background:#fff;}
+  .guide span{font-size:16px;}
+  .guide em{font-size:12px;color:#888;font-style:normal;}
+  </style>
+
+</head>
+<body>
+  <!--[if IE]>
+  <script type="text/javascript">
+  (function(a,b){function h(a,b){var c=a.createElement("p"),d=a.getElementsByTagName("head")[0]||a.documentElement;return c.innerHTML="x<style>"+b+"</style>",d.insertBefore(c.lastChild,d.firstChild)}function i(){var a=l.elements;return typeof a=="string"?a.split(" "):a}function j(a){var b={},c=a.createElement,f=a.createDocumentFragment,g=f();a.createElement=function(a){if(!l.shivMethods)return c(a);var f;return b[a]?f=b[a].cloneNode():e.test(a)?f=(b[a]=c(a)).cloneNode():f=c(a),f.canHaveChildren&&!d.test(a)?g.appendChild(f):f},a.createDocumentFragment=Function("h,f","return function(){var n=f.cloneNode(),c=n.createElement;h.shivMethods&&("+i().join().replace(/\w+/g,function(a){return c(a),g.createElement(a),'c("'+a+'")'})+");return n}")(l,g)}function k(a){var b;return a.documentShived?a:(l.shivCSS&&!f&&(b=!!h(a,"article,aside,details,figcaption,figure,footer,header,hgroup,nav,section{display:block}audio{display:none}canvas,video{display:inline-block;*display:inline;*zoom:1}[hidden]{display:none}audio[controls]{display:inline-block;*display:inline;*zoom:1}mark{background:#FF0;color:#000}")),g||(b=!j(a)),b&&(a.documentShived=b),a)}var c=a.html5||{},d=/^<|^(?:button|form|map|select|textarea|object|iframe|option|optgroup)$/i,e=/^<|^(?:a|b|button|code|div|fieldset|form|h1|h2|h3|h4|h5|h6|i|iframe|img|input|label|li|link|ol|option|p|param|q|script|select|span|strong|style|table|tbody|td|textarea|tfoot|th|thead|tr|ul)$/i,f,g;(function(){var c=b.createElement("a");c.innerHTML="<xyz></xyz>",f="hidden"in c,f&&typeof injectElementWithStyles=="function"&&injectElementWithStyles("#modernizr{}",function(b){b.hidden=!0,f=(a.getComputedStyle?getComputedStyle(b,null):b.currentStyle).display=="none"}),g=c.childNodes.length==1||function(){try{b.createElement("a")}catch(a){return!0}var c=b.createDocumentFragment();return typeof c.cloneNode=="undefined"||typeof c.createDocumentFragment=="undefined"||typeof c.createElement=="undefined"}()})();var l={elements:c.elements||"abbr article aside audio bdi canvas data datalist details figcaption figure footer header hgroup mark meter nav output progress section summary time video",shivCSS:c.shivCSS!==!1,shivMethods:c.shivMethods!==!1,type:"default",shivDocument:k};a.html5=l,k(b)})(this,document)
+  </script>
+  <![endif]-->
+  <div class="container">
+      <div class="page-box">
+            <section class="page-part">
+                <h2 class="page-part-tit">青衫磊落险峰行</h2>
+                <div class="page-part-con">
+                     青光闪动，一柄青钢剑倏地刺出，指向在年汉子左肩，使剑少年不等招用老，腕抖剑斜，剑锋已削向那汉子右颈。那中年汉子剑挡格，铮的一声响，双剑相击，嗡嗡作声，震声未绝，双剑剑光霍霍，已拆了三招，中年汉子长剑猛地击落，直砍少年顶门。
+                </div>
+            </section>
+
+            <section class="page-part">
+                <h2 class="page-part-tit">玉壁月华明</h2>
+                <div class="page-part-con">
+                     折腾了这久，月亮已渐到中天，段誉迳向西行，他虽不会武功，但年轻力壮，脚下也甚迅捷，走出十余里，已经到无量山峰的后山，只听得水声淙淙，前面有条山溪。他正感口渴，寻声来到溪旁，月光下溪水清澈异常，刚伸手入溪，忽听得远处地下枯枝格的一响，跟着有两人的脚步之声，段誉忙俯伏溪边，不敢稍动。
+                </div>
+            </section>
+
+            <section class="page-part">
+                <h2 class="page-part-tit">马疾香幽</h2>
+                <div class="page-part-con">
+                     段誉回过头来，只见一个身穿家人服色的汉子快步走来，便是先前隔着板壁所见的来福儿。他走到近处，行了一礼，道：“小人来福儿，奉夫人之命陪公子去借马。”段誉点头道：“甚好。有劳管家了。”
+                </div>
+            </section>
+
+            <section class="page-part">
+                <h2 class="page-part-tit">崖高人远</h2>
+                <div class="page-part-con">
+                     奔出数里，黑玫瑰走上了一条长岭，山岭渐见崎岖，黑玫瑰行得更加慢了，背后呐喊声隐隐传来。段誉叫道：“黑玫瑰啊，今日说什么也要辛苦你些，劳你驾跑得快一点儿吧！”又行里许，回头望见刀光闪烁，追兵渐近。木婉清不住催喝：“快，快！”
+                </div>
+            </section>
+
+            <section class="page-part">
+                <h2 class="page-part-tit">微步毂纹生</h2>
+                <div class="page-part-con">
+                     天色一明，倒为她解开了难题，反正逃不走的了，“这负心郎来也罢，不来也罢，我在这里等死便是。”正想到凄苦处，忽听得拍的一声，数十丈外从空落下一物，跌入了草丛。木婉清心想：“那是什么？”当即伏下，听草丛中再无声响发出，悄悄爬将过去，要瞧个究竟。
+                </div>
+            </section>
+
+            <section class="page-part">
+                <h2 class="page-part-tit">谁家子弟谁家院</h2>
+                <div class="page-part-con">
+                     段誉将木婉清搂在怀里，又是欢喜，又是关心，只问：“木，你伤处好些了么？那恶人没欺侮你吧？”木婉清嗔道：“我是你什么人？还是木姑娘、木姑娘的叫我。”
+                </div>
+            </section>
+
+            <section class="page-part">
+                <h2 class="page-part-tit">无计悔多情</h2>
+                <div class="page-part-con">
+                     段正淳等回到府中，内堂张宴。一桌筵席除段正淳夫妇和段誉之外，便是木婉清一人，在旁侍候的宫婢倒有十七八人。木婉清一生之中，又怎见过如此荣华富贵的气象？每一道菜都是见所未见，闻所未闻。她见镇南王夫妇将自己视人，俨然是两代夫妇同席欢叙，自是芳心窃喜。
+                </div>
+            </section>
+
+            <section class="page-part">
+                <h2 class="page-part-tit">虎啸龙吟</h2>
+                <div class="page-part-con">
+                     镇南王府暖阁之中，善阐侯高升泰还报，钟万仇夫妇及秦红棉已离府远去。镇南王妃刀白凤挂念爱子，说道：“皇上，那万劫谷的所在，皇上可知道么？”保定帝段下明道：“万劫谷这名字，今日不是首次听见，但想来离大理不无。”刀白凤急道：“听那钟万仇之言，似乎这地方甚是隐秘，只怕不易寻找。誉儿若是在敌人手中久了……”保定帝微笑道：“誉儿娇生惯养，不知人间的险恶，让他多经历一此艰难，磨练磨练，于他也未始没有益处。”刀白凤心下甚是焦急，却已不敢多说。
+                </div>
+            </section>
+
+            <section class="page-part">
+                <h2 class="page-part-tit">换巢鸾凤</h2>
+                <div class="page-part-con">
+                     保定帝下旨免了盐税，大理国万民感恩。云南产盐不多，通国只白井、黑井、云龙等九井产盐，每年须向蜀中买盐，盐税甚重，边远贫民一年中往往有数月淡食。保定帝知道盐税一免，黄眉僧定要设法去救段誉以报。他素来佩服黄眉僧的机智武功，又知他两名弟子也是武功不弱，师徒三人齐出，当可。
+                </div>
+            </section>
+
+            <section class="page-part">
+                <h2 class="page-part-tit">剑气碧烟横</h2>
+                <div class="page-part-con">
+                     次日清晨，段正淳与妻、儿话别。听段誉说木婉清昨晚已随其母秦红棉而去，段正淳呆了半晌，叹了几口气，问起崔百泉、过彦之二人，却说早已首途北上。随即带同三公、四护卫到宫中向保定帝辞别，与慧真、慧观二僧向陆凉州而去。段誉送出东门十里方回。
+                </div>
+            </section>
+        </div>
+  </div>
+    <div class="guide">
+      <em class="page-up">PgUp</em>
+      <span class="up">↑</span>
+        <em class="page-down">PgDn</em>
+        <span class="left">←</span>
+        <span class="down">↓</span>
+        <span class="right">→</span>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript" src="http://www.yi-jy.com/demo/js/jquery-1.8.0.min.js"></script>
+<script type="text/javascript">
+  $(function() {
+    var $pagePart=$(".page-part"),
+      i=0,
+      $pagePartLen=$pagePart.size();
+    $pagePart.eq(0).addClass("page-part-cur");
+    $(document).bind("keydown",function(e) {
+      switch(e.keyCode){
+        case 37:case 38:
+        toPage(-1,true);
+        break;
+        case 39:case 40:
+        toPage(1,false);
+        break;
+        default:
+        return;
+      }
+    })
+
+    function toPage(iChange,bPrev) {
+      if((i==0&&bPrev)||(i==$pagePartLen-1&&!bPrev)){
+        return;
+      }
+      else{
+        if(bPrev){
+          $pagePart.eq(i).removeClass("page-part-cur").addClass("page-part-next");
+          $pagePart.eq(i-1).removeClass("page-part-prev").addClass("page-part-cur");
+        }
+        else{
+          $pagePart.eq(i).removeClass("page-part-cur").addClass("page-part-prev");
+          $pagePart.eq(i+1).removeClass("page-part-next").addClass("page-part-cur");
+        }
+        i+=iChange;
+        var thisUrl=location.href,
+          paraPos=thisUrl.indexOf("#");
+        var nowUrl=thisUrl.substring(0,paraPos);
+        location.href=nowUrl+"#"+(i+1);
+      }
+    }
+  })
+</script>

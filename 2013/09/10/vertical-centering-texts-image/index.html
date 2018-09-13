@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="多行文字和图片垂直居中的实现 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css图片垂直居中 css多行文字居中">
+  
+
+  
+
+  <title>多行文字和图片垂直居中的实现 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">多行文字和图片垂直居中的实现</h1>
+
+  <time class="post-time">2013-09-10</time>
+
+  <div class="post-content">
+    <p>多行文字和未知高度的图片水平垂直居中，这似乎是个古老的话题。</p>
+<p>有用伪类:after或者:before实现，但低版本的IE无法支持。有用文字行高的1.14倍，可是针对容器的高度不同，IE版本浏览器的呈现也不尽相同。有用 display:table-cell 再结合 vertical-align:middle，可是IE6再一次把我们坑了，不支持。在这里，可见IE是比较万恶的。因为这些不兼容，或多或少的会让web开发人员“暴躁”起来。</p>
+<a id="more"></a>
+<p>垂直居中，css3的flexbox呢？或许现在还是早了点吧。</p>
+<p>在CSS2里，说到水平垂直居中，难点还是在垂直居中。要使得元素垂直居中，究其本质，也就需要用到涉及垂直居中的css属性 vertical-align:middle , 可是block元素并不支持此属性，所以，我们必须将其转为display:inline-block;</p>
+<p>这里需明确一点，就是 vertical-align:middle的元素必须有对照物。它的对照物就是相邻元素高度最大的那个，这里涉及到IFC（inline formating context），它是一种环境，这个环境存在的都是内联元素，如果在其中插入了块级元素，则这种环境会被破坏。</p>
+<p>以下分别是多行文字和图片水平垂直居中的例子，实用且兼容：</p>
+<p><strong>多行文字水平垂直居中</strong></p>
+<img src="/2013/09/10/vertical-centering-texts-image/center_middle_text.jpg" title="多行文字水平垂直居中">
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-tag">body</span>,<span class="selector-tag">p</span>&#123;<span class="attribute">margin</span>:<span class="number">0</span>;<span class="attribute">padding</span>:<span class="number">0</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#box</span>&#123;<span class="attribute">width</span>:<span class="number">200px</span>;<span class="attribute">height</span>:<span class="number">200px</span>;<span class="attribute">padding</span>:<span class="number">0</span> <span class="number">30px</span>;<span class="attribute">border</span>:<span class="number">1px</span> solid <span class="number">#ccc</span>;<span class="attribute">margin</span>:<span class="number">10px</span> auto;<span class="attribute">font-size</span>:<span class="number">0</span>;<span class="attribute">line-height</span>:<span class="number">20px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#box</span> <span class="selector-tag">b</span>&#123;<span class="attribute">display</span>:inline-block;<span class="attribute">_display</span>:inline;<span class="attribute">zoom</span>:<span class="number">1</span>;<span class="attribute">vertical-align</span>:middle;<span class="attribute">width</span>:<span class="number">0</span>;<span class="attribute">height</span>:<span class="number">100%</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#box</span> <span class="selector-tag">p</span>&#123;<span class="attribute">display</span>:inline-block;<span class="attribute">_display</span>:inline;<span class="attribute">zoom</span>:<span class="number">1</span>;<span class="attribute">vertical-align</span>:middle;<span class="attribute">font-size</span>:<span class="number">12px</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>多行文字的显示，多行文字的显示，多行文字的显示，多行文字的显示，多行文字的显示<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">b</span>&gt;</span><span class="tag">&lt;/<span class="name">b</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>图片垂直居中</strong></p>
+<img src="/2013/09/10/vertical-centering-texts-image/center_middle_img.jpg" title="未知高度水平垂直居中">
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-tag">body</span>,<span class="selector-tag">ul</span>&#123;<span class="attribute">margin</span>:<span class="number">0</span>;<span class="attribute">padding</span>:<span class="number">0</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#box</span> <span class="selector-tag">li</span>&#123;<span class="attribute">float</span>:left;<span class="attribute">width</span>:<span class="number">220px</span>;<span class="attribute">height</span>:<span class="number">250px</span>;<span class="attribute">margin-right</span>:<span class="number">12px</span>;<span class="attribute">border</span>:<span class="number">1px</span> solid <span class="number">#ccc</span>;<span class="attribute">text-align</span>:center;<span class="attribute">list-style</span>:none;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#box</span> <span class="selector-class">.img_a</span>&#123;<span class="attribute">display</span>:inline-block;<span class="attribute">_display</span>:inline;<span class="attribute">zoom</span>:<span class="number">1</span>;<span class="attribute">vertical-align</span>:middle;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#box</span> <span class="selector-class">.img_b</span>&#123;<span class="attribute">display</span>:inline-block;<span class="attribute">_display</span>:inline;<span class="attribute">zoom</span>:<span class="number">1</span>;<span class="attribute">vertical-align</span>:middle;<span class="attribute">width</span>:<span class="number">0</span>;<span class="attribute">height</span>:<span class="number">100%</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"images/img1.jpg"</span> <span class="attr">class</span>=<span class="string">"img_a"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"images/img.jpg"</span> <span class="attr">class</span>=<span class="string">"img_b"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"images/img2.jpg"</span> <span class="attr">class</span>=<span class="string">"img_a"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"images/img.jpg"</span> <span class="attr">class</span>=<span class="string">"img_b"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"images/img3.jpg"</span> <span class="attr">class</span>=<span class="string">"img_a"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"images/img.jpg"</span> <span class="attr">class</span>=<span class="string">"img_b"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>img.jpg可为随意图片。</p>
+<p>补充于9月30日：</p>
+<p>对于以上的图片对齐方法，或者你会觉得在图片后面还要增加一个多余的图片标签来作为对齐参照物可读性差，毕竟这图也需要加载。那么这里可以换成其他标签吗？</p>
+<p>答案是肯定的，这里你也可以换成b，i等空标签，如果对ie6浏览器没要求，也可以用伪类。不过都要将它们转成inline-block元素哦。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.img_align</span>&#123;<span class="attribute">display</span>:inline-block;<span class="attribute">_display</span>:inline;<span class="attribute">zoom</span>:<span class="number">1</span>;<span class="attribute">vertical-align</span>:middle;<span class="attribute">width</span>:<span class="number">0</span>;<span class="attribute">height</span>:<span class="number">100%</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">b</span> <span class="attr">class</span>=<span class="string">"img_align"</span>&gt;</span><span class="tag">&lt;/<span class="name">b</span>&gt;</span></span><br></pre></td></tr></table></figure>
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

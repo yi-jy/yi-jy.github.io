@@ -1,0 +1,36 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>生成地图</title>
+<link rel="stylesheet" href="jquery-jvectormap-2.0.2.css">
+<style type="text/css">
+*{margin:0;padding:0;}
+.map{position:relative;width:960px;margin-left:auto;margin-right:auto;}
+.map-container{width:800px;height:600px;}
+</style>
+</head>
+
+<body>
+
+<div class="map">
+  <div class="map-container"></div>
+</div>
+
+
+
+</body>
+</html>
+
+<script type="text/javascript" src="jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="jquery-jvectormap-2.0.2.min.js"></script>
+<script type="text/javascript" src="jquery-jvectormap-china.js"></script>
+<script type="text/javascript">
+$(function(){
+
+  $(".map-container").vectorMap({
+      map: "china"
+  });
+})
+</script>

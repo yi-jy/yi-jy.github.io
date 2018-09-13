@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="ie6（ie）浏览器不支持的一些CSS属性和解决方案 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content=":focus  :hover  clip  fixed  inline-block  max-width(height)  outline">
+  
+
+  
+
+  <title>ie6（ie）浏览器不支持的一些CSS属性和解决方案 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">ie6（ie）浏览器不支持的一些CSS属性和解决方案</h1>
+
+  <time class="post-time">2013-02-21</time>
+
+  <div class="post-content">
+    
+<p>不要抱怨ie6和ie7，它们诞生的年代只是离现在有些遥远而已。切入正文，我们知道CSS2的一些属性在ie浏览器并不兼容，这篇文章主要介绍这些属性和针对ie6，ie7浏览器它们的解决方案！</p>
+<a id="more"></a>
+<h2 id="一、fixed"><a href="#一、fixed" class="headerlink" title="一、fixed"></a>一、fixed</h2><p>介绍：fixed属性是可以固定某个块（div）在某个位置，并且随网页滚动，该块（div）位置不变，即固定定位。并且它对应的父级是视窗本身。</p>
+<p>不支持的浏览器：ie6；</p>
+<p>解决方案：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">body</span>&#123;</span><br><span class="line">    <span class="attribute">_background-image</span>:<span class="built_in">url</span>(about:blank);</span><br><span class="line">    <span class="attribute">_background-attachment</span>:fixed;<span class="comment">/*ie6浏览器*/</span>&#125;  </span><br><span class="line">    <span class="selector-id">#demo</span>&#123;<span class="attribute">position</span>:fixed;<span class="comment">/*非ie6浏览器*/</span></span><br><span class="line">    <span class="attribute">bottom</span>:<span class="number">10px</span>; </span><br><span class="line">    <span class="attribute">_position</span>:absolute;<span class="comment">/*ie6浏览器*/</span></span><br><span class="line">    <span class="attribute">_top</span>:<span class="built_in">expression</span>(documentElement.scrollTop+documentElement.clientHeight-this.offsetHeight);<span class="comment">/*ie6浏览器*/</span></span><br><span class="line">    <span class="attribute">right</span>:<span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="二、最大宽-高度-—max-width-height-，最小宽（高度）—min-width-height"><a href="#二、最大宽-高度-—max-width-height-，最小宽（高度）—min-width-height" class="headerlink" title="二、最大宽(高度)—max-width(height)，最小宽（高度）—min-width(height)"></a>二、最大宽(高度)—max-width(height)，最小宽（高度）—min-width(height)</h2><p>介绍：当某块内容不固定高度但需要有一个最小或者最大的宽度（高度）时，可使用这个属性。</p>
+<p>不支持的浏览器：ie6；</p>
+<p>解决方案：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#demo</span> &#123;</span><br><span class="line">    <span class="attribute">max-width</span>:<span class="number">1000px</span>;<span class="comment">/*非ie6浏览器*/</span></span><br><span class="line">    <span class="attribute">_width</span>:<span class="built_in">expression</span>((document.documentElement.clientHeight||document.body.clientHeight)&lt;<span class="number">1000</span>?<span class="string">"1000px"</span>:<span class="string">""</span>);<span class="comment">/*ie6浏览器*/</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-id">#demo</span> &#123; </span><br><span class="line">    <span class="attribute">min-width</span>:<span class="number">1000px</span>;<span class="comment">/*非ie6浏览器*/</span></span><br><span class="line">    <span class="attribute">_width</span>:<span class="built_in">expression</span>((document.documentElement.clientHeight||document.body.clientHeight)&gt;<span class="number">1000</span>?<span class="string">"1000px"</span>:<span class="string">""</span>);<span class="comment">/*ie6浏览器*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="三、display：inline-block"><a href="#三、display：inline-block" class="headerlink" title="三、display：inline-block"></a>三、display：inline-block</h2><p>介绍：此属性是将块级元素转行为行内元素。但在ie6和ie7下，块级元素会出现不在同一行的问题，而对行内元素不会出现类似情况。</p>
+<p>不支持的浏览器：ie6，ie7；</p>
+<p>解决方案：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#demo</span>&#123;<span class="attribute">display</span>:inline-block；<span class="comment">/*非ie6浏览器*/</span></span><br><span class="line">display:inline;<span class="attribute">zoom</span>:<span class="number">1</span>；<span class="comment">/*ie6浏览器,zoom 触发元素的layout*/</span>&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="四、outline"><a href="#四、outline" class="headerlink" title="四、outline"></a>四、outline</h2><p>介绍：outline （轮廓）是绘制于元素周围的一条线，位于边框边缘的外围，可起到突出元素的作用。轮廓线不会占据空间，也不一定是矩形。但是此属性不是很常用。</p>
+<p>不支持的浏览器：ie6，ie7，ie8；</p>
+<p>解决方案：  无！</p>
+<h2 id="五、-hover"><a href="#五、-hover" class="headerlink" title="五、:hover"></a>五、:hover</h2><p>介绍：:hover 伪类在鼠标移到元素上时向此元素添加特殊的样式。</p>
+<p>不支持的浏览器：ie6（除了a标签）；</p>
+<p>解决方案： 借助javascript的onmouseover函数或者jq的hover函数。</p>
+<h2 id="六、-focus"><a href="#六、-focus" class="headerlink" title="六、:focus"></a>六、:focus</h2><p>介绍：:focus 伪类在元素获得焦点时向元素添加特殊的样式，一般对于input表单最实用。</p>
+<p>不支持的浏览器：ie6，ie7，ie8（ie9可以支持）；</p>
+<p>解决方案：借助javascript的focus函数。</p>
+<h2 id="七、clip"><a href="#七、clip" class="headerlink" title="七、clip"></a>七、clip</h2><p>介绍：clip 属性剪裁绝对定位元素。这里要注意是这个属性需要配合绝对定位的元素才能使用，它的结构式clip:rect(top right bottom left)；比如clip:rect(10px,,20px,30px,40px)指的是裁剪后的元素上边距离原元素上边有10px，裁剪后的元素右边距离原元素左边有20px，裁剪后的元素下边距离原元素上边有30px，裁剪后的元素右边距离原元素左边有10px。</p>
+<p>不支持的浏览器：ie6，ie7；</p>
+<p>解决方案：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#demo</span>&#123;</span><br><span class="line">    <span class="attribute">position</span>:absolute;</span><br><span class="line">    <span class="attribute">width</span>:<span class="number">500px</span>;</span><br><span class="line">    <span class="attribute">height</span>:<span class="number">300px</span>;</span><br><span class="line">    <span class="attribute">background</span>:green;</span><br><span class="line">    <span class="attribute">clip</span>:<span class="built_in">rect</span>(20px 300px 200px 100px); <span class="comment">/*ie6，ie7浏览器，去除逗号，但是需要空格*/</span></span><br><span class="line">    <span class="attribute">clip</span>:<span class="built_in">rect</span>(20px,300px,200px,100px); <span class="comment">/*非ie6浏览器*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="八、-after-，-before"><a href="#八、-after-，-before" class="headerlink" title="八、:after ，:before"></a>八、:after ，:before</h2><p>介绍：利用css为元素插入内容的伪元素</p>
+<p>不支持的浏览器：ie6；</p>
+<p>解决方案：借助javascript appendChild ,insertBefor函数。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

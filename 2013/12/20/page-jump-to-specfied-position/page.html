@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>根据id滚动到相应的位置</title>
+<style type="text/css">
+*{margin:0;padding:0;}
+div{height:500px;}
+h2{font:30px/50px "Microsoft Yahei";padding-left:20px;}
+</style>
+</head>
+
+<body>
+<div id="aa">
+	<h2>aa</h2>
+</div>
+<div id="bb">
+	<h2>bb</h2>
+</div>
+<div id="cc">
+	<h2>cc</h2>
+</div>
+<div id="dd">
+	<h2>dd</h2>
+</div>
+<div id="ee">
+	<h2>ee</h2>
+</div>
+<div id="ff">
+	<h2>ff</h2>
+</div>
+<div id="gg">
+	<h2>gg</h2>
+</div>
+<div id="hh">
+	<h2>hh</h2>
+</div>
+<div id="ii">
+	<h2>ii</h2>
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+(function(){
+	var timer=null;
+	var iPos=location.href.indexOf("?");
+	var oSrc=location.href.substring(iPos+1);
+	
+	toScrollTop($(oSrc));
+	
+	function $(id){
+		return document.getElementById(id);	
+	}
+	
+	function toScrollTop(obj){
+		clearInterval(timer);
+		var iTarget=obj.offsetTop;
+		timer=setInterval(function(){
+			var scrollTop=document.documentElement.scrollTop||document.body.scrollTop;
+			var iSpeed=(iTarget-scrollTop)/8;
+			iSpeed=iSpeed>0?Math.ceil(iSpeed):Math.floor(iSpeed);
+			if(scrollTop==iTarget){
+				clearInterval(timer);
+			}
+			else{
+				document.documentElement.scrollTop=document.body.scrollTop=scrollTop+iSpeed; 
+			}
+		},30)
+	}
+})()
+</script>

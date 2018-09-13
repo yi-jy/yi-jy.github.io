@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="富文本编辑器的实现 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="富文本编辑 contenteditable  designMode  execCommand">
+  
+
+  
+
+  <title>富文本编辑器的实现 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">富文本编辑器的实现</h1>
+
+  <time class="post-time">2015-01-21</time>
+
+  <div class="post-content">
+    <p>如果你还不知道什么是富文本编辑器（Rich Text Editor），那么我强烈建议你先去百度了解一下。富文本编辑器（以下简称RTE）是一种所见即所得的网页编辑器。最常见的比如论坛发帖编辑发布框、写作类网站的编辑器。此文并不是详细描述如何用js去开发一个RTE，主要目的是介绍制作富文本编辑器的思路以及方法，还有就是在开发过程中遇到的问题。若你想详细知道如何去开发一个RTE，可在阅读完本文之后查看demo源代码。</p>
+<p>我们知道，可以让网页处于编辑状态可以通过以下三种形式：</p>
+<a id="more"></a>
+<p><strong>第一种：文本域。</strong></p>
+<p>文本域是网页中最常见的输入框，不过它只是文本框，只能输入文字，不可输入图片或者链接等多媒体元素，因此它必然不是我们想要的。</p>
+<p><strong>第二种：添加 contenteditable属性为true的div</strong></p>
+<p>contenteditable这个属性连低版本的ie都支持，QQ空间的心情发布框就是带有此属性的div，因此我们可以想到用类似的方法做RTE，但是本文介绍的这个RTE并不是利用div制作的，为什么？文章结尾处会提及。</p>
+<p><strong>第三种：设置了designMode为”on”的iframe</strong></p>
+<p>在网页中插入iframe，那么iframe就可以看做是一个单独的文档，我们再把iframe的designMode属性设置为on，结合js提供的execCommand方法。即可在这个文档中实现编辑、插入等设置功能，这也是本篇所要说的。</p>
+<h2 id="制作RTE"><a href="#制作RTE" class="headerlink" title="制作RTE"></a>制作RTE</h2><p>Js提供了操作文档的方法，即document.execCommand。此方法有三个参数，用法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">document</span>.execCommand(commandName,<span class="literal">false</span>,[<span class="literal">null</span>|string]);</span><br></pre></td></tr></table></figure>
+<p>第一个参数commandName：要执行的命令名称</p>
+<p>第二个参数false：应该始终设置为false，因为在firefox中若参数为true时报错</p>
+<p>第三个参数null或者字符串：表示浏览器是否应该为当前命令提供用户界面的一个布尔值和执行命令必须的一个值（如果不需要值，则传递null）</p>
+<p>下表列出了开发中所用到的参数：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>（第一个参数）</th>
+<th>值（第三个参数）    说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bold</td>
+<td>null</td>
+<td>将选择的文字加粗</td>
+</tr>
+<tr>
+<td>italic</td>
+<td>null</td>
+<td>将选择的文字转换为斜体</td>
+</tr>
+<tr>
+<td>underline</td>
+<td>null</td>
+<td>将选择的文字加下划线</td>
+</tr>
+<tr>
+<td>strikethrough</td>
+<td>null</td>
+<td>将选择的文字加删除线</td>
+</tr>
+<tr>
+<td>fontsize</td>
+<td>1-7</td>
+<td>将选择的文字修改为指定字体大小</td>
+</tr>
+<tr>
+<td>justifyleft</td>
+<td>null</td>
+<td>将选择的文字居左</td>
+</tr>
+<tr>
+<td>justifycenter</td>
+<td>null</td>
+<td>将选择的文字居中</td>
+</tr>
+<tr>
+<td>justifyright</td>
+<td>null</td>
+<td>将选择的文字居右</td>
+</tr>
+<tr>
+<td>indent</td>
+<td>null</td>
+<td>左缩进</td>
+</tr>
+<tr>
+<td>outdent</td>
+<td>null</td>
+<td>右缩进</td>
+</tr>
+<tr>
+<td>insertorderedlist</td>
+<td>null</td>
+<td>插入有序列表</td>
+</tr>
+<tr>
+<td>insertunorderedlist</td>
+<td>null</td>
+<td>插入无序列表</td>
+</tr>
+<tr>
+<td>undo</td>
+<td>null</td>
+<td>撤销</td>
+</tr>
+<tr>
+<td>redo</td>
+<td>null</td>
+<td>重复</td>
+</tr>
+<tr>
+<td>removeformat</td>
+<td>null</td>
+<td>将选择的文字清除格式</td>
+</tr>
+<tr>
+<td>forecolor</td>
+<td>颜色字符串</td>
+<td>设置文档背景色</td>
+</tr>
+<tr>
+<td>backcolor</td>
+<td>颜色字符串</td>
+<td>将选择的文字修改为指定颜色</td>
+</tr>
+</tbody>
+</table>
+<p>倘若我们需要对iframe里的内容做特殊操作，比如预览编辑好的内容、或者切换到源码等，因为document.execCommand没有相关参数，那么document.execCommand就用不上了。此时就需要添加一些自定义方法，下表也列出了这些功能以及相关做法：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+<th>功能实现描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>insertimage</td>
+<td>插入图片</td>
+<td>通过iframe的innerHTML拼接</td>
+</tr>
+<tr>
+<td>createlink</td>
+<td>插入链接</td>
+<td>通过prompt输入，插入到文档</td>
+</tr>
+<tr>
+<td>inserttime</td>
+<td>插入时间</td>
+<td>获取时间对象，插入到文档</td>
+</tr>
+<tr>
+<td>insertface</td>
+<td>插入表情</td>
+<td>通过iframe的innerHTML拼接</td>
+</tr>
+<tr>
+<td>insertsymbol</td>
+<td>插入特殊符号</td>
+<td>通过iframe的innerHTML拼接</td>
+</tr>
+<tr>
+<td>inserttable</td>
+<td>插入表格</td>
+<td>生成table结构，通过iframe的innerHTML拼接</td>
+</tr>
+<tr>
+<td>save</td>
+<td>保存当前内容</td>
+<td>execCommand中的savesa命令，其他浏览器给出提示</td>
+</tr>
+<tr>
+<td>new</td>
+<td>新建编辑内容</td>
+<td>confirm用户，确认后清空iframe的innerHTML</td>
+</tr>
+<tr>
+<td>preview</td>
+<td>预览当前内容</td>
+<td>将iframe内容复制给弹层，显示弹层</td>
+</tr>
+<tr>
+<td>html</td>
+<td>切换视图与源码</td>
+<td>textarea获取iframe的html源码，控制显示隐藏</td>
+</tr>
+</tbody>
+</table>
+<p>我们对相应标签设置一个data-command或self-command属性，属性值为以上两个表格列出的命令。然后当用户点击这些标签时，获取data-command（self-command）的属性值，执行相应的操作即可。</p>
+<h2 id="浏览器兼容性的处理"><a href="#浏览器兼容性的处理" class="headerlink" title="浏览器兼容性的处理"></a>浏览器兼容性的处理</h2><p><strong>1.低版本ie不支持新建窗口预览。</strong></p>
+<p>通常我们在做代码效果预览时，都是采用新建空白窗口，然后将文本域内容写入到新窗口中，即：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.open().document.write(iframeDocument.body.innerHTML);</span><br></pre></td></tr></table></figure>
+<p>但是在低版本ie不支持此方法，于是采用当前页面弹框形式。</p>
+<p><strong>2.低版本的ie中，点击iframe以外的元素，iframe会失去焦点，回到iframe第一行最开始编辑的位置。</strong></p>
+<p>解决方案是给选择功能的元素加unselectable属性，并设置为on。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ele[i].setAttribute(<span class="string">"unselectable"</span> , <span class="string">"on"</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>3.低版本ie在execCommand方法中不支持三位数的颜色。</strong></p>
+<p>前面提到，iframe文档中有这么一个方法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">iframeDocument.execCommand(commandType,<span class="literal">false</span>,value);</span><br></pre></td></tr></table></figure>
+<p>其中的val可以是字体的大小值，也可以为颜色值等。在处理iframe中的颜色（文字颜色、文字背景色）时，我一开始直接用我前面写的colorTake.js提取颜色，因为这个js文件获取的颜色值默认为三位，后来发现三位数值的颜色在低版本ie中根本无法生效，于是修改colorTake.js返回六位的数值。</p>
+<p><strong>4.将iframe保存为页面。</strong></p>
+<p>在开发过程中发现，只有低版本的ie才支持execCommand的saveas命令，所以需要对其他浏览器做提示处理。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(!+[<span class="number">1</span>,])&#123;</span><br><span class="line">    iframeDocument.execCommand(<span class="string">"saveas"</span>,<span class="literal">false</span>,<span class="string">"document.html"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">    alert(<span class="string">"对不起，当前浏览器出于安全机制禁止保存，你可以尝试手动保存或使用IE浏览器！"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="为什么不用div代替iframe"><a href="#为什么不用div代替iframe" class="headerlink" title="为什么不用div代替iframe"></a>为什么不用div代替iframe</h2><ol>
+<li>当前文档的行为不会影响iframe中的元素。也就是说，当前页面定义的样式和js操作，对iframe中相同类名的元素是无效的。</li>
+<li>对于文档操作，js提供了一套现成的execCommand方法。倘若我们用div来开发RTE，在没有现成方法的基础，那么就需要先提取选中的文字，可以参见我之前写的文字选中分享到”简单实现，然后再对选中的文字对象做处理，处理完后再获取光标位置，最后插入到对应的位置，这当中所涉及到的方法兼容性都一塌糊涂，而且方法名都很长，谁搞谁知道。</li>
+</ol>
+<p>文章末尾，来用下这款 <a href="/2015/01/21/rich-text-editor/rte.html" title="富文本编辑器">富文本编辑器</a> 吧。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+.loading{position:relative;width:40px;height:40px;margin:100px auto;border-radius:50%;}
+.loading .circle{position:absolute;width:6px;height:6px;border-radius:50%;opacity:0.6;background:#DD8000;}
+.loading .circle:nth-child(1){left:16px;top:0;-webkit-animation:circleRotote05 1s 0.625s ease-out infinite;animation:circleRotote05 1s 0.625s ease-out infinite; }
+.loading .circle:nth-child(2){left:28px;top:5px;-webkit-animation:circleRotote05 1s 0.75s ease-out infinite;animation:circleRotote05 1s 0.75s ease-out infinite;}
+.loading .circle:nth-child(3){left:34px;top:17px;-webkit-animation:circleRotote05 1s 0.875s ease-out infinite;animation:circleRotote05 1s 0.875s ease-out infinite;}
+.loading .circle:nth-child(4){left:28px;top:28px;-webkit-animation:circleRotote05 1s 0 ease-out infinite;animation:circleRotote05 1s 0 ease-out infinite;}
+.loading .circle:nth-child(5){left:16px;top:34px;-webkit-animation:circleRotote05 1s 0.125s ease-out infinite;animation:circleRotote05 1s 0.125s ease-out infinite;}
+.loading .circle:nth-child(6){left:5px;top:28px;-webkit-animation:circleRotote05 1s 0.25s ease-out infinite;animation:circleRotote05 1s 0.25s ease-out infinite;}
+.loading .circle:nth-child(7){left:0;top:17px;-webkit-animation:circleRotote05 1s 0.375s ease-out infinite;animation:circleRotote05 1s 0.375s ease-out infinite;}
+.loading .circle:nth-child(8){left:5px;top:5px;-webkit-animation:circleRotote05 1s 0.5s ease-out infinite;animation:circleRotote05 1s 0.5s ease-out infinite;}
+
+@-webkit-keyframes circleRotote05{
+  0% {opacity:0.5;-webkit-transform:scale(1);}
+  12.5%{opacity:1;-webkit-transform:scale(2);}
+    25% {opacity:0.95;-webkit-transform:scale(1.7);}
+  37.5% {opacity:0.85;-webkit-transform:scale(1.4);}
+}
+@keyframes circleRotote05{
+  0% {opacity:0.5;transform:scale(1);}
+  12.5%{opacity:1;transform:scale(2);}
+    25% {opacity:0.95;transform:scale(1.7);}
+  37.5% {opacity:0.85;transform:scale(1.4);}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="loading">
+  <b class="circle"></b>
+    <b class="circle"></b>
+    <b class="circle"></b>
+    <b class="circle"></b>
+    <b class="circle"></b>
+    <b class="circle"></b>
+    <b class="circle"></b>
+    <b class="circle"></b>
+</div>
+
+<!--
+1. 先做一个圆，然后定位每个圆的位置。最好使用作图软件，这样很容易得到每个圆的坐标
+2. 依次改变每个圆的大小（scale），透明度
+-->
+
+</body>
+</html>

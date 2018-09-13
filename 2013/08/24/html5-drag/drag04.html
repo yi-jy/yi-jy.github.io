@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+body{font-size:12px;}
+#target_box{width:500px;padding-bottom:100px;line-height:20px;font-size:12px;border:2px dashed #aaa;}
+#target_box img{width:80px;height:50px;margin:10px;}
+#target_box h4{color:#999;font-size:20px;text-align:center;}
+h3{margin-top:50px;}
+</style>
+</head>
+
+<body>
+<h2>HTML5上传文件 ---file</h2>
+
+<h3>XHTML</h3>
+<input type="file"/>
+
+<h3>HTML5 - input 上传</h3>
+<input type="file" multiple/>
+
+<h3>HTML5 - file 上传</h3>
+<div id="target_box"><h4 id="target_des">文件拖放区域</h4></div>
+
+<span id="pro"></span>
+</body>
+</html>
+
+<script type="text/javascript">
+(function(){
+    function $(id){
+        return document.getElementById(id);
+    }
+    var oTarget=$("target_box"),
+		oDes=$("target_des"),
+		oPro=$("pro");
+    
+    oTarget.ondragenter=function(){
+        this.style.border="2px dashed #F60";
+		oDes.innerHTML="进入了目标元素";
+    }
+
+    oTarget.ondragover=function(ev){  
+        ev.preventDefault(); 
+    }  
+    oTarget.ondrop=function(ev){
+		this.style.border="2px dashed #aaa";
+        var files=ev.dataTransfer.files; 
+        for(var i=0;i<files.length;i++){  
+            var filesReader=new FileReader(); 
+            filesReader.readAsDataURL(files[i]); 
+			console.log(files[i].name + "," + files[i].size + " bytes");
+            filesReader.onload=function(){
+                var oImg=document.createElement("img");
+                oImg.src=this.result;
+                oTarget.appendChild(oImg);
+            }
+        }
+		oDes.innerHTML="元素已添加！";
+		ev.preventDefault(); // 阻止firefox打开新链接  
+    }
+
+})();
+</script>

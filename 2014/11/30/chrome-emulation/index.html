@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="chrome开发工具中emulation的详解 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css media deviceorientation emulation orientationchange">
+  
+
+  
+
+  <title>chrome开发工具中emulation的详解 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">chrome开发工具中emulation的详解</h1>
+
+  <time class="post-time">2014-11-30</time>
+
+  <div class="post-content">
+    <p>对于web开发者来说，或许chrome开发工具并不陌生。编辑或copy html代码、修改或新增样式、又或者调试js代码，这些修改都能实时的在页面看到，这无疑是非常方便。但这些都不是本篇的重点，今天的主角是emulation，它也是开发工具中最重要的一项，主要是用于模拟手机浏览器页面的显示以及各种行为，随着chrome版本的不断升级，emulation也变得越来越健全，chrome39以后更是新增了标尺和快捷选项。emulation主要包含device、media、network和sensors四大项，以下介绍它们的详细用法：</p>
+<a id="more"></a>
+<h2 id="Device（设备）"><a href="#Device（设备）" class="headerlink" title="Device（设备）"></a>Device（设备）</h2><img src="/2014/11/30/chrome-emulation/device.jpg" title="device">
+<p>通过上图，我们可以知道device主要有model、Emulate screen resolution、Emulate mobile、shrink to fit四个选项。那么我们来看看它们的作用：</p>
+<p>Model ：机型选择。你可以通过这个下拉选项选择你需要测试的手机机型。</p>
+<p>Emulate screen resolution ： 模拟屏幕分辨率，而中间的左右箭头按钮用于切换横屏和竖屏。关于横竖屏的检测，我们可以通过css：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.screen-status</span>&#123;<span class="attribute">width</span>:<span class="number">50%</span>;<span class="attribute">height</span>:<span class="number">180px</span>;<span class="attribute">margin</span>:<span class="number">0</span> auto;<span class="attribute">border</span>:<span class="number">3px</span> solid <span class="number">#ccc</span>;<span class="attribute">border-radius</span>:<span class="number">5px</span>;<span class="attribute">line-height</span>:<span class="number">180px</span>;<span class="attribute">text-align</span>:center;&#125;</span><br><span class="line">@<span class="keyword">media</span> (orientation: portrait) &#123;</span><br><span class="line">　　<span class="selector-class">.screen-status</span>&#123;<span class="attribute">background</span>:<span class="number">#F90</span>;&#125;</span><br><span class="line">　　<span class="selector-class">.screen-status</span><span class="selector-pseudo">:after</span>&#123;<span class="attribute">content</span>:<span class="string">"现在是：竖屏"</span>;&#125;</span><br><span class="line">&#125;</span><br><span class="line">@<span class="keyword">media</span> (orientation: landscape) &#123;</span><br><span class="line">　　<span class="selector-class">.screen-status</span>&#123;<span class="attribute">background</span>:<span class="number">#9CC</span>;&#125;</span><br><span class="line">　　<span class="selector-class">.screen-status</span><span class="selector-pseudo">:after</span>&#123;<span class="attribute">content</span>:<span class="string">"现在是：横屏"</span>;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"screen-status"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>具体demo：<a href="/2014/11/30/chrome-emulation/screen-status-css.html" title="点击">点击</a> 或者扫描二维码</p>
+<img src="/2014/11/30/chrome-emulation/screen-status-css.jpg" title="screen-status-css">
+<p>也可以通过js，默认的是采用orientationchange事件，对于不支持此事件的则可以利用reisze事件对窗口宽度进行探测：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> initScreenW = <span class="built_in">document</span>.documentElement.clientWidth || <span class="built_in">document</span>.body.clientWidth,</span><br><span class="line">　　tempScreenW = <span class="number">0</span> ;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">testScreenStatus</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">　　tempScreenW = <span class="built_in">document</span>.documentElement.clientWidth || <span class="built_in">document</span>.body.clientWidth;</span><br><span class="line">　　<span class="keyword">if</span>(<span class="string">"onorientationchange"</span> <span class="keyword">in</span> <span class="built_in">window</span>)&#123;</span><br><span class="line">　　　　<span class="keyword">if</span>(<span class="built_in">window</span>.orientation==<span class="number">180</span>||<span class="built_in">window</span>.orientation==<span class="number">0</span>)&#123;</span><br><span class="line">　　　　　　alert(<span class="string">"现在是：竖屏"</span>);</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　　　<span class="keyword">if</span>(<span class="built_in">window</span>.orientation==<span class="number">90</span>||<span class="built_in">window</span>.orientation==<span class="number">-90</span>)&#123;</span><br><span class="line">　　　　　　alert(<span class="string">"现在是：横屏"</span>);</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;</span><br><span class="line">　　<span class="keyword">else</span>&#123;</span><br><span class="line">　　　　<span class="keyword">if</span>(tempScreenW&gt;initScreenW+<span class="number">50</span>)&#123;</span><br><span class="line">　　　　　　alert(<span class="string">"现在是：横屏"</span>);</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　　　<span class="keyword">else</span>&#123;</span><br><span class="line">　　　　　　alert(<span class="string">"现在是：竖屏"</span>);</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br><span class="line">testScreenStatus();</span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">"onorientationchange"</span> <span class="keyword">in</span> <span class="built_in">window</span> ? <span class="string">"orientationchange"</span> : <span class="string">"resize"</span>, testScreenStatus,<span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
+<p>具体demo：<a href="/2014/11/30/chrome-emulation/screen-status-js.html" title="点击">点击</a> 或者扫描二维码</p>
+<img src="/2014/11/30/chrome-emulation/screen-status-js.jpg" title="screen-status-js">
+<p>下面的Device pixel ratio是像素比，即设备的物理像素与设备独立像素的比例。</p>
+<p>Emulate mobile ：模拟手机屏幕视窗，即viewport，它将手机浏览器模拟成pc浏览器来显示网页。手机浏览器开发商设置了一个meta元素，它的name属性值为viewports，它还有content属性，主要设置手机屏幕视窗的宽度、以及相关的初始、最小、最大比例和是否允许用户缩放网页。完整属性如下：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>shrink to fit ：表示网页是否随浏览器的缩放而变化。</p>
+<h2 id="Media（媒体）"><a href="#Media（媒体）" class="headerlink" title="Media（媒体）"></a>Media（媒体）</h2><img src="/2014/11/30/chrome-emulation/media.jpg" title="media">
+<p>这里的media指的是媒体类型，在选项中我们可以看到有这么多种：</p>
+<ol>
+<li>braille 盲文触觉设备</li>
+<li>embossed 盲文打印机设备</li>
+<li>handheld 手持设备</li>
+<li>print 手持设备</li>
+<li>projection 投影设备</li>
+<li>screen 彩屏设备</li>
+<li>speech 类听觉媒体设备</li>
+<li>tty 电传打字机终端（设备）</li>
+<li>tv  电视</li>
+<li>all所有媒体</li>
+</ol>
+<p>而关于css媒体查询，指的是让你有能力在相同的样式表中，针对不同的媒介使用不同的样式规则。你可以采用链接的做法：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"css/print.css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">type</span>=<span class="string">"text/css"</span> <span class="attr">media</span>=<span class="string">"print and (max-width: 600px)"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>也可以使用如下语法:</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">@<span class="keyword">media</span> [media type] and (condition)&#123;</span><br><span class="line">　　div&#123;…&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假设只想针对最大宽度为320像素的屏幕应用此样式，你可以：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">@<span class="keyword">media</span> all and (max-width: <span class="number">320px</span>)&#123;</span><br><span class="line">　　<span class="selector-tag">div</span> &#123; <span class="attribute">width</span>:<span class="number">320px</span>;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，你也可以限制一个宽度范围：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">@<span class="keyword">media</span> tv and (min-width:<span class="number">1000px</span>) and (max-width: <span class="number">1200px</span>)&#123;</span><br><span class="line">　　<span class="selector-tag">div</span> &#123; <span class="attribute">width</span>:<span class="number">1000px</span>;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Network（网络）"><a href="#Network（网络）" class="headerlink" title="Network（网络）"></a>Network（网络）</h2><img src="/2014/11/30/chrome-emulation/network.jpg" title="network">
+<p>Limit network throughput：限制何种流量来浏览网页。是gprs？3g？还是wifi、或其他</p>
+<p>Spoof user agent ：模拟手机是何种系统</p>
+<h2 id="Sensors（传感器）"><a href="#Sensors（传感器）" class="headerlink" title="Sensors（传感器）"></a>Sensors（传感器）</h2><img src="/2014/11/30/chrome-emulation/sensors.jpg" title="sensors">
+<p>Emulate touch screen ：模拟手机端触摸事件，当勾选此项时，你会看到屏幕有一个灰色圆点。</p>
+<p>Emulate geolocation coordinates ：是否模拟地理信息</p>
+<p>Accelerometer：模拟手机上下、左右、前后倾斜，这个可用于方向类游戏开发。</p>
+<p>α：alpha，围绕Z轴旋转时（即顺（逆）时针旋转时），y轴的度数差；是一个介于0到360之间的浮点数<br>β：beta，围绕X轴旋转时（即前后翻转设备时），z轴的度数差；是一个介于-180到180之间的浮点数<br>γ：gamma，围绕Y轴旋转时（即左右扭转设备时），z轴的度数差；是一个介于-90到90之间的浮点数</p>
+<p>最后是关于模拟手机倾斜的demo：<a href="/2014/11/30/chrome-emulation/rotate.html" title="点击">点击</a> 或者扫描二维码。</p>
+<img src="/2014/11/30/chrome-emulation/rotate.jpg" title="rotate">
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

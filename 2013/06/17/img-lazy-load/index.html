@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="解析图片预加载 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="图片预加载">
+  
+
+  
+
+  <title>解析图片预加载 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">解析图片预加载</h1>
+
+  <time class="post-time">2013-06-17</time>
+
+  <div class="post-content">
+    <p>图片预加载技术很早就应用于各大网站，常见的有电子商城，还有类似瀑布流系列的图片站点。</p>
+<p>我们来扯扯图片预加载技术的特点：</p>
+<a id="more"></a>
+<ol>
+<li><p>利用图片的offsetTop属性来判断图片是否进入可视区域，从而确定它是否执行预加载函数，将图片的_src属性直接赋值src，进行加载图片。</p>
+</li>
+<li><p>用户将页面滚动到哪个位置，图片就相应的加载这个位置的图片，减少了服务器的压力，性能提高。</p>
+</li>
+<li><p>避免了图片一次性全部加载而由于网速慢出现图片等待加载白屏的情况，对于未到达可视区域的图片使用 loading.gif 动态转动等待的背景图，改善了用户体验。</p>
+</li>
+</ol>
+<p>以下为完整的一个demo：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-tag">ul</span> <span class="selector-tag">li</span>&#123;<span class="attribute">list-style</span>:none;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-tag">img</span>&#123;<span class="attribute">border</span>:none;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#box</span>&#123;<span class="attribute">width</span>:<span class="number">800px</span>;<span class="attribute">margin</span>:<span class="number">800px</span> auto <span class="number">0</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#box</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span>&#123;<span class="attribute">width</span>:<span class="number">220px</span>;<span class="attribute">height</span>:<span class="number">300px</span>;<span class="attribute">text-align</span>:center;<span class="attribute">float</span>:left;<span class="attribute">border</span>:<span class="number">1px</span> solid <span class="number">#ccc</span>;<span class="attribute">margin</span>:<span class="number">10px</span>;<span class="attribute">overflow</span>:hidden;<span class="attribute">background</span>:<span class="built_in">url</span>(images/loading.gif) center center no-repeat;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#box</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span> <span class="selector-tag">img</span>&#123;<span class="attribute">width</span>:<span class="number">200px</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line">　　<span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">　　　　<span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">_src</span>=<span class="string">"images/img1.jpg"</span> <span class="attr">src</span>=<span class="string">""</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">　　　　<span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">_src</span>=<span class="string">"images/img2.jpg"</span> <span class="attr">src</span>=<span class="string">""</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">　　　　<span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">_src</span>=<span class="string">"images/img3.jpg"</span> <span class="attr">src</span>=<span class="string">""</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">　　　　...</span><br><span class="line">　　　　<span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">_src</span>=<span class="string">"images/img15.jpg"</span> <span class="attr">src</span>=<span class="string">""</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">　　<span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> move=(<span class="function"><span class="keyword">function</span><span class="params">(obj,json,fn)</span></span>&#123;</span></span><br><span class="line"><span class="undefined">    clearInterval(obj.timer);</span></span><br><span class="line"><span class="actionscript">    obj.timer=setInterval(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">var</span> bStop=<span class="literal">true</span>;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">for</span>(<span class="keyword">var</span> attr <span class="keyword">in</span> json)&#123;</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">if</span>(attr==<span class="string">"opacity"</span>)&#123;</span></span><br><span class="line"><span class="javascript">                <span class="keyword">var</span> iCur=<span class="built_in">Math</span>.round(getStyle(obj,attr)*<span class="number">100</span>);</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">            <span class="keyword">var</span> iSpeed=(json[attr]-iCur)/<span class="number">7</span>;</span></span><br><span class="line"><span class="javascript">            iSpeed=iSpeed&gt;<span class="number">0</span>?<span class="built_in">Math</span>.ceil(iSpeed):<span class="built_in">Math</span>.floor(iSpeed);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">            <span class="keyword">if</span>(iCur!=json[attr])&#123;</span></span><br><span class="line"><span class="actionscript">                bStop=<span class="literal">false</span>;</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">            <span class="keyword">if</span>(attr==<span class="string">"opacity"</span>)&#123;</span></span><br><span class="line"><span class="actionscript">                obj.style.filter=<span class="string">"alpha(opacity:"</span>+(iCur+iSpeed)+<span class="string">")'; </span></span></span><br><span class="line"><span class="undefined">                obj.style.opacity=(iCur+iSpeed)/100;</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">        <span class="keyword">if</span>(bStop)&#123;</span></span><br><span class="line"><span class="undefined">            clearInterval(obj.timer);</span></span><br><span class="line"><span class="actionscript">                <span class="keyword">if</span>(fn)&#123;</span></span><br><span class="line"><span class="undefined">                    fn();</span></span><br><span class="line"><span class="undefined">                &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    &#125;,30) </span></span><br><span class="line"><span class="undefined">&#125;);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> getStyle=(<span class="function"><span class="keyword">function</span><span class="params">(obj,attr)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">if</span>(obj.currentStyle)&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">return</span> obj.currentStyle[attr];</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">else</span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">return</span> getComputedStyle(obj,<span class="literal">false</span>)[attr];</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="comment">//绑定事件函数</span></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> addEvent=(<span class="function"><span class="keyword">function</span><span class="params">(obj,sEvent,fn)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">if</span>(obj.attachEvent)&#123;</span></span><br><span class="line"><span class="actionscript">        obj.attachEvent(<span class="string">"on"</span>+sEvent,fn);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">else</span>&#123;</span></span><br><span class="line"><span class="actionscript">        obj.addEventListener(sEvent,fn,<span class="literal">false</span>);</span></span><br><span class="line"><span class="undefined">    &#125; </span></span><br><span class="line"><span class="undefined">&#125;);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="comment">//核心部分</span></span></span><br><span class="line"><span class="actionscript"><span class="keyword">var</span> preloadImg=(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> oBox=<span class="built_in">document</span>.getElementById(<span class="string">"box"</span>),</span></span><br><span class="line"><span class="actionscript">    aImg=oBox.getElementsByTagName(<span class="string">"img"</span>);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">    <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;aImg.length;i++)&#123;</span></span><br><span class="line"><span class="actionscript">        aImg[i].unLoad=<span class="literal">true</span>;  <span class="comment">//给所有图片做个未加载的标记</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">    addEvent(<span class="built_in">window</span>,<span class="string">"scroll"</span>,showImg);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">    <span class="function"><span class="keyword">function</span> <span class="title">showImg</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">var</span> scrollTop=<span class="built_in">document</span>.documentElement.scrollTop||<span class="built_in">document</span>.body.scrollTop,</span></span><br><span class="line"><span class="javascript">        viewH=<span class="built_in">document</span>.documentElement.clientHeight;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;aImg.length;i++)&#123;</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">if</span>(aImg[i].offsetTop&lt;scrollTop+viewH&amp;&amp;aImg[i].unLoad)&#123; <span class="comment">//通过不断获取网页滚动的高度，再判断图片是否进入可视区域</span></span></span><br><span class="line"><span class="actionscript">                aImg[i].src=aImg[i].getAttribute(<span class="string">"_src"</span>);</span></span><br><span class="line"><span class="actionscript">                aImg[i].style.filter=<span class="string">"alpha(opacity:0)"</span>;</span></span><br><span class="line"><span class="undefined">                aImg[i].style.opacity=0;</span></span><br><span class="line"><span class="actionscript">                move(aImg[i],&#123;opacity:<span class="number">100</span>&#125;);  <span class="comment">// 图片透明度由0到100逐渐显示</span></span></span><br><span class="line"><span class="actionscript">                aImg[i].unLoad=<span class="literal">false</span>;  <span class="comment">// 标记清除</span></span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    &#125; </span></span><br><span class="line"><span class="undefined">&#125;);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">preloadImg();　<span class="comment">//调用函数</span></span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

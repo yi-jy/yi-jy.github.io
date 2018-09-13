@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="chrome插件开发之manifest.json | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="chrome插件开发 manifest.json">
+  
+
+  
+
+  <title>chrome插件开发之manifest.json | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">chrome插件开发之manifest.json</h1>
+
+  <time class="post-time">2016-03-20</time>
+
+  <div class="post-content">
+    <p>一般而言，一个chrome插件一般包含以下目录的文件。</p>
+<p>├── manifest.json<br>├── icon.png<br>├── popup.html<br>├── options.html<br>├── js<br>│ ├── background.js<br>│ ├── app.js<br><a id="more"></a></p>
+<p>对于前端而言，除了manifest.json，以上的其他文件大家都比较熟悉。作为类似chrome插件开发的配置文件，manifest.json的结构大致是这样的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"manifest_version"</span>: <span class="number">2</span>,</span><br><span class="line"> </span><br><span class="line">    <span class="string">"name"</span>: <span class="string">"测试插件"</span>,</span><br><span class="line">    <span class="string">"description"</span>: <span class="string">"一款测试插件的说明"</span>,</span><br><span class="line">    <span class="string">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line"> </span><br><span class="line">    <span class="string">"icons"</span>: &#123;</span><br><span class="line">        <span class="string">"16"</span>: <span class="string">"icon16.png"</span>,</span><br><span class="line">        <span class="string">"32"</span>: <span class="string">"icon32.png"</span>,</span><br><span class="line">        <span class="string">"48"</span>: <span class="string">"icon48.png"</span>,</span><br><span class="line">        <span class="string">"128"</span>: <span class="string">"icon128.png"</span></span><br><span class="line">    &#125;,</span><br><span class="line"> </span><br><span class="line">    <span class="string">"browser_action"</span>: &#123;</span><br><span class="line">        <span class="string">"default_icon"</span>: <span class="string">"icon.png"</span>,</span><br><span class="line">        <span class="string">"default_title"</span>: <span class="string">"测试插件"</span>,</span><br><span class="line">        <span class="string">"default_popup"</span>: <span class="string">"popup.html"</span></span><br><span class="line">    &#125;,</span><br><span class="line"> </span><br><span class="line">    <span class="string">"page_action"</span>: &#123;</span><br><span class="line">        <span class="string">"default_icon"</span>: &#123;</span><br><span class="line">            <span class="string">"19"</span>: <span class="string">"images/icon19.png"</span>,</span><br><span class="line">            <span class="string">"38"</span>: <span class="string">"images/icon38.png"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">"default_title"</span>: <span class="string">"测试插件"</span>,</span><br><span class="line">        <span class="string">"default_popup"</span>: <span class="string">"popup.html"</span></span><br><span class="line">    &#125;,</span><br><span class="line"> </span><br><span class="line">    <span class="string">"content_scripts"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">"matches"</span>: [<span class="string">"*://www.baidu.com/*"</span>],</span><br><span class="line">            <span class="string">"js"</span>: [<span class="string">"js/test.js"</span>],</span><br><span class="line">            <span class="string">"css"</span>: [<span class="string">"css/test.css"</span>]</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line"> </span><br><span class="line">    <span class="string">"background"</span>: &#123;</span><br><span class="line">        <span class="string">"scripts"</span>: [<span class="string">"js/background01.js"</span>, <span class="string">"js/background02.js"</span>]</span><br><span class="line">    &#125;,</span><br><span class="line"> </span><br><span class="line">    <span class="string">"options_page"</span>: <span class="string">"options.html"</span>,</span><br><span class="line"> </span><br><span class="line">    <span class="string">"permissions"</span>: [</span><br><span class="line">        <span class="string">"https://www.baidu.com/"</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>或许你很好奇以上的属性或配置的作用，接下来，我们就分别对这些属性进行说明，你也根据自身插件的需要对属性进行增加和删除：</p>
+<h2 id="一、manifest-version"><a href="#一、manifest-version" class="headerlink" title="一、manifest_version"></a>一、manifest_version</h2><p>manifest_version：插件配置文件manifest.json的版本号，是由chrome官方发布的。</p>
+<h2 id="二、name"><a href="#二、name" class="headerlink" title="二、name"></a>二、name</h2><p>name：插件的名称</p>
+<h2 id="三、description"><a href="#三、description" class="headerlink" title="三、description"></a>三、description</h2><p>description：对插件的描述。定义了之后，打开chrome://extensions/，在插件名称的底部可以看到。</p>
+<h2 id="四、version"><a href="#四、version" class="headerlink" title="四、version"></a>四、version</h2><p>version：插件的版本</p>
+<h2 id="五、icons"><a href="#五、icons" class="headerlink" title="五、icons"></a>五、icons</h2><p>icons：打开扩展程序界面 chrome://extensions/，你会在每个插件的左侧看到对应的图标，这个也就在manifest.json定义的icons。一般而言，一个插件应用都有一套对应的图标，分别是四种大小的格式（16px, 32px, 48px, 128px）。在不同的分辨率下，chrome会根据不同情况采用不同大小的图标。</p>
+<p>值得注意的是，这个属性不是必须的。倘若你未指定icons，则chrome会采用默认的“拼图”图标。</p>
+<h2 id="六、browser-action"><a href="#六、browser-action" class="headerlink" title="六、browser_action"></a>六、browser_action</h2><p>browser_action：一般包含 “default_icon”、”default_title” 以及 “default_popup”</p>
+<h3 id="6-1-default-icon"><a href="#6-1-default-icon" class="headerlink" title="6.1 default_icon"></a>6.1 default_icon</h3><p>位于工具栏右侧的插件图标，它的值可以是字符串。也可以是一个对象(如下面)，当值为对象时，在不同的分辨率会选择不同图标。当未指定图标时，chrome会采用icons中指定的图标。但如果icons也没指定图标，那地址栏右侧的图标会变成一个带有“方块?”的深灰色图标，也就是系统默认的图标。 </p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="string">"browser_action"</span>: &#123;</span><br><span class="line">    <span class="string">"default_icon"</span>: &#123;</span><br><span class="line">        <span class="string">"19"</span>: <span class="string">"images/icon19.png"</span>,</span><br><span class="line">        <span class="string">"38"</span>: <span class="string">"images/icon38.png"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在js中，我们可以通过setIcon这个API来改变这个图标：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">chrome.browserAction.setIcon(details, callback);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>details–包含了三个属性。分别是”imageData”，”path”，”tabId”</li>
+<li>imageData–可选，值为对象，canvas元素。</li>
+<li>path–可选，值为字符串。图片在扩展中的的相对路径。</li>
+<li>tabId–可选，值为整数。切换到某一特定标签时，图标改变！关闭标签时，图标重置。</li>
+<li>callback–图标改变后，执行的函数。</li>
+</ul>
+<h3 id="6-2-default-title"><a href="#6-2-default-title" class="headerlink" title="6.2 default_title"></a>6.2 default_title</h3><p>指定了鼠标悬停到工具栏右侧插件图标时显示的文字信息，很像普通html标签的title属性。我们也可以通过setTitle这个API来改变标题，如果插件有后台处理功能，那么我们就可以通过改变title来告知用户的当前状态：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">chrome.browserAction.setTitle(details);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>details–包含了二个属性。分别是”title”，”tabId”</li>
+<li>title–值为字符串。鼠标经过图标时要显示的文字。</li>
+<li>tabId–可选，值为整数。切换到某一特定标签时，标题改变！关闭标签时，标题重置。</li>
+</ul>
+<h3 id="6-3-default-popup"><a href="#6-3-default-popup" class="headerlink" title="6.3 default_popup"></a>6.3 default_popup</h3><p>看到带popup字样，我们便能联想到这是关于弹出层的信息。default_popup指定了鼠标点击工具栏右侧插件图标时显示的弹出层，它是一个html页面（popup.html）,主要用于展示插件内容。我们也可以通过setPopup这个API来改变popup展示的内容：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">chrome.browserAction.setPopup(details);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>details–包含了二个属性。分别是”tabId”，”popup”</li>
+<li>tabId–可选，值为整数。切换到某一特定标签时，popup展示的内容改变！关闭标签时，内容重置。</li>
+<li>popup–值为string。鼠标点击插件图标时弹出的html文件，如果为空字符串，则不弹出内容。</li>
+</ul>
+<h2 id="七、Badge"><a href="#七、Badge" class="headerlink" title="七、Badge"></a>七、Badge</h2><p>Badge翻译成中文表示徽章、标记的意思，它是位于图标底部的信息块。在前面，我们必须通过点击图标或悬停在图标的方式来查看消息，这样看起来或许不那么便捷。而Badge的出现又给我们多提供了一种展现信息状态的选择！它能很直观的反馈消息。</p>
+<p>我们可以通过以下API对Badge进行设置和读取:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">chrome.browserAction.setBadgeText(details);</span><br><span class="line">chrome.browserAction.getBadgeText(details, callback);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>details–包含了二个属性。分别是”text”，”tabId”</li>
+<li>text–值为字符串。显示在Badge里字，只能显示四个字符。</li>
+<li>tabId–可选，值为整数。切换到某一特定标签时，设置生效！关闭标签时，Badge重置。</li>
+<li>callback–设置改变后，执行的回调函数。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">chrome.browserAction.setBadgeBackgroundColor(details);</span><br><span class="line">chrome.browserAction.getBadgeBackgroundColor(details, callback);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>details–包含了二个属性。分别是”color”，”tabId”</li>
+<li>text–值为数组或字符串。设置Badge的背景色，可以是#cccccc，也可以是类似rgba的[100, 200, 200, 50]。</li>
+<li>tabId–可选，值为整数。切换到某一特定标签时，设置生效！关闭标签时，Badge重置。</li>
+<li>callback–设置改变后，执行的回调函数。</li>
+</ul>
+<p>值得注意的时，当设置了Badge，我们在重新加载了插件后，还需要点击工具栏右侧图标，才会看到设置或更新的Badge。</p>
+<h2 id="八、page-action"><a href="#八、page-action" class="headerlink" title="八、page_action"></a>八、page_action</h2><p>page_action：page_action与browser_action的功能大同小异。不同点主要有：</p>
+<ol>
+<li>browser_action中的插件图标”default_icon”是在工具栏右侧，而page_action是在地址栏的右侧。如我们看到chrome中的收藏夹图标，是一个五角星！</li>
+<li>page_action具有显示和隐藏图标的API。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">chrome.pageAction.show(tabId);</span><br><span class="line">chrome.pageAction.hide(tabId);</span><br></pre></td></tr></table></figure>
+<p>tabId–值为整数。在指定标签下显示或隐藏插件图标。</p>
+<h2 id="九、content-scripts"><a href="#九、content-scripts" class="headerlink" title="九、content_scripts"></a>九、content_scripts</h2><p>content_scripts：通常在使用chrome插件时，我们可以对需要操作的页面进行DOM操作。它的值是一个数组，其中数组的第一个项是一个对象。包含了match、exclude_matches、css以及js等属性。这里要说明的是，chrome不允许在页面里直接内嵌js代码，因为你必须外链js文件。</p>
+<p>match–匹配需要操作页面所在的域，即匹配到的页面，才做相应的处理。如果不作域名限制，可通过以下方式：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="string">"matches"</span>: [<span class="string">"*://*/*"</span>]</span><br></pre></td></tr></table></figure>
+<p>js、css–被注入到操作页面的样式和脚本，当用户打开页面，被注入的文件就会自动运行。改变UI界面，处理各种逻辑与行为。<br>关于content_scripts，我写了个进入百度首页，然后倒计时5秒对 chrome插件 进行搜索的chrome插件！<a href="/2016/03/20/chrome-plug-manifest/content_scripts.zip" title="点击下载">点击下载</a></p>
+<h3 id="十、background"><a href="#十、background" class="headerlink" title="十、background"></a>十、background</h3><p>background：如果插件没有default_popup或者前台界面展示，而是通过后台脚本运行，去改变工具栏右侧插件图标的状态（比如page_action改变显示数）来通知用户。这种情况下，我们可以在manifest.json中加入background属性。</p>
+<p>它的值是一个对象，这个对象它包含了一个scripts属性，而scripts属性的值为一个数组，数组的每项是对应的js文件。有点绕？看看配置文件里的 background 吧。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="string">"background"</span>: &#123;</span><br><span class="line">    <span class="string">"scripts"</span>: [<span class="string">"js/background.js"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>比如，我们在background.js中对某个站点发送ajax请求，当站点有信息更新时，background.js也会更新工具栏右侧插件图标的状态，进而通知到用户！</p>
+<p>关于background，我写了个每隔5s改变 Badge 内容为 yes 的chrome插件！<a href="/2016/03/20/chrome-plug-manifest/background.zip" title="点击下载">点击下载</a></p>
+<h2 id="十一、options-page"><a href="#十一、options-page" class="headerlink" title="十一、options_page"></a>十一、options_page</h2><p>options_page：当我们鼠标右键工具栏右侧的插件图标时，会弹出一个菜单，菜单里包含了插件名称、选项、chrome移除和菜单隐藏操作、管理扩展程序以及审查弹出内容这几项。在我们没有在manifest.json指定options_page属性前，“选项”那项是置灰不可选。options_page的属性值是一个页面，假如像以下方式引入了options_page：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="string">"options_page"</span>: <span class="string">"options.html"</span></span><br></pre></td></tr></table></figure>
+<p>再次右键插件图标会发现“选项”变为可选状态，点击它会跳转到我们创建的options.html。当然，页面名称你可以选择自定义。</p>
+<p>通过这个页面，我们可以对插件进行个性化的功能设置，而设置后的值通常以键值对的格式保存在localstorage，虽然localstorage存在跨域限制，但chrome在插件开发方面却没有对此作要求，也正因为如此，我们能轻松读取到用户设置的数据，从而插件也能按照用户设置的状态进行运行！</p>
+<h2 id="十二、permissions"><a href="#十二、permissions" class="headerlink" title="十二、permissions"></a>十二、permissions</h2><p>permissions：web开发中跨域请求是不允许的，如前面讲到的localstrong一样，这个规则在chrome插件中也被打破。我们可以通过在permissions中指定请求的域，在后台js文件对这个域发送ajax，从而完成信息获取。permissions的值是一个数组，每项是对应的url。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="string">"permissions"</span>: [</span><br><span class="line">    <span class="string">"https://www.baidu.com/"</span> <span class="comment">// 设置跨域地址</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>关于permissions，我写了一个可预览城市一周天气的chrome插件！里面包含了前面所讲的 options_page。<a href="/2016/03/20/chrome-plug-manifest/weather_forecast.zip" title="点击下载">点击下载</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

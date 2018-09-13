@@ -1,0 +1,82 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<link rel="stylesheet" href="css/page.css">
+<title>rotate</title>
+</head>
+
+<body>
+
+<div class="container" onselectstart="return false;">
+
+  <div class="hammer-test">
+    <p class="test-des">rotate-旋转</p>
+    <div class="rotate-box"></div>
+    <textarea name="" id="f" cols="30" rows="10"></textarea>
+  </div>
+
+
+  <div class="hammer-test">
+    <p class="test-des">识别器类型</p>
+    <div class="recognizers-type-box"></div>
+    <textarea name="" id="" cols="30" rows="10" class="recognizers-type"></textarea>
+  </div>
+
+
+</div>
+
+<img src="images/rotate.png" alt="" class="qr-code-img">
+
+<script type="text/javascript" src="js/zepto.min.js"></script>
+<script type="text/javascript" src="js/hammer.min.js"></script>
+<script type="text/javascript">
+
+
+var rotateBox = $(".rotate-box"),
+  mRotateBox = new Hammer(rotateBox.get(0));
+
+mRotateBox.startRotate = mRotateBox.initRotate = 0;
+
+mRotateBox.get("rotate").set({ enable: true });
+
+mRotateBox.on("rotatestart", function(e) {
+  mRotateBox.startRotate = mRotateBox.startRotate || 0;
+  mRotateBox.initRotate = mRotateBox.startRotate || 0;
+  rotateBox.html(e.rotation);
+});
+
+mRotateBox.on("rotatemove", function(e) {
+  mRotateBox.startRotate = mRotateBox.initRotate + e.rotation;
+    rotateBox.css({
+      "transform" : "rotate(" + mRotateBox.startRotate + "deg)",
+      "-webkit-transform" :  "rotate(" + mRotateBox.startRotate + "deg)"
+    });
+  rotateBox.html(e.rotation);
+  $("#f").html($("#f").html() + e.rotation + "\n");
+});
+
+
+
+// 探测识别器类型
+var recognizersTypeBox = $(".recognizers-type-box"),
+  mRecognizersTypeBox = new Hammer(recognizersTypeBox.get(0));
+
+mRecognizersTypeBox.on("rotatestart rotatemove rotateend rotatecancel", function(e) {
+  $(".recognizers-type").html($(".recognizers-type").html() + e.type + " ");
+});
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+

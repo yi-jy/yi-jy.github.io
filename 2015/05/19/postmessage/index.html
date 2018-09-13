@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="使用postMessage进行跨域通信 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="onmessage postMessage 跨域操作">
+  
+
+  
+
+  <title>使用postMessage进行跨域通信 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">使用postMessage进行跨域通信</h1>
+
+  <time class="post-time">2015-05-19</time>
+
+  <div class="post-content">
+    <p>我们知道两个域名不同，或同一域名中协议、子域名、端口号其中一个不同时都属于跨域，无论是在平时的开发中，还是在面试里，我们会经常遇见跨域的问题。而针对跨域的解决方案，我们可以使用jsonp，也可以设置window.name，还可以通过iframe等，但这些都不是本篇重点，本篇的重点是postMessage。</p>
+<p>window.postMessage方法提供了一套规避跨域的控制机制。当 window.postMessage 被调用时，会给目标页面发送消息，然后在目标页面触发message事件，目标页面再获取消息，然后进行相应的DOM或其他操作，当然我们也可以反向操作。好了，我们先看下他们的语法。</p>
+<p>对于发送消息的方法有：</p>
+<a id="more"></a>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">otherWindow.postMessage(message, targetOrigin, [transfer]);</span><br></pre></td></tr></table></figure>
+<p><strong>otherWindow</strong> ： 一个对其他窗口的引用。例如iframe 元素的 contentWindow 属性</p>
+<p><strong>message</strong> ： 你要传递的数据，通常是json格式，你需要通过JSON.stringify把它转换为了字符串格式</p>
+<p><strong>targetOrigin</strong> ： 获取页面所在的域，即目标域。你可以设置*，表示允许任何域名获取你的数据，但是为了防止恶意第三方的拦截，最好是设置一个具体的域名。</p>
+<p><strong>transfer</strong> ： 可选参数，一般为空</p>
+<p>而接收消息的事件则是：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">"message"</span>, fn , <span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>fn</strong> ： 这个函数主要用于处理获取的消息</p>
+<h2 id="如何应用"><a href="#如何应用" class="headerlink" title="如何应用"></a>如何应用</h2><p>那么接下来，我们该如何操作呢？ 首先你的准备两个具备跨域条件的域名，这里我在本地分别用wamp和百度的fis搭建了 <a href="http://127.0.0.1" target="_blank" rel="noopener">http://127.0.0.1</a> 和 <a href="http://127.0.0.1:8080" target="_blank" rel="noopener">http://127.0.0.1:8080</a> 两个本地服务环境，因为前者无端口号(即默认端口为80)，而后者有(8080)，所以也算跨域了。</p>
+<p>然后我们在两个域名下分别准备两个页面，比如 <a href="http://127.0.0.1" target="_blank" rel="noopener">http://127.0.0.1</a> 下建立一个 a.html , <a href="http://127.0.0.1:8080" target="_blank" rel="noopener">http://127.0.0.1:8080</a> 下则建立一个 b.html。然后我们通过在 a.html 加入一个iframe作为媒介，iframe的src为 b.html ，接着我们在a.html进行按钮发送消息，通过在目标页b.html中利用onmessage事件监听，将数据插入到b.html中。反之，我们也可以把 b.html 的数据，利用相同的方法在 a.html 页面获取。或许描述的有点繁琐，那么来看代码和示意图了解更多：</p>
+<p><a href="http://127.0.0.1" target="_blank" rel="noopener">http://127.0.0.1</a> 域名下的 a.html</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;p&gt;<span class="xml"><span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">"receive-data-btn"</span>&gt;</span>获取跨域数据<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><span class="xml"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line">&lt;iframe width=<span class="string">"800"</span> src=<span class="string">"http://127.0.0.1:8080/b/b.html"</span> id=<span class="string">"receive-iframe"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span></span><br><span class="line"> </span><br><span class="line">~<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> dataA = &#123;</span><br><span class="line">			name : <span class="string">"yi-a"</span>,</span><br><span class="line">			age : <span class="string">"28-a"</span>,</span><br><span class="line">			tech : <span class="string">"web-a"</span></span><br><span class="line">		&#125;,</span><br><span class="line">		receiveDataBtn = <span class="built_in">document</span>.getElementById(<span class="string">"receive-data-btn"</span>),</span><br><span class="line">		receiveIframe = <span class="built_in">document</span>.getElementById(<span class="string">"receive-iframe"</span>).contentWindow;</span><br><span class="line">		<span class="comment">//获取iframe的window对象，而不是iframe这个dom元素。否则无法使用postMessage方法</span></span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">sendMsg</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> dataStr = <span class="built_in">JSON</span>.stringify(dataA); </span><br><span class="line">		receiveIframe.postMessage( dataStr , <span class="string">"http://127.0.0.1:8080"</span> );</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">getMsg</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(event.origin !== <span class="string">'http://127.0.0.1:8080'</span>) <span class="keyword">return</span>;</span><br><span class="line">		<span class="keyword">var</span> targetData = <span class="built_in">JSON</span>.parse(event.data),</span><br><span class="line">			targetName = targetData.name,</span><br><span class="line">			targetAge = targetData.age,</span><br><span class="line">			targetTech = targetData.tech,</span><br><span class="line">			box = <span class="built_in">document</span>.createElement(<span class="string">"p"</span>),</span><br><span class="line">			boxHtml = <span class="string">"这个页面名称是a.html，是属于域名http://127.0.0.1。从http://127.0.0.1:8080中b.html页面获取的数据为：&lt;br/&gt;"</span>;</span><br><span class="line"> </span><br><span class="line">		boxHtml += <span class="string">" name: &lt;strong style='color:red'&gt;"</span> + targetName + <span class="string">"&lt;/strong&gt;&lt;br/&gt;"</span>;</span><br><span class="line">		boxHtml += <span class="string">" age: &lt;strong style='color:red'&gt;"</span> + targetAge + <span class="string">"&lt;/strong&gt;&lt;br/&gt;"</span>;</span><br><span class="line">		boxHtml += <span class="string">" tech: &lt;strong style='color:red'&gt;"</span> + targetTech + <span class="string">"&lt;/strong&gt;"</span>;</span><br><span class="line">		box.innerHTML = boxHtml;</span><br><span class="line">		<span class="built_in">document</span>.body.appendChild(box);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	receiveDataBtn.addEventListener( <span class="string">"click"</span> , sendMsg ,<span class="literal">false</span> );	</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// message监听 </span></span><br><span class="line">	<span class="built_in">window</span>.addEventListener( <span class="string">"message"</span> , getMsg ,<span class="literal">false</span> );	</span><br><span class="line"> </span><br><span class="line">&#125;()</span><br></pre></td></tr></table></figure>
+<p><a href="http://127.0.0.1:8080" target="_blank" rel="noopener">http://127.0.0.1:8080</a> 域名下的 b.html</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;p&gt;在iframe中：&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">~function()&#123;</span></span><br><span class="line"><span class="regexp">	var dataB = &#123;</span></span><br><span class="line"><span class="regexp">			name : "yi-b",</span></span><br><span class="line"><span class="regexp">			age : "28-b",</span></span><br><span class="line"><span class="regexp">			tech : "web-b"</span></span><br><span class="line"><span class="regexp">		&#125;;</span></span><br><span class="line"><span class="regexp"> </span></span><br><span class="line"><span class="regexp">	function getMsg (event)&#123;</span></span><br><span class="line"><span class="regexp">		if(event.origin != "http:/</span><span class="regexp">/127.0.0.1") return;</span></span><br><span class="line"><span class="regexp">		var targetData = JSON.parse(event.data),</span></span><br><span class="line"><span class="regexp">			targetName = targetData.name,</span></span><br><span class="line"><span class="regexp">			targetAge = targetData.age,</span></span><br><span class="line"><span class="regexp">			targetTech = targetData.tech,</span></span><br><span class="line"><span class="regexp">			box = document.createElement("p"),</span></span><br><span class="line"><span class="regexp">			boxHtml = "这个页面名称是b.html，是属于域名http:/</span><span class="regexp">/127.0.0.1:8080/</span>。从http:<span class="comment">//127.0.0.1中a.html页面获取数据为：&lt;br/&gt;";</span></span><br><span class="line"> </span><br><span class="line">		boxHtml += <span class="string">" name: &lt;strong style='color:red'&gt;"</span> + targetName + <span class="string">"&lt;/strong&gt;&lt;br/&gt;"</span>;</span><br><span class="line">		boxHtml += <span class="string">" age: &lt;strong style='color:red'&gt;"</span> + targetAge + <span class="string">"&lt;/strong&gt;&lt;br/&gt;"</span>;</span><br><span class="line">		boxHtml += <span class="string">" tech: &lt;strong style='color:red'&gt;"</span> + targetTech + <span class="string">"&lt;/strong&gt;"</span>;</span><br><span class="line">		box.innerHTML = boxHtml;</span><br><span class="line">		<span class="built_in">document</span>.body.appendChild(box);</span><br><span class="line"> </span><br><span class="line">		<span class="keyword">var</span> dataStr = <span class="built_in">JSON</span>.stringify(dataB); </span><br><span class="line">		event.source.postMessage(dataStr , event.origin);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="comment">// message监听 </span></span><br><span class="line">	<span class="built_in">window</span>.addEventListener(<span class="string">"message"</span>, getMsg , <span class="literal">false</span>);</span><br><span class="line">&#125;()</span><br></pre></td></tr></table></figure>
+<p>最后点击获取跨域数据的按钮，你将看到：</p>
+<img src="/2015/05/19/postmessage/postMessage.jpg" title="postMessage">
+<h2 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h2><p>目前主流的chrome、firefox都支持，值得欣慰的是，虽然是html5的api，但ie8+也部分支持！</p>
+<p>注意点：</p>
+<ol>
+<li><p>在使用iframe作为媒介时，必须获取iframe的window对象，即本篇文章中的 iframe.contentWindow，而不是iframe这个dom元素，否则无法使用postMessage方法</p>
+</li>
+<li><p>在推送数据前，必须将json数据对象转换为字符串再postMessage，即本篇中先使用 JSON.stringify(json)将json数据转换为字符串 ，否则程序无法执行，报错为 Uncaught SyntaxError: Unexpected token o</p>
+</li>
+<li><p>虽然 <a href="http://127.0.0.1" target="_blank" rel="noopener">http://127.0.0.1</a> 默认也可以用localhost访问。但是在测试时，你必须使用 <a href="http://127.0.0.1" target="_blank" rel="noopener">http://127.0.0.1</a> 访问，因为在获取数据的页面存在一个 event.origin 的判断，如果你用的是localhost，那么 event.origin 永远也不会等于 <a href="http://127.0.0.1，" target="_blank" rel="noopener">http://127.0.0.1，</a> 即程序会一直return</p>
+</li>
+</ol>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="页面跳转滚动到指定位置 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="页面跳转 平滑滚动">
+  
+
+  
+
+  <title>页面跳转滚动到指定位置 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">页面跳转滚动到指定位置</h1>
+
+  <time class="post-time">2013-12-20</time>
+
+  <div class="post-content">
+    <p>我们知道，设置锚点链接可以让我们快速找到想要部分，尤其是在页面内容多的情况下，设置一个锚点链接导航尤为方便。无论是在同一页面跳转还是在不同页面间跳转，只要在对应页面加上相应的id，锚点链接设置 href=”#id” 即可。</p>
+<p>要实现滚动到某个固定位置，如果是当前页面内跳转，传统的做法是获取该位置的offsetTop，然后通过运动函数让body的scrollTop达到offsetTop即可。</p>
+<a id="more"></a>
+<p>跨页面的滚动跳转原理也是类似的，但是如何让目标页面知道跳转到哪个位置呢？这是一个问题。后来想到可以通过给目标页面的url传递参数，即 <a href="http://xxx.com/xx/page.html?id" target="_blank" rel="noopener">http://xxx.com/xx/page.html?id</a>  ，而该参数就是锚点的id，再在目标页面里解析url得到该锚点id，于是就有：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">iPos = location.href.indexOf(“?”);</span><br><span class="line"></span><br><span class="line">oSrc = location.href.substring(iPos+<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">toScrollTop($(oSrc));  <span class="comment">// toScrollTop为运动函数</span></span><br></pre></td></tr></table></figure>
+<p>具体的demo页面：<a href="/2013/12/20/page-jump-to-specfied-position/demo.html" title="页面跳转滚动对比">页面跳转滚动对比</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

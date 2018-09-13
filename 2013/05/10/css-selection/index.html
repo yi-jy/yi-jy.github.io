@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="改变选中文字默认背景和颜色的研究—::selection | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css::selection 改变选中文字背景 改变选中文字颜色">
+  
+
+  
+
+  <title>改变选中文字默认背景和颜色的研究—::selection | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">改变选中文字默认背景和颜色的研究—::selection</h1>
+
+  <time class="post-time">2013-05-10</time>
+
+  <div class="post-content">
+    <p>经常在淘宝ued上看文章，一次突然对其文章的文字选中情况下感兴趣，淘宝ued的选中文字下其背景色并非是默认的蓝色，而是醒目的橙色。如图：</p>
+<a id="more"></a>
+<img src="/2013/05/10/css-selection/selection-example-default1.jpg" title="默认选中文字的背景和颜色">
+<img src="/2013/05/10/css-selection/selection-example1.jpg" title="改变选中文字的背景和颜色">
+<p><strong>::selection的研究？</strong></p>
+<p>这种特别的效果，最初我是想到可能是通过javascript更改document的默认行为，从而去达到的，但是经过了一段时间的百度和google，最后并无相关的技术文章。于是，在时间有限的情况，直接网页保存本地对其逐段代码研究，最后查找到了::selection属性。有了方向后，再去查询::selection的相关内容，得到了::selection的语法：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-pseudo">::selection</span>&#123;<span class="attribute">background</span>:<span class="number">#F60</span>;<span class="attribute">color</span>:<span class="number">#fff</span>;&#125;   <span class="comment">/*一些主流浏览器*/</span></span><br><span class="line"><span class="selector-tag">-moz-selection</span>&#123;<span class="attribute">background</span>:<span class="number">#F60</span>;<span class="attribute">color</span>:<span class="number">#fff</span>;&#125;    <span class="comment">/*firefox浏览器*/</span></span><br></pre></td></tr></table></figure>
+<p>demo的代码如下：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.box</span> <span class="selector-tag">p</span><span class="selector-pseudo">::selection</span>&#123;<span class="attribute">background</span>:<span class="number">#F60</span>;<span class="attribute">color</span>:<span class="number">#fff</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.box</span> <span class="selector-tag">p</span><span class="selector-pseudo">::-moz-selection</span>&#123;<span class="attribute">background</span>:<span class="number">#F60</span>;<span class="attribute">color</span>:<span class="number">#fff</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>CSS 选择器是一种应用于 DOM 节点查找场景的特定微型语法，本质上和正则表达式一样都是一种模式匹配语言，灵活使用可以方便得获取指定置的节点集合。</span><br><span class="line">    <span class="tag">&lt;/<span class="name">p</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>最后得到我们想要的效果，需要再此说明的是，::selection的属性除了背景色和文字颜色，不可操作其他属性（例如font-size，line-height等），还有::selection这个属性必须加在作用的标签上，如果你将其添加到父级元素上则不会有任何的效果，可见这个属性并没有继承性！</p>
+<p><strong>兼容性如何？</strong></p>
+<p>经过轮番测试，到目前为止，支持这个伪类属性的只有ie9+，chrome ,safari, firefox ，opera浏览器。所以说，在兼容性方面，只能是高级浏览器支持，再说其本来就是一个隐藏的很深的一个属性！</p>
+<p><strong>是否可以支持背景图片？</strong></p>
+<p>关于是否支持背景图片这个问题，是后来向自己提的。于是删除当前的背景色，给对应的段落标签设置背景图片：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.box</span> <span class="selector-tag">p</span><span class="selector-pseudo">::selection</span>&#123;<span class="attribute">background</span>:<span class="built_in">url</span>(../images/bg.jpg);<span class="attribute">color</span>:<span class="number">#fff</span>;&#125;</span><br><span class="line"><span class="selector-class">.box</span> <span class="selector-tag">p</span><span class="selector-pseudo">::-moz-selection</span>&#123;<span class="attribute">background</span>:<span class="built_in">url</span>(../images/bg.jpg);<span class="attribute">color</span>:<span class="number">#fff</span>;&#125;</span><br></pre></td></tr></table></figure>
+<p>结果如下。</p>
+<p>Chrome：</p>
+<img src="/2013/05/10/css-selection/selection-example-default2.jpg" title="Chrome-设置图片背景的selection">
+<p>其他浏览器：</p>
+<img src="/2013/05/10/css-selection/selection-example-bg.jpg" title="其他浏览器-设置图片背景的selection">
+<p>真相告诉我们，其他浏览器并不会像chrome浏览器那样智能，无效背景采取默认的处理方式，而是会在文字的选中区域出现空白。所以说，这个属性是不能设置背景图片。如果纯粹是为了增加页面文章观感的新颖，就直接使用纯色背景吧！</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

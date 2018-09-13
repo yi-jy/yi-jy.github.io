@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="浏览器检测和属性支持方法总结[js-html-css] | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css3 @support  navigator.userAgent 浏览器检测">
+  
+
+  
+
+  <title>浏览器检测和属性支持方法总结[js-html-css] | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">浏览器检测和属性支持方法总结[js-html-css]</h1>
+
+  <time class="post-time">2014-07-19</time>
+
+  <div class="post-content">
+    
+<p>浏览器检测是前端开发工作中最常见的问题，有时因为一个属性的不支持，我们需要判断浏览器并对不支持的浏览器做优雅降级。而检测浏览器的方法也有多种，总体来说，我们可以使用js的特性检测(能力检测)或者window对象里的ua、也可以用html的注释、又或者通过css的hack来处理不同浏览器。在实际开发过程中，也需要判断一些属性的支持情况。因为内容比较繁杂，所以在此做个总结。</p>
+<a id="more"></a>
+<h2 id="Javascript"><a href="#Javascript" class="headerlink" title="Javascript"></a>Javascript</h2><p>其实在高级程序设计里有提到过，对于浏览器的判断，特性检测的优先级是高于ua检测的。但是，因为现在浏览器版本更新速度都比较频繁，一些浏览器的独有特性不在独有了。说到这里，chrome浏览器虽然是08年发布的，但是由于它的优异表现而被其他各种浏览器模拟。所以说，有时候特性检测并不可靠，而ua则反映的是浏览器的内核、浏览器名称以及版本信息，虽然它会被伪造，但个人还是觉得用它检测是比较靠谱。我整理了一个检测函数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> browser=&#123;</span><br><span class="line">　　　ua : navigator.userAgent.toLowerCase(),</span><br><span class="line">　　　detect : <span class="function"><span class="keyword">function</span>(<span class="params">str</span>)</span>&#123;</span><br><span class="line">　　　　　<span class="keyword">var</span> re=<span class="keyword">new</span> <span class="built_in">RegExp</span>(str);</span><br><span class="line">　　　　　<span class="keyword">return</span> re.test(<span class="keyword">this</span>.ua);</span><br><span class="line">　　　&#125;,</span><br><span class="line">　　　ie : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">　　　　　<span class="keyword">return</span> <span class="keyword">this</span>.detect(<span class="string">"msie"</span>);</span><br><span class="line">　　　&#125;,</span><br><span class="line">　　　ie6 : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">　　　　　<span class="keyword">return</span> <span class="keyword">this</span>.detect(<span class="string">"msie 6.0"</span>);</span><br><span class="line">　　　&#125;,</span><br><span class="line">　　　ie7 : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">　　　　　<span class="keyword">return</span> <span class="keyword">this</span>.detect(<span class="string">"msie 7.0"</span>);</span><br><span class="line">　　　&#125;,</span><br><span class="line">　　　ie8 : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">　　　　　<span class="keyword">return</span> <span class="keyword">this</span>.detect(<span class="string">"msie 8.0"</span>);</span><br><span class="line">　　　&#125;,</span><br><span class="line">　　　ie9 : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">　　　　　<span class="keyword">return</span> <span class="keyword">this</span>.detect(<span class="string">"msie 9.0"</span>);</span><br><span class="line">　　　&#125;,</span><br><span class="line">　　　ie10 : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">　　　　　<span class="keyword">return</span> <span class="keyword">this</span>.detect(<span class="string">"msie 10.0"</span>);</span><br><span class="line">　　　&#125;,</span><br><span class="line">　　　chrome : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">　　　　　<span class="keyword">return</span> <span class="keyword">this</span>.detect(<span class="string">"applewebkit"</span>)&amp;&amp;<span class="keyword">this</span>.detect(<span class="string">"chrome"</span>)&amp;&amp;!<span class="keyword">this</span>.detect(<span class="string">"opr"</span>);</span><br><span class="line">　　　&#125;,</span><br><span class="line">　　　firefox : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">　　　　　<span class="keyword">return</span> <span class="keyword">this</span>.detect(<span class="string">"gecko"</span>)&amp;&amp;<span class="keyword">this</span>.detect(<span class="string">"firefox"</span>);</span><br><span class="line">　　　&#125;,</span><br><span class="line">　　　opera : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">　　　　　<span class="keyword">return</span> <span class="keyword">this</span>.detect(<span class="string">"applewebkit"</span>)&amp;&amp;<span class="keyword">this</span>.detect(<span class="string">"opr"</span>);</span><br><span class="line">　　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样的话，如果你要判断chrome浏览器，只需这样做即可：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(browser.chrome())&#123;</span><br><span class="line">　　<span class="comment">// chrome浏览器才执行的代码 </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，你也可以使用jquery中$.browser和$.browser.version来组合判断。</p>
+<h2 id="Html"><a href="#Html" class="headerlink" title="Html"></a>Html</h2><p>说到html检测浏览器，我们通常都是用html的注释标签来判断浏览器，用它主要是区分IE和非IE浏览器。如果只想要某段代码在IE浏览器生效，我们可以像这样引入一段代码（注意IE需要大写）：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--[if IE]&gt;</span></span><br><span class="line"><span class="comment">IE浏览器才生效的代码...</span></span><br><span class="line"><span class="comment">&lt;![endif]--&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如上所见，而如果我们需要在非IE浏览器生效，则可以这样引入：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--[if !IE]&gt;&lt;!--&gt;</span> </span><br><span class="line">非IE浏览器才生效的代码...</span><br><span class="line"><span class="comment">&lt;!--&lt;![endif]--&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如果你要判断不同版本的IE浏览器，只需要在代码中设置IE的版本：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--[if IE 6]&gt; </span></span><br><span class="line"><span class="comment">只要IE6浏览器下才生效的代码...</span></span><br><span class="line"><span class="comment">&lt;![endif]--&gt;</span></span><br></pre></td></tr></table></figure>
+<p>另外，假如你想要设置某个范围内不同版本的IE浏览器，我们可以在html加入相应的判断，小于或等于有lt(less than)、 lte(less than or equal )、 而大于或等于有gt(greater than)、 lte(greater than or equal )：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--[if lt IE 8]&gt;</span></span><br><span class="line"><span class="comment">    IE8以下浏览器下才生效的代码...</span></span><br><span class="line"><span class="comment">&lt;![endif]--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--[if lte IE 8]&gt;</span></span><br><span class="line"><span class="comment">    IE8以及IE8以下浏览器下才生效的代码...</span></span><br><span class="line"><span class="comment">&lt;![endif]--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--[if gt IE 8]&gt;</span></span><br><span class="line"><span class="comment">    IE8以上浏览器下才生效的代码...</span></span><br><span class="line"><span class="comment">&lt;![endif]--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--[if gte IE 8]&gt;</span></span><br><span class="line"><span class="comment">    IE8以及IE8以上浏览器下才生效的代码...</span></span><br><span class="line"><span class="comment">&lt;![endif]--&gt;</span></span><br></pre></td></tr></table></figure>
+<p>对html5标签，你可以在标签内加入相关标注:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">canvas</span>&gt;</span></span><br><span class="line">您的浏览器不支持canvas元素</span><br><span class="line"><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>而对于一些html5的功能，如果要在不支持的浏览器使用的话，我们也可以使用modernizr。</p>
+<h2 id="Css"><a href="#Css" class="headerlink" title="Css"></a>Css</h2><p>对于css判断浏览器，想必我们使用最多的是css hack 。当然你也可以在html判断的基础上相应的引入不同样式文件，但是对于我们只是设置几个元素的独立属性显然是有点杀鸡用牛刀，因此实用性不大。</p>
+<h3 id="Css3中的-support"><a href="#Css3中的-support" class="headerlink" title="Css3中的@support"></a>Css3中的@support</h3><p>在css3中定义了@support属性，这个属性主要是用于判断某个css属性是否在浏览器支持。support的语法为:</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">@supports(name:value) &#123;</span><br><span class="line">	<span class="comment">/* 相关css属性*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>让我们来看下具体使用，假设我们要检测box-sizing属性的支持情况：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">@supports(box-sizing:content-box)  &#123;</span><br><span class="line"><span class="selector-class">.box</span>&#123;<span class="attribute">box-sizing</span>:content-box;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然你也可以组合多个属性来检测：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">@supports(box-sizing:content-box) or (background-clip:border-box) &#123;</span><br><span class="line">	<span class="selector-class">.box</span>&#123;<span class="attribute">box-sizing</span>:content-box;<span class="attribute">background-clip</span>:border-box&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="JS检测css3属性的支持"><a href="#JS检测css3属性的支持" class="headerlink" title="JS检测css3属性的支持"></a>JS检测css3属性的支持</h3><p>由于上面提到的@supports并非所有浏览器支持，而有时我们需要对支持或不支持css3浏览器做相应的处理（比如加个class），因此选择一种通用方法很有必要，在这里，我们使用js和浏览器前缀去判断：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> detectCssSupport = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	   <span class="keyword">var</span> div = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>),</span><br><span class="line">	      vendors = <span class="string">'Khtml Ms O Moz Webkit'</span>.split(<span class="string">' '</span>),</span><br><span class="line">	      len = vendors.length;</span><br><span class="line"></span><br><span class="line">	   <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">prop</span>) </span>&#123;</span><br><span class="line">	   	  <span class="comment">// 如果prop是div的可用属性，则浏览器支持，返回true。因为某些属性不用前缀，因此最先判断。</span></span><br><span class="line">	      <span class="keyword">if</span> ( prop <span class="keyword">in</span> div.style ) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">	 	  <span class="comment">// 将prop(css)属性的首字母转换为大写，类似BoxShadow，浏览器表现为MozBoxShadow // replace第二个参数是第一个参数匹配的结果</span></span><br><span class="line">	      prop = prop.replace(<span class="regexp">/^[a-z]/</span>, <span class="function"><span class="keyword">function</span>(<span class="params">val</span>) </span>&#123;</span><br><span class="line">	         <span class="keyword">return</span> val.toUpperCase();</span><br><span class="line">	      &#125;);</span><br><span class="line"></span><br><span class="line">	 	  <span class="comment">// 加前缀的判断 </span></span><br><span class="line">	      <span class="keyword">while</span>(len--) &#123;</span><br><span class="line">	         <span class="keyword">if</span> ( vendors[len] + prop <span class="keyword">in</span> div.style ) &#123;</span><br><span class="line">	            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	         &#125; </span><br><span class="line">	      &#125;</span><br><span class="line">	      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	   &#125;;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<p>当我们判断某个css属性时，就可以这样。如果支持，就加上相应的类：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(detectCssSupport(<span class="string">"boxShadow"</span>))&#123;</span><br><span class="line">　　　element.className+=” box-shadow”;			</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>对于一些css新属性，html、xml标签的浏览器支持情况，你可以查看 <a href="http://caniuse.com/" target="_blank" rel="noopener">http://caniuse.com/</a></p>
+<p>而如果你要判断你现在使用的浏览器是否支持html5标签，你也可以进入这个网址 <a href="http://html5test.com/" target="_blank" rel="noopener">http://html5test.com/</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://davidwalsh.name/css-supports" target="_blank" rel="noopener">CSS @supports</a></li>
+<li><a href="http://code.tutsplus.com/tutorials/quick-tip-detect-css3-support-in-browsers-with-javascript–net-16444" target="_blank" rel="noopener">Quick Tip: Detect CSS3 Support in Browsers with JavaScript</a></li>
+<li><a href="http://www.adobe.com/cn/devnet/dreamweaver/articles/using-modernizr.html" target="_blank" rel="noopener">using-modernizr</a></li>
+</ul>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

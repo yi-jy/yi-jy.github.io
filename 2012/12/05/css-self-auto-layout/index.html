@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="自适应布局–中部内容自适应宽度 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="自适应布局 css布局">
+  
+
+  
+
+  <title>自适应布局–中部内容自适应宽度 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">自适应布局–中部内容自适应宽度</h1>
+
+  <time class="post-time">2012-12-05</time>
+
+  <div class="post-content">
+    <p>项目中虽然很少用到自适应布局，但是也有不少网站运用它，特别是一些大型的论坛网站，就拿本站的wordpress后台也是采用此种布局，因此了解这种布局的结构非常有必要。</p>
+<a id="more"></a>
+<p>特点和要求：左侧div和中侧div都在一个左浮动，并且宽度100%的大div中，并且此大div必须设置一个大于或者等于右侧div宽度的负右margin，在此大div左浮动的情况下，右侧div才会顶上来，与左、中侧div水平齐平。而对于右侧div的要求是：要与大div节点同级，并且需要设置右浮动。另外，想要左侧div与中侧div有一定水平距离，则要设置中侧div一个大于左侧div宽度的margin即可。</p>
+<img src="/2012/12/05/css-self-auto-layout/zsybj1.jpg" title="中侧自适应宽度">
+<p>以下是某个具体实例的代码：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.wrap</span>&#123;<span class="attribute">width</span>:<span class="number">100%</span>;<span class="attribute">float</span>:left;<span class="attribute">margin-right</span>:-<span class="number">300px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.left</span>&#123;<span class="attribute">width</span>:<span class="number">200px</span>;<span class="attribute">height</span>:<span class="number">500px</span>;<span class="attribute">float</span>:left;<span class="attribute">background</span>:<span class="number">#0CF</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.center</span>&#123;<span class="attribute">margin</span>:<span class="number">0</span> <span class="number">320px</span> <span class="number">0</span> <span class="number">210px</span>;<span class="attribute">background</span>:green;<span class="attribute">height</span>:<span class="number">500px</span>;<span class="attribute">color</span>:<span class="number">#fff</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.right</span>&#123;<span class="attribute">width</span>:<span class="number">300px</span>;<span class="attribute">height</span>:<span class="number">500px</span>;<span class="attribute">background</span>:<span class="number">#000</span>;<span class="attribute">color</span>:<span class="number">#fff</span>;<span class="attribute">float</span>:right;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"wrap"</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span>这是左侧内容<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"center"</span>&gt;</span>这是中侧的内容<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span>这是右侧的内容<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>我的时钟</title>
+<style type="text/css">
+*{margin:0;padding:0;}
+#clock{width:410px;height:410px;margin:30px auto;position:relative;background:url(clock.gif) no-repeat;}
+#clock span{display:block;height:1px;background:red;position:absolute;top:204px;left:206px;}
+#clock #h{width:80px;-webkit-transform:rotate(30deg);-webkit-transform-origin:0 0;}
+#clock #m{width:120px;-webkit-transform:rotate(90deg);-webkit-transform-origin:0 0;}
+#clock #s{left:170px;width:190px;-webkit-transform:rotate(50deg);-webkit-transform-origin:37px 0;}
+</style>
+</head>
+
+<body>
+<div id="clock">
+    <span id="h"></span>
+    <span id="m"></span>
+    <span id="s"></span>
+</div>
+</body>
+</html>
+
+
+<script type="text/javascript">
+// 秒针走360deg ， 分针走6deg ，时针走 0.5deg
+(function(){
+	var iH=document.getElementById("h"),
+		iM=document.getElementById("m"),
+		iS=document.getElementById("s");
+	var timer=null;
+
+	pointerRotate();
+		
+	timer=setInterval(pointerRotate,1000); 
+	
+	function pointerRotate(){
+		var oDate=new Date(),
+			oH=oDate.getHours(),
+			oM=oDate.getMinutes(),
+			oS=oDate.getSeconds();
+		
+		if(oH>=12){
+			oH=oH-12;
+		}
+		
+		var nowH=parseInt(iH.style.WebkitTransform.substring(7));
+		var nowM=parseInt(iM.style.WebkitTransform.substring(7));
+		var nowS=parseInt(iS.style.WebkitTransform.substring(7));
+		if(nowS==270){
+			nowS=-90;
+		}
+		nowS=oS*6-90;
+		iS.style.WebkitTransform="rotate("+nowS+"deg)";
+		if(nowM==270){
+			nowM=-90;
+		}
+		nowM=oM*6-90;
+		iM.style.WebkitTransform="rotate("+nowM+"deg)";
+		// 分针确定时针在一小时之内的度数
+		nowH=oH*30-90+Math.floor(oM/60*30);  
+		if(nowH==270){
+			nowH=-90;
+		}	
+		iH.style.WebkitTransform="rotate("+nowH+"deg)";	
+	}
+	
+})()
+</script>

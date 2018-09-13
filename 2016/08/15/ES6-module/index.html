@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="ES6-module | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="es6 module">
+  
+
+  
+
+  <title>ES6中的 Module | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">ES6中的 Module</h1>
+
+  <time class="post-time">2016-08-15</time>
+
+  <div class="post-content">
+    <p>为了方便管理和维护一些复杂的项目，开发者往往会将整个大型项目细分为很多不同的功能模块。这样，模块之间便没有那么强的耦合度，如果某个模块出错，也能快速定位和单元测试。并且，正是由于模块之间的弱关联性，团队内便可以多人同时开发一个项目，而且我们可以把单个模块抽离出来，应用到其他项目中。<a id="more"></a></p>
+<p>很多开发语言都有 模块 或者类似模块的概念，比如说，C语言中的模块是一个个小小的独立文件，应用时，只需要在主程序中 <code>include</code> 进来。又比如说 node.js 中模块叫做 包（package），要使用一些常见的功能，只需要在 <a href="https://www.npmjs.com/" target="_blank" rel="noopener">npm官网</a> 上下载对应的依赖包，然后再 <code>require</code> 到项目即可。</p>
+<p>但是，并不是所有的语言都具有 模块 的概念。至少对于 ES6 之前的 JavaScript 来说，它是没有的。因此，如果我们要在程序中公用一些方法或者代码，要么，就把代码写在一个作用域内，要么，就把一些方法挂载在 window 全局对象上。比如，最常见的插件代码中，总会有这么一句：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.plugInName = plugInName;</span><br></pre></td></tr></table></figure>
+<p>但是，我们都知道，全局变量会导致代码冲突或者安全问题。</p>
+<p>于是，ES6 就出现了 模块（Module）。</p>
+<p>简单来说，模块 有点类似 <code>script</code> 标签的使用，模块这个文件也就是 <code>script</code> 中 <code>src</code> 属性所引用的文件。但它们两者还有一些区别：</p>
+<ul>
+<li>模块的下载和执行顺序取决于它们引用的先后位置</li>
+<li>模块中的代码，默认是处于严格模式，你无法手动退出这个模式</li>
+<li>模块的顶层对象（this）不是 <code>window</code>，而是 <code>undefined</code></li>
+<li>模块可以只导入需要的部分，而不用加载整个模块</li>
+</ul>
+<p>在了解模块的相关内容之前，需要注意的是，目前主流浏览器还没有支持 module 的，但你可以通过相关编译工具将它转换成 ES5 代码。</p>
+<h2 id="一、export（导出）的使用"><a href="#一、export（导出）的使用" class="headerlink" title="一、export（导出）的使用"></a>一、export（导出）的使用</h2><p>为了让当前模块所定义的内容可以在其他模块中使用，我们必须使用 <code>export</code> 命令来导出它们。比如，导出一个变量：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">var</span> name = <span class="string">'yix'</span>;</span><br></pre></td></tr></table></figure>
+<p>在上面代码中，我们只是在变量声明的前面加上关键词 <code>export</code>，便完成了导出。你也可以像下面这样导出多个变量：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">var</span> name = <span class="string">'yix'</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">let</span> job = <span class="string">'web'</span>;</span><br></pre></td></tr></table></figure>
+<p>或者，采用先定义，再一次性导出的形式：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">'yix'</span>;</span><br><span class="line"><span class="keyword">let</span> job = <span class="string">'web'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;name, job&#125;;</span><br></pre></td></tr></table></figure>
+<p>要注意的是，这里用 <code>{}</code> 大括号将导出的内容包含起来。</p>
+<p>除了变量，我们还可以导出函数、对象、类等，如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 导出一个变量</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">var</span> name = <span class="string">'yix'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 导出一个函数</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 导出一个对象 </span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">var</span> person = &#123;</span><br><span class="line">    name: <span class="string">'yix'</span>,</span><br><span class="line">    job: <span class="string">'web'</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 导定义类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(name) &#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 导出 Person 类</span></span><br><span class="line"><span class="keyword">export</span> &#123;Person&#125;;</span><br></pre></td></tr></table></figure>
+<p>假设上面模块名为 <code>test.js</code>，后文中提到的 <code>test.js</code> 都是此处所定义的。</p>
+<p>无论是导出单个内容、还是导出多个内容，它们都需要指定标识符（变量名、函数名等）。但有的时候，我们可能不希望逐个指定标识符导出，我们需要导出整个模块。比如在 <code>main.js</code> 里导出整个 <code>test.js</code> 模块，则可以采用如下写法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> * <span class="keyword">from</span> <span class="string">'./test.js'</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="二、import（导入）的使用"><a href="#二、import（导入）的使用" class="headerlink" title="二、import（导入）的使用"></a>二、import（导入）的使用</h2><p>为了能够在当前模块可以使用其他模块所定义的内容，我们必须首先使用 <code>import</code> 命令来导入它们。比如，要导入 <code>test.js</code> 中的变量 <code>name</code>，你可以这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;name&#125; <span class="keyword">from</span> <span class="string">'./test.js'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(name); <span class="comment">// "yix"</span></span><br></pre></td></tr></table></figure>
+<p>通过上面代码，我们可以看到，<code>import</code> 后面跟着的是 <code>{}</code> 大括号，然后大括号中包含了我们需要导入的变量，它实际上是模块中的一个引用。它的名称和在 <code>test.js</code> 里定义的是一样的，于是，我们便可以在当前模块使用这个变量了。</p>
+<p>而大括号后面是跟着关键词 <code>from</code>，它后面是导入模块的路径，表示该变量是从某某路径的模块所导入而来的。</p>
+<p>说到导入模块的路径，它可以使用绝对路径，也可以使用绝对路径。假设当前模块是 <code>main.js</code>，需要导入的模块名为 <code>test.js</code>。那么可以总结为以下四种情况：</p>
+<ul>
+<li>url 格式，比如 <code>https://www.xx.com/test.js</code></li>
+<li>以 <code>/</code> 开头的，比如 <code>/test.js</code>，表示从 <code>main.js</code> 所在项目根目录查找 <code>test.js</code></li>
+<li>以 <code>./</code> 开头的，比如 <code>./test.js</code>，表示从 <code>main.js</code> 所在目录查找 <code>test.js</code></li>
+<li>以 <code>../</code> 开头的，比如 <code>../test.js</code>，表示从 <code>main.js</code> 父级目录开始查找 <code>test.js</code></li>
+</ul>
+<p>和 导出 一样，我们也能同时导入多个引用，如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;name, add, person&#125; <span class="keyword">from</span> <span class="string">'./test.js'</span>;</span><br></pre></td></tr></table></figure>
+<p>在这里，我们导入了三个引用，分别为：变量 <code>name</code>、函数 <code>add</code>、对象 <code>person</code>，它们之间用逗号隔开。</p>
+<p>在某些特殊情况下，可能需要导入整个模块。我们不会在 <code>{}</code> 大括号中逐个列出 <code>test.js</code> 定义的变量、方法或者类，因为我们有更便捷的方式，即：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> xx <span class="keyword">from</span> <span class="string">'./test.js'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(xx.name); <span class="comment">// "yix"</span></span><br></pre></td></tr></table></figure>
+<p>上面的写法，可能与我们之前遇到的都不大相同。这里首先用到了 <code>*</code> 符号，表示全部的意思，然后接着是一个关键词 <code>as</code>，之后是 <code>xx</code>（这个 <code>xx</code> 是由你自定义名称），而后面的 <code>from</code> 和前面是一样的。</p>
+<p>以上格式为固定写法，值得一说就是这个我们自定义的 <code>xx</code>。我们并没有在 <code>test.js</code> 定义 <code>xx</code>，但是它却以对象的形式存在当前模块中，而 <code>test.js</code> 模块中导入的内容都以属性的形式挂载到了这个 <code>xx</code> 对象上，这样，我们便可以在当前模块使用 <code>test.js</code> 所导出的内容。总之，你可以简单把 <code>xx</code> 理解为访问 <code>test.js</code> 整个模块的钩子。</p>
+<p>另外，主要注意的是，如果多次使用 <code>import</code> 从同一个模块中导入多个内容，这个模块只会加载并执行一次，所以以下两种写法是等价的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;name&#125; <span class="keyword">from</span> <span class="string">'./test.js'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;add&#125; <span class="keyword">from</span> <span class="string">'./test.js'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等价于</span></span><br><span class="line"><span class="keyword">import</span> &#123;name, add&#125; <span class="keyword">from</span> <span class="string">'./test.js'</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="三、as-的使用"><a href="#三、as-的使用" class="headerlink" title="三、as 的使用"></a>三、as 的使用</h2><p>其实在多人开发中，很多模块可能不是我们自己写的，我们只需要将一些需要模块导入进来即可。这些模块中定义的内容在命名上可能不太符合语义，那么，我们会觉得如果在导入模块时，能改变原有的名称（比如变量，函数名等。内部的功能实现不变）就好了。</p>
+<p>有没有办法实现呢？答案是肯定的。</p>
+<p>ES6 模块中提供了关键词 <code>as</code>，它的功能主要是在模块外部重新指定引用名称。</p>
+<p>比如，前面前文中提到的 <code>test.js</code> 模块，这里面有这么一个函数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 导出一个函数</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在使用这个函数时，我觉得它的函数名为 sum 更为合适。于是，我们要把 <code>add</code> 更改为 <code>sum</code>，这里有两种方法。</p>
+<p>第一种是在导出模块 <code>test.js</code> 中处理，即先定义，再命名导出：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;add <span class="keyword">as</span> sum&#125;;</span><br></pre></td></tr></table></figure>
+<p>然后使用时，直接使用该函数名：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;sum&#125; <span class="keyword">from</span> <span class="string">"./test.js"</span>;</span><br></pre></td></tr></table></figure>
+<p>这种做法可能会被人骂。原因有两个，其一，这些模块通常都是别人编写的，擅自改写别人代码，或许会引发他们的不满（命名这种东西，没有对错）。其二，这个模块可能是公用的，别人的项目代码已经导入并使用其中的功能了，如果你导出时将 <code>add</code> 修改为了 <code>sum</code>，那使用导入使用时，就必须用 <code>sum</code> 函数，但是，之前的项目代码还是用的 <code>add</code>，这必然会引发错误。</p>
+<p>而另外一种方法则相对好多了。因为它无需修改原有的模块代码，只是在使用导入模块时，重命名引用即可，如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;add <span class="keyword">as</span> sum&#125; <span class="keyword">from</span> <span class="string">'./test.js'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(sum(<span class="number">2</span>, <span class="number">8</span>)); <span class="comment">// 10</span></span><br></pre></td></tr></table></figure>
+<h2 id="四、默认值"><a href="#四、默认值" class="headerlink" title="四、默认值"></a>四、默认值</h2><p>通过前面的内容，我们知道，无论是 export（导出）还是 import（导入），都必须指定对应的标识符，即引用的名称。</p>
+<p>我们可以不指定标识符，只要应用模块的默认值即可。比如导出一个匿名函数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由上面的代码可以知道，采用默认值导出的方式，需要在 <code>export</code> 后面加上关键词 <code>default</code> 。此时，整个模块对外的接口，便是这个求和函数。</p>
+<p>当然，我们也可以先声明函数，再进行默认输出，如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> add;</span><br></pre></td></tr></table></figure>
+<p>此时，需要注意的是，<code>add</code> 无需用 <code>{}</code> 大括号包括起来。结合前面说到的 <code>as</code> 重命名，上面代码块的最后一行也可以写成这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> &#123;add <span class="keyword">as</span> <span class="keyword">default</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p>类似的，我们也可以在导入时应用默认值。比如，导入默认值为某个函数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> add <span class="keyword">from</span> <span class="string">'./test.js'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(add(<span class="number">2</span>, <span class="number">8</span>)); <span class="comment">// 10</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，默认值导入的写法与基本导入有点类似，但这里的 <code>add</code> 没有被 <code>{}</code> 包括起来。</p>
+<p>另外，在同一 <code>import</code> 语句，你不仅能导入默认值，还能导入普通引用。只需通过如下写法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> add, &#123;name&#125; <span class="keyword">from</span> <span class="string">'./test.js'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(add(<span class="number">2</span>, <span class="number">8</span>)); <span class="comment">// 10</span></span><br><span class="line"><span class="built_in">console</span>.log(name); <span class="comment">// "yix"</span></span><br></pre></td></tr></table></figure>
+<p>上面的代码中，既导入了默认值，也导入了普通引用。</p>
+<p>要注意的是，默认值必须写在普通引用前，它们之间用 <code>,</code> 分割开来。默认值外面没有 <code>{}</code> 大括号，而普通引用仍然还是被 <code>{}</code> 大括号所括起来。如果你想要保留默认值，并且把它们都放入 <code>{}</code> 大括号中，你可以使用 <code>as</code> 重名，像这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 等价于上面代码的第一行</span></span><br><span class="line"><span class="keyword">import</span> &#123;<span class="keyword">default</span> <span class="keyword">as</span> add, name&#125; <span class="keyword">from</span> <span class="string">'./test.js'</span>;</span><br></pre></td></tr></table></figure>
+<p>在某些情况下，我们会在模块中导出之前导入的模块，比如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;add, name&#125; <span class="keyword">from</span> <span class="string">'./test.js'</span>;</span><br><span class="line"><span class="keyword">export</span> &#123;add, name&#125;;</span><br></pre></td></tr></table></figure>
+<p>上面的代码，从 <code>test.js</code> 模块中导入了 <code>add</code> 函数和 <code>name</code> 变量，接着又把这两个引用导出。根据模块的特性，我们也可以是用一行 <code>export</code> 语句来实现它：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 等价于上面两行代码</span></span><br><span class="line"><span class="keyword">export</span> &#123;add, name&#125; <span class="keyword">from</span> <span class="string">'./test.js'</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="五、加载模块"><a href="#五、加载模块" class="headerlink" title="五、加载模块"></a>五、加载模块</h2><p>默认情况下，<code>&lt;script&gt;</code> 元素用于加载脚本，当没有指定 <code>type</code> 属性时，该元素主要用于存放或者加载 Javascipt 文件。我们可以将脚本代码内嵌在其中，也可以结合 <code>src</code> 属性来外链 JavaScript 文件。</p>
+<h3 id="5-1-网页中使用模块"><a href="#5-1-网页中使用模块" class="headerlink" title="5.1 网页中使用模块"></a>5.1 网页中使用模块</h3><p>ES6 也是用 <code>&lt;script&gt;</code> 标签在网页中加载模块，它也有 <code>defer</code>（延迟加载）和 <code>async</code>（异步加载）这样的属性。不同的是，你必须设置 <code>&lt;script&gt;</code> 元素的 <code>type</code> 属性值为 <code>module</code>，这样浏览器通过这个属性值才能分辨出它是一个模块。</p>
+<p>像普通的脚本一样，它也包含两种形式，即：内嵌文件、外链文件。</p>
+<p>内嵌是这样的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script type=<span class="string">"module"</span>&gt;</span><br><span class="line">    <span class="keyword">import</span> &#123;add&#125; <span class="keyword">from</span> <span class="string">"./test.js"</span>;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>而外链则是这样的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script type=<span class="string">"module"</span> src=<span class="string">"test.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>可以看到，它的用法几乎与普通脚本没多大差别。</p>
+<h3 id="5-2-模块加载执行顺序"><a href="#5-2-模块加载执行顺序" class="headerlink" title="5.2 模块加载执行顺序"></a>5.2 模块加载执行顺序</h3><p>我们都知道，网页性能优化中有一点，是建议将 JavaScript 代码或者外链文件的 <code>&lt;script&gt;</code> 放置在网页底部。这是因为 JavaScript 会阻塞网页的加载，它需要完成下载 -&gt; 解析 -&gt; 执行 的过程。</p>
+<p>如果网页中链接了多个 JavaScript 文件，你是无法得知哪个 JavaScript 文件先下载完，哪个 JavaScript 先执行。</p>
+<p>但是对于没有做异步处理的模块，它们加载与执行的顺序，则取决于它们的所在位置顺序。先来看段代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script type=<span class="string">"module"</span> src=<span class="string">"test1.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line">&lt;script type=<span class="string">"module"</span>&gt;</span><br><span class="line">    <span class="keyword">import</span> &#123;add&#125; <span class="keyword">from</span> <span class="string">"./test.js"</span>;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script type="module" src="test2.js"&gt;&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure>
+<p>上面代码中，有三个模块，其中两个是外部链接，中间那个是内联模块。</p>
+<p>这三个模块加载的顺序如下：</p>
+<ol>
+<li>下载并解析 <code>test1.js</code></li>
+<li>递归下载并解析在 <code>test1.js</code> 中导入的模块</li>
+<li>解析行内模块</li>
+<li>递归下载并解析行内导入的模块</li>
+<li>下载并解析 <code>test2.js</code></li>
+<li>递归下载并解析在 <code>test2.js</code> 中导入的模块</li>
+</ol>
+<p>加载完后，接着等待整个文档解析。待文档（document）解析完，于是，开始执行模块。它们的顺序如下：</p>
+<ol>
+<li>递归执行 <code>test1.js</code> 导入的模块</li>
+<li>执行 <code>test1.js</code></li>
+<li>递归执行行内模块导入的模块</li>
+<li>执行行内模块</li>
+<li>递归执行 <code>test2.js</code> 导入的模块</li>
+<li>执行 <code>test2.js</code></li>
+</ol>
+<p>如果还有更多模块，可以依次类推。我们无需在 <code>&lt;script&gt;</code> 元素上加 <code>defer</code> 属性来延迟模块的下载，因为，带 <code>type=&quot;module&quot;</code> 属性的 <code>&lt;script&gt;</code> 本身就自带这种属性的行为。</p>
+<p>刚才说到的是没有异步处理的模块，它们是按所在位置先后顺序下载并执行。倘若我们像 <code>&lt;script async src=&quot;test.js&quot;&gt;</code> 这样，在 <code>&lt;script type=&quot;module&quot; src=&quot;test.js&quot;&gt;</code> 模块元素上加 <code>async</code> 属性，那么，这些模块都将异步下载。如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script type=<span class="string">"module"</span> <span class="keyword">async</span> src=<span class="string">"test1.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line">&lt;script type=<span class="string">"module"</span> <span class="keyword">async</span> src=<span class="string">"test2.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>异步加载意味着无需等待文档下载并解析完，模块便能下载执行。正因为如此，我们无法判断，模块 <code>test1.js</code> 与 模块 <code>test2.js</code> 哪一个会先下载并执行。但有一点肯定的是，先下载的模块会优先执行。</p>
+<p>以上就是 ES6 中 模块 的相关内容，虽然目前各大主流浏览器都还未支持，但没关系，飘在空中的尘埃，总会有落地的那一天。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

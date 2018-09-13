@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="onmouseover模拟onmouseenter和mouse类事件理解 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="onmouseover onmouseenter fromElement relatedTarget toElement">
+  
+
+  
+
+  <title>onmouseover模拟onmouseenter和mouse类事件理解 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">onmouseover模拟onmouseenter和mouse类事件理解</h1>
+
+  <time class="post-time">2013-08-14</time>
+
+  <div class="post-content">
+    
+<p>说到mouse事件，可能会涉及到很多东西。这里主要谈的是鼠标移入，移出事件。我们知道在js中分别是用onmouseover和onmouseout来表示鼠标移入和移出事件，当然也可以用onmouseenter和onmouseleave来表示鼠标移入和移出。但是这两种移入，移出却有很大的区别。</p>
+<a id="more"></a>
+<p>不得不说，有时候某度出来的问题真的会误导人，各种不负责任的转载，所以还是借鉴居多。下面以函数的形式通俗的来说下着onmouseover，onmouseout  ，onmouseenter，onmouseleave的概念：</p>
+<h2 id="onmouseover-—-onmouseout"><a href="#onmouseover-—-onmouseout" class="headerlink" title="onmouseover — onmouseout"></a>onmouseover — onmouseout</h2><h3 id="onmouseover"><a href="#onmouseover" class="headerlink" title="onmouseover"></a>onmouseover</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">obj.onmouseover=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  　  fn1();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>表示当鼠标移入obj时，触发fn1()，但是当鼠标由元素移到子元素上或者由子元素移动到元素时，都会触发fn1()，这个事件可兼容所有浏览器。</p>
+<h3 id="onmouseout"><a href="#onmouseout" class="headerlink" title="onmouseout"></a>onmouseout</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">obj.onmouseout=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    　　fn2();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>表示当鼠标移出obj时，触发fn2()，但是当鼠标由元素移到子元素上或者由子元素移动到元素时，也都会触发fn2()，与onmouseover一样 ，这个事件也兼容所有浏览器。</p>
+<h2 id="onmouseenter-—-onmouseleave"><a href="#onmouseenter-—-onmouseleave" class="headerlink" title="onmouseenter — onmouseleave"></a>onmouseenter — onmouseleave</h2><h3 id="onmouseenter"><a href="#onmouseenter" class="headerlink" title="onmouseenter"></a>onmouseenter</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">obj.onmouseenter=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    　　fn1();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>表示当鼠标移入obj时，触发fn1()，并且这个事件不冒泡 ，也就是说鼠标在元素的子元素里移动（包含在子元素和元素之间交叉移动）都不会触发fn1()，在DOM2级并没有定义这个事件，在DOM3级才有定义。IE，FF，Opear都支持这个事件，但是chrome并不支持这个事件。</p>
+<h3 id="onmouseleave"><a href="#onmouseleave" class="headerlink" title="onmouseleave"></a>onmouseleave</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">obj.onmouseleave=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    　　fn2();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>表示当鼠标移出obj时，触发fn2()，并且这个事件不冒泡 ，也就是说鼠标在元素的子元素里移动（包含在子元素和元素之间交叉移动）都不会触发fn2()，在DOM2级并没有定义这个事件，而在DOM3级才有定义。IE，FF，Opear都支持这个事件，但是chrome并不支持这个事件。</p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>这么一个需求，有一个id为box，背景为灰色的div，其有一个id为con，且背景色为白色的子div。如代码，我们需要的是，当鼠标移入box时，隔0.1s后box的背景色变为绿色。鼠标移出box时，box的背景色恢复为灰色。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#box</span>&#123;<span class="attribute">width</span>:<span class="number">100px</span>;<span class="attribute">height</span>:<span class="number">90px</span>;<span class="attribute">background</span>:<span class="number">#ccc</span>;<span class="attribute">padding</span>:<span class="number">30px</span> <span class="number">30px</span> <span class="number">50px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#con</span>&#123;<span class="attribute">height</span>:<span class="number">80px</span>;<span class="attribute">background</span>:<span class="number">#fff</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span> <span class="attr">id</span>=<span class="string">"body"</span>&gt;</span></span><br><span class="line"> 　　<span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line"> 　　　　box</span><br><span class="line"> 　　　　<span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"con"</span>&gt;</span>con<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"> 　　<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript">(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">　　<span class="function"><span class="keyword">function</span> <span class="title">$</span>(<span class="params">id</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">　　　　<span class="keyword">return</span> <span class="built_in">document</span>.getElementById(id);</span></span><br><span class="line"><span class="undefined">　　&#125;</span></span><br><span class="line"><span class="javascript">　　<span class="keyword">var</span> oBox=$(<span class="string">"box"</span>);</span></span><br><span class="line"><span class="actionscript">　　oBox.onmouseover=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123; 　<span class="comment">// 这里不用onmouseenter，因为chrome不兼容</span></span></span><br><span class="line"><span class="actionscript">　　　　timer=setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;oBox.style.background=<span class="string">"green"</span>;&#125;,<span class="number">100</span>); </span></span><br><span class="line"><span class="javascript">　　　　<span class="built_in">document</span>.title=<span class="string">"移入"</span>;</span></span><br><span class="line"><span class="undefined">　　&#125;</span></span><br><span class="line"><span class="actionscript">　　oBox.onmouseout=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123; </span></span><br><span class="line"><span class="actionscript">　　　　oBox.style.background=<span class="string">"#ccc"</span>;</span></span><br><span class="line"><span class="javascript">　　　　<span class="built_in">document</span>.title=<span class="string">"移出"</span>;</span></span><br><span class="line"><span class="undefined">　　&#125;</span></span><br><span class="line"><span class="undefined">&#125;)()</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<img src="/2013/08/14/know-onmouseover-and-onmouseenter/onmouseover.gif" title="onmouseover实现背景变换">
+<p>观察上图，我们发现当鼠标在box内移动时，box的背景会不断闪烁变化。这就是onmouseover本来的特性所导致的，在元素与子元素间移动会重复触发fn1()和fn2()。但是文件的title却很正常，如果鼠标在box内，title显示的一直是“移入”。而鼠标在box外，则title显示的一直是“移出”。</p>
+<p><strong>jquery方法</strong></p>
+<p>在jquery中，这个需求可以用hover函数轻易实现，如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">obj.hover(fn1(),fn2()) ;  <span class="comment">//具体代码省略</span></span><br></pre></td></tr></table></figure>
+<p>由此可知，jquery里的hover=mouseenter+mouseleave，而非hover=mouseover+mouseout，由于jquery良好的封装性，因此mouseenter在chrome中也可以得到很好的支持，但是如何让原生的onmouseenter也支持chrome呢？</p>
+<p>由于onmouseover兼容性不错，所以我们想到用onmouseover来模拟onmouseenter。那么如何模拟呢？这里我们可以通过此两者的区别考虑，也就是说无论鼠标在哪里，只要鼠标在box元素里移动（无论是从box元素到con元素，还是从con元素到box元素），都不触发fn1()。同理，只有当鼠标真正离开了box元素（不是从con元素离开到box元素，或者是从box元素离开到con元素），才触发fn2();</p>
+<p>可是，又如何知道鼠标是从哪个元素移入到另外一个元素呢？这里，javascript给我们提供了一个relatedTarget 事件属性：</p>
+<p>对于onmouseover 事件来说，该属性是鼠标指针移到目标节点上时所离开的那个节点。（IE是fromElement）</p>
+<p>对于onmouseout 事件来说，该属性是离开目标时，鼠标指针进入的节点。（IE是toElement）</p>
+<p>比如说：鼠标由box元素移入到它的子元素con，则此时，对onmouseover来说，box就是relatedTarget节点。而对onmouseout来说，con就是relatedTarget节点。于是我们对这两个节点判断，在onmouseover时，如果两个节点存在父子关系，则不触发fn1()。而在box内移动时，当发生onmouseout事件，如果两个节点存在父子关系，则不触发fn2();</p>
+<p>判断父子关系的函数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isSons</span>(<span class="params">obj1,obj2</span>)</span>&#123;</span><br><span class="line">　　<span class="keyword">var</span> temp=obj1;</span><br><span class="line"> 　　<span class="keyword">while</span>(temp.parentNode)&#123;</span><br><span class="line"> 　　　　temp=temp.parentNode; </span><br><span class="line"> 　　　　<span class="keyword">if</span>(temp==obj2)&#123;</span><br><span class="line"> 　　　　　　<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"> 　　　　&#125; </span><br><span class="line"> 　　&#125; </span><br><span class="line"> 　　<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>为了方便起见，我们利用几个标签（id分别为relEle1，relEle2的span元素）来表示鼠标移入，移出元素时relatedTarget的变化。于是就有：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span> <span class="attr">id</span>=<span class="string">"body"</span>&gt;</span></span><br><span class="line"> 　　<span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line"> 　　　　box</span><br><span class="line"> 　　　　<span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"con"</span>&gt;</span>con<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"> 　　<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>isSons(this,relEle):<span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"status"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>this:<span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"This"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>relEle:<span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"relEle1"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>relEle2:<span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"relEle2"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript">(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript"> 　　<span class="function"><span class="keyword">function</span> <span class="title">$</span>(<span class="params">id</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript"> 　　　　<span class="keyword">return</span> <span class="built_in">document</span>.getElementById(id);</span></span><br><span class="line"><span class="undefined"> 　　&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"> 　　<span class="function"><span class="keyword">function</span> <span class="title">isSons</span><span class="params">(obj1,obj2)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript"> 　　　　<span class="keyword">var</span> temp=obj1;</span></span><br><span class="line"><span class="actionscript"> 　　　　<span class="keyword">while</span>(temp.parentNode)&#123;</span></span><br><span class="line"><span class="undefined"> 　　　　　　temp=temp.parentNode; </span></span><br><span class="line"><span class="actionscript"> 　　　　　　<span class="keyword">if</span>(temp==obj2)&#123;</span></span><br><span class="line"><span class="actionscript"> 　　　　　　　　<span class="keyword">return</span> <span class="literal">true</span>;</span></span><br><span class="line"><span class="undefined"> 　　　　　　&#125; </span></span><br><span class="line"><span class="undefined"> 　　　　&#125; </span></span><br><span class="line"><span class="actionscript"> 　　　　<span class="keyword">return</span> <span class="literal">false</span>;</span></span><br><span class="line"><span class="undefined"> 　　&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript"> 　　<span class="keyword">var</span> oBox=$(<span class="string">"box"</span>),oS=$(<span class="string">"status"</span>),oT=$(<span class="string">"This"</span>),oR1=$(<span class="string">"relEle1"</span>),oR2=$(<span class="string">"relEle2"</span>);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"> 　　oBox.onmouseover=<span class="function"><span class="keyword">function</span><span class="params">(ev)</span></span>&#123; </span></span><br><span class="line"><span class="actionscript"> 　　　　<span class="keyword">var</span> e=ev||event,relEle= e.relatedTarget||e.fromElement; </span></span><br><span class="line"><span class="actionscript"> 　　　　<span class="keyword">if</span>(isSons(<span class="keyword">this</span>,relEle))&#123;  <span class="comment">//为父子关系才触发，但是这里this为box元素，当在box内移动时，relEle不是box本身就是con，所以永远不会触发</span></span></span><br><span class="line"><span class="actionscript"> 　　　　　　setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;oBox.style.background=<span class="string">"green"</span>;&#125;,<span class="number">100</span>);</span></span><br><span class="line"><span class="undefined"> 　　　　&#125; </span></span><br><span class="line"><span class="actionscript"> 　　　　oS.innerHTML=isSons(<span class="keyword">this</span>,relEle);</span></span><br><span class="line"><span class="actionscript"> 　　　　oT.innerHTML=<span class="keyword">this</span>.id;</span></span><br><span class="line"><span class="undefined"> 　　　　oR1.innerHTML=relEle.id;</span></span><br><span class="line"><span class="javascript"> 　　　　<span class="built_in">document</span>.title=<span class="string">"移入"</span>; </span></span><br><span class="line"><span class="undefined"> 　　&#125;</span></span><br><span class="line"><span class="actionscript"> 　　oBox.onmouseout=<span class="function"><span class="keyword">function</span><span class="params">(ev)</span></span>&#123; </span></span><br><span class="line"><span class="actionscript"> 　　　　<span class="keyword">var</span> e=ev||event,relEle= e.relatedTarget||e.toElement;</span></span><br><span class="line"><span class="actionscript"> 　　　　<span class="keyword">if</span>(isSons(<span class="keyword">this</span>,relEle))&#123;</span></span><br><span class="line"><span class="actionscript"> 　　　　　　oBox.style.background=<span class="string">"#ccc"</span>;</span></span><br><span class="line"><span class="undefined"> 　　　　&#125; </span></span><br><span class="line"><span class="undefined"> 　　　　oR2.innerHTML=relEle.id;</span></span><br><span class="line"><span class="javascript"> 　　　　<span class="built_in">document</span>.title=<span class="string">"移出"</span>;</span></span><br><span class="line"><span class="javascript"> 　　　　<span class="built_in">console</span>.log(isSons(<span class="keyword">this</span>,relEle));</span></span><br><span class="line"><span class="undefined"> 　　&#125;</span></span><br><span class="line"><span class="undefined">&#125;)()</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>通过代码我们可知，当鼠标在box内部移动时，isSons(this,relEle)总是false(我们可以看到控制台的变化)，则永远不会触发fn1()和fn2()。只有当鼠标由外部移入box时，isSons(this,relEle)才为true，此时才会触发fn1()，或者当鼠标由box移出到外部时，才会触发fn2()。效果演示图如下：</p>
+<img src="/2013/08/14/know-onmouseover-and-onmouseenter/onmouseenter.gif" title="onmouseenter实现背景变换">
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,72 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>web audio</title>
+</head>
+
+<body>
+
+<audio src="mmlbjk.mp3" controls id="audio" style="width:500px;"></audio>
+
+<canvas id="canvas" style="display:block;width:500px;height:200px;"></canvas>
+
+</body>
+</html>
+
+<script>
+;~function(){
+
+  var canvas = document.getElementById("canvas");
+    canvasCtx = canvas.getContext("2d"),
+    canvasWidth = canvas.width,
+    canvasHeight = canvas.height;
+
+  // 创建 audio context对象和 分析器
+  var audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
+    analyser = audioCtx.createAnalyser();
+
+  // 获取播放源
+  var audio = document.getElementById("audio"),
+    audioSource = audioCtx.createMediaElementSource(audio);
+
+  // 连接节点
+  audioSource.connect(analyser);
+  analyser.connect(audioCtx.destination);
+
+  // 设置数据格式
+  analyser.fftSize = 256;
+    var bufferLength = analyser.frequencyBinCount, // 通过frequencyBinCount属性来获取存放音频缓冲区的数据长度
+      dataArray = new Uint8Array(bufferLength); // js里底层的特殊数组--无符号整数8位数组，这个数组的长度为bufferLength
+
+    var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame,
+      data = document.getElementById("data");
+
+    // 即时呈现数据
+  function draw() {
+
+      analyser.getByteFrequencyData(dataArray); // 实时获取波形数据
+
+      canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+      canvasCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+      var barWidth = (canvasWidth / bufferLength) * 2;
+          barHeight = 0 ,
+          barX = 0;
+
+      for(var i = 0; i < bufferLength; i++) {
+          barHeight = dataArray[i];
+          canvasCtx.fillStyle = "#f7d54e";
+          canvasCtx.fillRect(barX , canvasHeight-barHeight/2 , barWidth , barHeight);
+          barX += barWidth + 1;
+      }
+
+      drawTimer = requestAnimationFrame(arguments.callee);
+  }
+
+
+  draw();
+
+}()
+</script>

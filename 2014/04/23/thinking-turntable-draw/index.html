@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="大转盘抽奖的思维过程 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="转盘抽奖 css3大转盘">
+  
+
+  
+
+  <title>大转盘抽奖的思维过程 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">大转盘抽奖的思维过程</h1>
+
+  <time class="post-time">2014-04-23</time>
+
+  <div class="post-content">
+    <p>关于网页抽奖，在UI方面主要有方框奖品跳动、翻牌抽奖、或者圆盘转动等大体几种形式。曾经在网上看到一个”点击抽奖”直接切换gif动画图的，这会不会有点欺骗用户之嫌，哈哈。</p>
+<p>方框类抽奖可以通过不断改变某定位元素的left和top值。翻牌抽奖则可以在点击后给当前牌加相应的class，class设置对应的背景。当然可能你有更好的思路。</p>
+<a id="more"></a>
+<p>至于圆盘抽奖，在css3之前，转盘类抽奖基本上都是基于flash。而此篇文章主要讲述的是利用css3中transform里rotate属性来转动指针抽奖；</p>
+<p>抽奖的本质都是一样，概率性事件。这个我们大可使用随机数来求取某个数值范围内的数，再根据活动需求控制中奖几率。其实在用户点完按钮，抽奖的结果就也立即出来了。当然，这些都不是本篇文章的重点，所谓方框奖品跳动、纸牌翻转、指针转动都只是给用户看的。</p>
+<p>本篇的重点，如何让转盘指针根据点击后的随机数最终停到对应的奖区？</p>
+<p>我们分析转盘的过程：一个转盘抽奖，用户点击”开始抽奖”，首先指针应该先快速转动，一定时间后，再逐渐减速，最后指针停留在对应的奖区中央。</p>
+<p><strong>于是我开始了第一种思路：</strong></p>
+<blockquote>
+<p>在指针转动过程中，随时间变化，逐渐增大animation的duration，最后通过判断旋转的角度来控制指针停止。但结果无效。并不是不能改变duration，而是元素在动画过程中，如果keyframes相同的话，无论duration是否改变，元素只执行最初的duration动画直到停止。</p>
+</blockquote>
+<p>于是第一种思路被判了死刑。</p>
+<p><strong>然后我有了第二种思路：</strong></p>
+<blockquote>
+<p>根据随机数值，然后通过设置不同时间的延时定时器（setTimeout），让指针在某个点自动停止（animation-play-state:paused）。<br>但这个方法需要计算每个延迟的时间点，而且既然是定时停止，必然不能用变速动画，只能线性匀速的（linear）。</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.ele-stop</span>&#123;<span class="attribute">-webkit-animation-play-state</span>:paused;<span class="attribute">animation-play-state</span>:paused;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">timer=setTimeout(funciton()&#123;</span></span><br><span class="line"><span class="actionscript">　　ele.className+=<span class="string">" ele-stop"</span>;</span></span><br><span class="line"><span class="undefined">&#125;,time)</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>因此这种思路太过牵强，其一指针停止前并非减速动画，其二计算每个延迟点也显得颇于麻烦，所以第二种思路也被枪毙了。</p>
+<p><strong>最终第三种思路：</strong></p>
+<blockquote>
+<p>因为指针最后停留的几个角度都是固定的，所以我们可以为每个奖区设定对应的动画帧和调用它的class，再结合减速动画（ease-out）。最后通过获取的随机数来给指针添加相应的class。此方法虽css代码太多，但却能很好的达到转盘的抽奖效果。</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.ele-move02</span>&#123;<span class="attribute">-webkit-animation</span>:rorate02 <span class="number">10s</span> <span class="number">0s</span> ease-out <span class="number">1</span> forwards normal; <span class="attribute">animation</span>:rorate02 <span class="number">10s</span> <span class="number">0s</span> ease-out <span class="number">1</span> forwards normal; &#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.ele-move03</span>&#123;<span class="attribute">-webkit-animation</span>:rorate02 <span class="number">10s</span> <span class="number">0s</span> ease-out <span class="number">1</span> forwards normal; <span class="attribute">animation</span>:rorate02 <span class="number">10s</span> <span class="number">0s</span> ease-out <span class="number">1</span> forwards normal; &#125; </span></span><br><span class="line"><span class="css">@<span class="keyword">keyframes</span> rorate02&#123; 0% &#123; <span class="attribute">transform</span>: <span class="built_in">rotate</span>(0deg);&#125; 100% &#123; <span class="attribute">transform</span>: <span class="built_in">rotate</span>(3300deg);&#125; &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="css">@<span class="keyword">keyframes</span> rorate03&#123; 0% &#123; <span class="attribute">transform</span>: <span class="built_in">rotate</span>(0deg);&#125; 100% &#123; <span class="attribute">transform</span>: <span class="built_in">rotate</span>(3360deg); &#125; &#125; </span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript">ele.className +=<span class="string">" ele-move"</span> + iVal;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>另外，需要注意的点：</p>
+<ol>
+<li>页面防止刷新</li>
+<li>抽奖转动过程中按钮不可点</li>
+</ol>
+<p>最后，来试试下手气吧： <a href="/2014/04/23/thinking-turntable-draw/turntable.html" title="欢乐大转盘">欢乐大转盘</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

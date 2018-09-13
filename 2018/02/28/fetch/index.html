@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="异步请求之 Fetch | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="fetch">
+  
+
+  
+
+  <title>异步请求之 Fetch | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">异步请求之 Fetch</h1>
+
+  <time class="post-time">2018-02-28</time>
+
+  <div class="post-content">
+    <p>当我们谈到异步操作请求数据时，一般会提及 AJAX（Asynchronous Javascript And XML）。事实上，这种局部刷新交互式的开发技术，最早是由Adaptive Path公司的Jesse James Garrett在2005年2月提出。</p>
+<p>在过去的十几年里，异步请求数据都是围绕 XMLHttpRequest 这个核心对象而展开的。我们要么自己封装一个原生的AJAX库，要么使用 jQuery 或者 Zepto 这种工具库里封装好的 <code>$.ajax</code> 方法。</p>
+<a id="more"></a>
+<p>针对多个回调的情况，为了优雅的处理异步操作，我们还得用 promise 来包装下 ajax 方法。</p>
+<p>而现在我们开发的项目，大多数基于 React 或者 Vue 这种框架。所以，为一个ajax方法而去引入一个工具库，这种做法显然不合适。另外，用 Promise 去包装原生的ajax，再去处理兼容的做法，也有点过时了。</p>
+<p>除了 AJAX，到现在，终于有了异步请求数据的替代方案，那就是W3C所推出的标准API-Fetch，这个API是挂载于 BOM 的 window 下。在写本篇文章时，chrome和firefox的最新版本都支持它。</p>
+<h2 id="一、一个简单的-Fetch"><a href="#一、一个简单的-Fetch" class="headerlink" title="一、一个简单的 Fetch"></a>一、一个简单的 Fetch</h2><p>先来一个最简单的 fetch 请求，使用的接口数据来源于 <a href="http://jsonplaceholder.typicode.com/" target="_blank" rel="noopener">JSONPlaceholder</a>，它是一个在线模拟和仿照API的站点，我之前在 <a href="http://yi-jy.com/2017/06/15/json-server/">使用 JSON Server 构建数据接口</a> 一文中有介绍。</p>
+<p>首先，我们打开 <a href="http://jsonplaceholder.typicode.com/" target="_blank" rel="noopener">JSONPlaceholder</a>，开启控制台，输入以下内容：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">fetch(<span class="string">'http://jsonplaceholder.typicode.com/'</span>)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">  <span class="keyword">return</span> res.text();</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> <span class="built_in">console</span>.log(res));</span><br></pre></td></tr></table></figure>
+<p>返回的是：</p>
+<img src="/2018/02/28/fetch/fetch1.jpg" title="fetch1">
+<p>可以看到，fetch 执行后返回的是一个 Response 对象，并且采用的是 Promise 的链式写法。当对请求后的内容执行 <code>res.text()</code> 后，便可以得到网页的源码。</p>
+<p>这样，就完成一个简单的 fetch 请求。当你将控制台切换到 <code>Network</code> 选项，选中 <code>XHR</code>，你会发现，请求的类型不再是 <code>xhr</code>，而变成了 <code>fetch</code>。</p>
+<img src="/2018/02/28/fetch/fetch2.jpg" title="fetch2">
+<h2 id="二、Fetch-用法"><a href="#二、Fetch-用法" class="headerlink" title="二、Fetch 用法"></a>二、Fetch 用法</h2><p>通过上面我们可以知道，要发起一个 fetch 请求，只需要：</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">fetch</span><span class="params">(<span class="string">'https://jsonplaceholder.typicode.com/posts/1'</span>)</span></span></span><br></pre></td></tr></table></figure>
+<p>在这里，我们请求jsonplaceholder上第一篇内容的数据（json格式），执行fetch请求后，它返回结果为：</p>
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line">Promise &#123;<span class="string">[[PromiseStatus]]</span>: <span class="string">"pending"</span>, <span class="string">[[PromiseValue]]</span>: undefined&#125;</span><br></pre></td></tr></table></figure>
+<p>说明fetch执行后，返回的是一个 Promise 对象，这也是为什么我们在文章开头的例子中，可以在后面接 <code>then</code> 方法的原因。</p>
+<p>接着，我们进一步来获取对应的请求内容：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">fetch(<span class="string">'https://jsonplaceholder.typicode.com/posts/1'</span>)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> <span class="built_in">console</span>.log(res))</span><br></pre></td></tr></table></figure>
+<p>代码中，<code>then</code> 函数中的参数（res）为一个 <code>Response</code> 对象，我们将它打印出来，会发现它包含了一系列属性：</p>
+<img src="/2018/02/28/fetch/fetch3.jpg" title="fetch3">
+<p>其中包含请求地址（url）、ok（请求是否成功）、状态码（status）、状态描述（statusText）、body、header、type 之类的，当然，我们最关心的是 <code>ok</code>, <code>status</code> 属性。当 <code>ok</code> 的值为 true 并且 <code>status</code> 的值是 200 ~ 299 时，表示fetch请求成功。</p>
+<p>但是，我们在这个对象中并没有得到我们请求的业务数据。因此，我们进一步处理：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">fetch(<span class="string">'https://jsonplaceholder.typicode.com/posts/1'</span>)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">  <span class="keyword">return</span> res.json();</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> <span class="built_in">console</span>.log(res));</span><br></pre></td></tr></table></figure>
+<p>因为 res 是一个 <code>Response</code> 对象，在这里，我们在代码中使用了它隐式原型（<code>__proto__</code>）上的方法 <code>json()</code>，该方法将请求的内容转换为 json 格式，并且该方法仍然返回一个 Promise 对象。然后我们在第二个 <code>then</code> 函数里面获取返回的内容。即：</p>
+<img src="/2018/02/28/fetch/fetch4.jpg" title="fetch4">
+<p>如果你请求的是其他格式的数据，通过上面的截图，<code>Response</code> 对象还提供了其他的内容转换方法，这些方法都返回的是一个 Promise 对象，它们主要的有：</p>
+<h4 id="Body-text"><a href="#Body-text" class="headerlink" title="Body.text()"></a>Body.text()</h4><p>将请求后返回的内容解析为字符串格式</p>
+<h4 id="Body-json"><a href="#Body-json" class="headerlink" title="Body.json()"></a>Body.json()</h4><p>将请求后返回的内容解析为Json格式</p>
+<h4 id="Body-blob"><a href="#Body-blob" class="headerlink" title="Body.blob()"></a>Body.blob()</h4><p>将请求后返回的内容解析为Blob格式</p>
+<h4 id="Body-arrayBuffer"><a href="#Body-arrayBuffer" class="headerlink" title="Body.arrayBuffer()"></a>Body.arrayBuffer()</h4><p>将请求后返回的内容解析为ArrayBuffer格式</p>
+<h4 id="Body-formData"><a href="#Body-formData" class="headerlink" title="Body.formData()"></a>Body.formData()</h4><p>将请求后返回的内容解析为formData格式</p>
+<p>更多关于<code>Response</code> 对象内容，可查看<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Response" target="_blank" rel="noopener">相关资料</a></p>
+<h3 id="2-1-捕获错误"><a href="#2-1-捕获错误" class="headerlink" title="2.1 捕获错误"></a>2.1 捕获错误</h3><p>我们在请求接口时，大部分请求都会成功返回。但是，也存在发送错误的情况，比如说网络错误，或者说将接口地址拼写错误，这个时候，我们可以像 Promise 一样，使用 <code>catch</code> 方法来捕获这个错误，用代码来说明下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">fetch(<span class="string">'https://xx.typicode.com/posts/1'</span>)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> res.json())</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> <span class="built_in">console</span>.log(res))</span><br><span class="line">.catch(<span class="function"><span class="params">err</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'错误：'</span>, err));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 错误： TypeError: Failed to fetch</span></span><br></pre></td></tr></table></figure>
+<p>在上面代码中，将请求接口地址的主域名改为 <code>xx</code>，这显然是一个不存在的接口地址，执行fetch后在 <code>catch</code> 函数中里将会捕获到一个请求失败的错误。</p>
+<p>因此，为了保证代码的健壮性，最后在后面加上 <code>then</code> 函数。</p>
+<p>在早期的Fetch版本中，如果请求的是一个不存在的接口，可能代码中的第一个 <code>then</code> 函数还是会执行的，然后才会执行 <code>catch</code> 函数，但这显然是不对的。针对这种情况，我们早期得在第一个 <code>then</code> 函数这样处理：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">fetch(<span class="string">'https://xx.typicode.com/posts/1'</span>)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (res.ok) &#123;</span><br><span class="line">    res.json();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'something went wrong!'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> <span class="built_in">console</span>.log(res))</span><br><span class="line">.catch(<span class="function"><span class="params">err</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'错误：'</span>, err));</span><br></pre></td></tr></table></figure>
+<p>即通过判断 <code>Response</code> 对象的 <code>ok</code> 属性，如果该值为 false，则直接抛出错误，触发后面的 <code>catch</code> 函数。</p>
+<h3 id="2-2-get-请求"><a href="#2-2-get-请求" class="headerlink" title="2.2 get 请求"></a>2.2 get 请求</h3><p>前面讲到的都是 get 请求，但是请求地址里都没涉及到参数。倘若，你的get请求里面带有参数，则<strong>只能</strong>在请求地址拼接，如：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">fetch(<span class="string">'https://jsonplaceholder.typicode.com/posts?_page=2&amp;_limit=5'</span>)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> res.json();</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> <span class="built_in">console</span>.log(res));</span><br></pre></td></tr></table></figure>
+<p>上面的代码表示请求第2页的5条数据。</p>
+<h3 id="2-3-post-请求"><a href="#2-3-post-请求" class="headerlink" title="2.3 post 请求"></a>2.3 post 请求</h3><p>默认情况下，使用 fetch 发送 get 请求非常简单，你几乎不用作任何设置。但如果要进行其他方式的请求，则需要使用到 fetch 函数的第二个参数，它是一个对象，主要配置请求的相关选项。</p>
+<p>比如发送一个 post 请求，代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">fetch(<span class="string">'http://jsonplaceholder.typicode.com/posts'</span>, &#123;</span><br><span class="line">  method: <span class="string">'post'</span>,</span><br><span class="line">  headers: &#123;</span><br><span class="line">    <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  body: <span class="built_in">JSON</span>.stringify(&#123;</span><br><span class="line">    title: <span class="string">'title'</span>,</span><br><span class="line">    body: <span class="string">'some text'</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> res.json())</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> <span class="built_in">console</span>.log(res))</span><br><span class="line">.catch(<span class="function"><span class="params">err</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'错误：'</span>, err));</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#123;title: "title", body: "some text", id: 101&#125;</span></span><br></pre></td></tr></table></figure>
+<p>上面的代码，表示新增一篇文章。可以看到，第二参数中指定了请求类型为 <code>post</code>，并且在 header 中设置了向服务器发送的内容编码类型（json），最后，在 body 中通过 <code>JSON.stringify</code> 函数设置传入的参数。</p>
+<p>这里要注意，对于post请求，如果不在 headers 中设置 <code>&#39;Content-Type&#39;: &#39;application/json&#39;</code>，可能会导致不能正常请求到数据。因为此时在 <code>Request Headers</code> 中，<code>content-type</code> 的值默认为 <code>content-type:text/plain;charset=UTF-8</code>，但在 <code>Response Headers</code> 中则是 <code>Content-Type:application/json; charset=utf-8</code>，前后数据类型不匹配！</p>
+<p>最后，对于get请求，还要注意的是，get 请求地址的参数只能拼接URL后面，强制将请求参数放在fetch函数中第二个参数的body里，会导致报错。</p>
+<h3 id="2-4-自定义Header"><a href="#2-4-自定义Header" class="headerlink" title="2.4 自定义Header"></a>2.4 自定义Header</h3><p>传统的XMLHttpRequest有两个主要缺点：</p>
+<ul>
+<li>对搜索引擎的支持比较弱</li>
+<li>不支持浏览器的history功能，即网页不能前进或后退</li>
+</ul>
+<p>其中第二个问题可以使用 pjax 来解决，它的原理主要是用到了 pushState API，并且在发送 ajax 前，定义一个专属头部，以便服务端识别：</p>
+<figure class="highlight lasso"><table><tr><td class="code"><pre><span class="line">xhr.setRequestHeader(<span class="string">'X-PJAX'</span>, <span class="literal">true</span>)</span><br><span class="line">xhr.setRequestHeader(<span class="string">'X-PJAX-container'</span>, htmlContainer)</span><br><span class="line"><span class="params">...</span></span><br></pre></td></tr></table></figure>
+<p>github 中也大量使用了 pjax，你可以打开 <a href="https://github.com/joy-yi0905" target="_blank" rel="noopener">github</a>，打开控制台的 Network 选项，就能看到：</p>
+<img src="/2018/02/28/fetch/pjax.jpg" title="pjax">
+<p>说这么多，我只是想表示，fetch API 也提供了自定义 Header 接口，在这个接口上，我们可以对请求头和响应头执行各种操作，其中包含添加，删除、检索。其实，你可以把Headers对象看成是一组键值对的集合。</p>
+<p>来看下它们的具体操作：</p>
+<figure class="highlight processing"><table><tr><td class="code"><pre><span class="line">var myHeaders = <span class="keyword">new</span> Headers();</span><br><span class="line"></span><br><span class="line">myHeaders.<span class="built_in">append</span>(<span class="string">'Content-Length'</span>, <span class="string">'xxxxx'</span>.length.toString());</span><br><span class="line">myHeaders.<span class="built_in">append</span>(<span class="string">'Custom-Header'</span>, <span class="string">'anything'</span>);</span><br><span class="line"></span><br><span class="line">console.<span class="built_in">log</span>(myHeaders.has(<span class="string">'Content-Length'</span>)); <span class="comment">// true</span></span><br><span class="line">console.<span class="built_in">log</span>(myHeaders.<span class="built_in">get</span>(<span class="string">'Custom-Header'</span>)); <span class="comment">// "anything"</span></span><br><span class="line"></span><br><span class="line">myHeaders.delete(<span class="string">'Custom-Header'</span>);</span><br><span class="line"></span><br><span class="line">console.<span class="built_in">log</span>(myHeaders.<span class="built_in">get</span>(<span class="string">'Custom-Header'</span>)); <span class="comment">// null</span></span><br></pre></td></tr></table></figure>
+<p>在 fetch 请求中获取 Header：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">fetch(<span class="string">'http://jsonplaceholder.typicode.com/posts'</span>, &#123;</span><br><span class="line">  method: <span class="string">'post'</span>,</span><br><span class="line">  headers: &#123;</span><br><span class="line">    <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  body: <span class="built_in">JSON</span>.stringify(&#123;</span><br><span class="line">    title: <span class="string">'title'</span>,</span><br><span class="line">    body: <span class="string">'some text'</span></span><br><span class="line">  &#125;),</span><br><span class="line">  mode: <span class="string">'cors'</span></span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> &#123;headers&#125; = res;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">console</span>.log(headers.has(<span class="string">'Content-Length'</span>)); <span class="comment">// true</span></span><br><span class="line">  <span class="built_in">console</span>.log(headers.get(<span class="string">'Content-Type'</span>)); <span class="comment">// application/json; charset=utf-8</span></span><br><span class="line">  <span class="built_in">console</span>.log(headers.get(<span class="string">'Date'</span>)); <span class="comment">// Wed, 28 Feb 2018 13:07:59 GMT</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="2-5-第二参数的其他属性"><a href="#2-5-第二参数的其他属性" class="headerlink" title="2.5 第二参数的其他属性"></a>2.5 第二参数的其他属性</h3><p>除了 <code>method</code>、<code>headers</code>、<code>body</code> 属性，fetch 的第二个参数还包含了其他属性，简述如下：</p>
+<ul>
+<li>method：发送请求的方法，比如 get、post、put、DELETE 等。get 请求可省略第二参数</li>
+<li>headers：请求的头信息</li>
+<li>body：请求的 body 信息</li>
+<li>mode：请求模式，值可以是 <code>cors</code>（支持跨域）、 <code>no-cors</code>（跨域请求，不需要服务端支持cors） 或 <code>same-origin</code>（不允许跨域）</li>
+<li>credentials：请求证书，值可以是 <code>omit</code>（默认值，不发送cookie）、 <code>same-origin</code>（cookie只能同域发送，不可跨域）、 <code>include</code>（cookie同域，跨域都可发送）</li>
+<li>cache：缓存设置，它的值有 <code>default</code>（默认值，fetch请求前进行http缓存） 、 <code>no-store</code>（完全不http缓存） 、 <code>no-cache</code>（有缓存时，fetch将发送请求，并更新缓存） 、 <code>reload</code>（忽略之前的缓存，请求后更新缓存） 、 <code>force-cache</code>（严重依赖缓存，即使缓存过期，也读取该缓存） 或者 <code>only-if-cached</code>（严重依赖缓存，无缓存时将抛出错误）</li>
+<li>redirect：重定向设置，它的值有 <code>follow</code> (自动重定向), <code>error</code> (产生重定向时将自动终止并且抛出一个错误), 或者 <code>manual</code> (手动处理重定向)</li>
+</ul>
+<h2 id="三、相关问题"><a href="#三、相关问题" class="headerlink" title="三、相关问题"></a>三、相关问题</h2><p>作为下一代异步通信的规范，Fetch API 虽然提供了一些强大的功能以及异步写法，但是也存在不少问题，这也是它至今未大规模使用的原因。</p>
+<h3 id="3-1-兼容性"><a href="#3-1-兼容性" class="headerlink" title="3.1 兼容性"></a>3.1 兼容性</h3><p>对于不支持 fetch 的浏览器或者服务器请求，我们可以通过以下代码做兼容：</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">if</span><span class="params">(self.fetch)</span></span> &#123;</span><br><span class="line">  <span class="comment">// fetch ...</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// XMLHttpRequest</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里使用 <code>self</code> 主要考虑 Window 或 Worker 环境。如果你要针对不支持它的浏览器也使用 fetch，可使用它的语法糖 <a href="https://github.com/github/fetch" target="_blank" rel="noopener">Fetch Polyfill</a></p>
+<h3 id="3-2-没有-timeout-特性"><a href="#3-2-没有-timeout-特性" class="headerlink" title="3.2 没有 timeout 特性"></a>3.2 没有 timeout 特性</h3><p>fetch 除了不能取消发送外，还有另外一点饱受诟病，那就是不支持 timeout。</p>
+<p>用过 <code>$.ajax</code> 的人都知道，我们可以在其中的选项中设置 <code>timeout</code> 属性，它的值是一个时间（毫秒），它表示请求若超过该时间，我们便可以在 <code>error</code> 或者 <code>complete</code> 函数中判断状态值，粗略代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> getUserData = $.ajax(&#123;</span><br><span class="line">  url: <span class="string">'xxx.com/user'</span>,</span><br><span class="line">  timeout: <span class="number">5000</span>,</span><br><span class="line">  complete: <span class="function"><span class="keyword">function</span>(<span class="params">xhr, textStatus</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(textStatus === <span class="string">'timeout'</span>) &#123;</span><br><span class="line">      getUserData.abort();</span><br><span class="line">      alert(<span class="string">'请求超时，请重试！'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>这样，当发送ajax请求出现了问题，便能给用户良好的反馈。但很可惜，本文介绍的 fetch 却没有提供相关设置。</p>
+<p>针对此情况，目前网上有两种替代方案，即 <code>setTimeout</code> 和 <code>Promise.race</code>。</p>
+<h4 id="3-2-1-setTimeout"><a href="#3-2-1-setTimeout" class="headerlink" title="3.2.1 setTimeout"></a>3.2.1 setTimeout</h4><p>这种方式比较简单粗暴，主要是利用 Promise 内部状态发生改变后（fulfilled 或 rejected），就再也会发生变化了。即在一个 Promise 中设置一个超时 reject，以及将 resolve 传入 fetch 中。若它们两者之间只有其中一个执行了，便达到了我们的效果，代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fetchTimeout1</span>(<span class="params">promise, timeout</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      reject(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'The request is timeout'</span>));</span><br><span class="line">    &#125;, timeout);</span><br><span class="line"></span><br><span class="line">    promise.then(resolve, reject);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fetchTimeout1(fetch(<span class="string">'/xx'</span>), <span class="number">5000</span>)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;&#125;)</span><br><span class="line">.catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="3-2-2-Promise-race"><a href="#3-2-2-Promise-race" class="headerlink" title="3.2.2 Promise.race"></a>3.2.2 Promise.race</h4><p>我们知道，Promise.race 返回的结果取决于所监听的 Promise 列表中最先改变状态的（无论是 fulfilled 还是 rejected） 的那个 Promise，利用这点，再结合上面的 timeout，我们又可以这样处理：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fetchTimeout2</span>(<span class="params">promise, timeout</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> timeoutPromise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      reject(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'The request is timeout'</span>));</span><br><span class="line">    &#125;, timeout);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Promise</span>.race([</span><br><span class="line">    promise,</span><br><span class="line">    timeoutPromise</span><br><span class="line">  ]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fetchTimeout2(fetch(<span class="string">'/xx'</span>), <span class="number">5000</span>)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;&#125;)</span><br><span class="line">.catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;&#125;);</span><br></pre></td></tr></table></figure>
+<p>其实，无论是 <code>setTimeout</code> 还是 <code>Promise.race</code>，它们的解决方案的原理都大同小异。</p>
+<h3 id="3-3-不支持取消（abort）发送的请求"><a href="#3-3-不支持取消（abort）发送的请求" class="headerlink" title="3.3 不支持取消（abort）发送的请求"></a>3.3 不支持取消（abort）发送的请求</h3><p>以前的 ajax 请求中，在某些情况下，我们可以通过 <code>abort</code> 方法来停止 ajax 请求，终止一切网络活动。</p>
+<p>但 fetch 不同，一旦你发起了一个 fetch 请求，便不能停止。但是，你可以像上面处理 setTimeout 一样，来模拟一个 abort 特性。</p>
+<p>除了上面的做法，如果你实在非常喜欢 fetch 的语法，又想在某些情况下，能够中断其请求，延续传统ajax里的一些好的特性。那么，我建议你可以考虑 <a href="https://github.com/axios/axios" target="_blank" rel="noopener">axios</a>。它是一个基于 Promise 并将 XMLHttpRequest（浏览器端）、HTTP（node服务端）结合封装起来的网络请求库，也就是说在客户端和服务端都能使用，另外，听说它的实现方式非常优雅。 </p>
+<h3 id="3-4-fetch-对一些状态码不会-reject"><a href="#3-4-fetch-对一些状态码不会-reject" class="headerlink" title="3.4 fetch 对一些状态码不会 reject"></a>3.4 fetch 对一些状态码不会 reject</h3><p>如果你用过 <code>XMLHttpRequest</code>，我们在发送请求后，首先会对这样判断状态码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">xhr.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (xhr.readyState === <span class="number">4</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (xhr.status === <span class="number">200</span> || xhr.status === <span class="number">0</span>) &#123;</span><br><span class="line">       <span class="comment">//</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      alert(<span class="string">'发生错误：'</span> + xhr.status);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>由于封装良好的原因，<code>$.ajax()</code> 方法我们则无需单独判断状态码。</p>
+<p>但是，fetch 比较特殊，由于它返回的是一个 Promise 对象，所以不管请求结果的状态码是 4XX 还是 5XX ，它都不会被 <code>reject</code> 。且只有网络错误时，才会被 <code>reject</code>。</p>
+<p>所以，必要的时候，我们可以在第一个 <code>then</code> 函数里面进行状态码处理，即如果服务端返回的状态码是非 200 的情况，可以考虑抛出错误。</p>
+<p>或者，通过在Fetch请求后的then函数中判断 <code>response.ok</code> 来确定请求是否成功。</p>
+<h2 id="四、参考资料"><a href="#四、参考资料" class="headerlink" title="四、参考资料"></a>四、参考资料</h2><ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/WindowOrWorkerGlobalScope/fetch" target="_blank" rel="noopener">fetch</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch" target="_blank" rel="noopener">使用 Fetch</a></li>
+<li><a href="https://css-tricks.com/using-fetch/" target="_blank" rel="noopener">Using Fetch</a></li>
+</ul>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

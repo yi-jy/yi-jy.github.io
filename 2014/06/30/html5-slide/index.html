@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="做一个html5 slide幻灯片 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="html5 slide">
+  
+
+  
+
+  <title>做一个html5 slide幻灯片 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">做一个html5 slide幻灯片</h1>
+
+  <time class="post-time">2014-06-30</time>
+
+  <div class="post-content">
+    <p>在会议上分享东西，我们通常用ppt。而技术交流会则习惯用html5 slide幻灯片作演示。以下内容主要是总结制作html5 slide 幻灯片的要点：</p>
+<a id="more"></a>
+<p>1 . 每个section作为一个独立页，结合css3的translate3d和透明度进行变换。</p>
+<p>2 . 通过箭头↑或者←控制向前翻页，箭头↓或者→控制向后翻页。并注意第一页和最后一页与箭头的情况。</p>
+<p>3 . css定义三个状态：prev，cur，next。向后翻页，cur过渡到prev，next过渡到cur。向前翻页，prev过渡到cur，cur过渡到next。</p>
+<p>4 . 每次翻页改变url的hash值，以确定当前页的位置。</p>
+<p>5 . 注意优雅降级，低版本的浏览器不支持html5元素 以及css3 3d（可通过层级z-index或者其他切换动画）。</p>
+<p>demo点此：<a href="/2014/06/30/html5-slide/html5-slide.html" title="一个html5 slide幻灯片">一个html5 slide幻灯片</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="js多线程运行之web worker | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="web worker 多进程运行">
+  
+
+  
+
+  <title>js多线程运行之web worker | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">js多线程运行之web worker</h1>
+
+  <time class="post-time">2014-09-19</time>
+
+  <div class="post-content">
+    
+<p>众所周知，Js是单线程运行的，也就是运行完前一个函数之后，才能运行后一个函数。犹如单行道的车辆，其实这是js的一个短板，同时也导致了运行阻塞。虽然有时候我们可以通过定时器来并向执行代码，但这并不能真正解决问题。</p>
+<p>在html5中有一个名为Web worker的api，它的产生就犹如人们发明了立交桥，使得js支持多线程运行。假设当前页面的代码为主线程，而创建Web worker则是为主线程开辟了另外一个新的子线程，因为是并行运行的，所以这个子线程不会阻塞主线程的执行。</p>
+<a id="more"></a>
+<p>Web worker是运行在后台的js，可以让web应用程序具备后台处理能力，即我们可以把一些非常复杂的运算、或一些很耗性能的js代码交给Web worker这个子线程来处理，然后再将得到的结果返回到主线程中，从而加快了页面的响应，但是正因为它是后台运行的js，所有它不能读取dom对象，但可以执行setInterval、setTimeout以及ajax请求。</p>
+<h2 id="相关用法"><a href="#相关用法" class="headerlink" title="相关用法"></a>相关用法</h2><p>使用之前浏览器的兼容处理，然后需要新建Worker方法，这个方法的参数是后台js文件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">window</span>.Worker) &#123;</span><br><span class="line">　　<span class="comment">// 支持web worker</span></span><br><span class="line">　　<span class="keyword">var</span> webWorker = <span class="keyword">new</span> Worker(<span class="string">"web-worker.js"</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">　　alert(<span class="string">"您的浏览器不支持web worker !"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么问题来了，如何将主线程的数据处理任务交给子线程呢？也就是说它们之间如何通信？Web worker提供了postMessage函数和 onmessage事件，postMessage可以接收一个字符串或者json对象作为它的参数，在主线程中据说是开启webWorker，来看如下代码：</p>
+<p>主线程（主页面）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">webWorker.postMessage(str);</span><br><span class="line">webWorker.addEventListener(<span class="string">"message"</span>,<span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">　　<span class="built_in">console</span>.log(e.data);</span><br><span class="line">&#125;,<span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
+<p>子线程（web-worker.js）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">self.addEventListener(<span class="string">"message"</span>,<span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">    <span class="comment">//对e.data进行非dom计算操作</span></span><br><span class="line">　　 <span class="keyword">var</span> str = e.data;</span><br><span class="line"> 　　self.postMessage(str); <span class="comment">// 返回给主线程</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>这里的self就是子线程，它通过使用onmessage事件监听变化，使用postMessage将计算的结果返回到主线程。如果你不想把数据处理的函数放在Web worker.js中，你也可以将其单独存为一个js文件，然后再在Web worker引入这个js文件，它也支持引入多个js文件，运行效果是一致。如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">importScripts(<span class="string">"fn1.js"</span>,<span class="string">"fn2.js"</span>);</span><br></pre></td></tr></table></figure>
+<p>正如前面所说，计算结果返回到主线程后，那么如何接收它呢？我们同样可以通过在web Worker上绑定onmessage事件，得到计算结果即 e.data ：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">webWorker.addEventListener(<span class="string">"message"</span>,<span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">　　alert(e.data);</span><br><span class="line">&#125;,<span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
+<p>当程序运行结束后，我们需要关闭web worker，而关闭子线程主要可以通过以下两种方式；</p>
+<p>在主线程关闭web worker：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">webWorker.terminate();</span><br></pre></td></tr></table></figure>
+<p>或者在子线程关闭web worker:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">self.close();</span><br></pre></td></tr></table></figure>
+<h2 id="一些限制"><a href="#一些限制" class="headerlink" title="一些限制"></a>一些限制</h2><p>子线程加载的js文件，必须与主线程在同一个域。也就是Web worker不能引入跨域的js文件。</p>
+<p>因为Web worker是运行在后台的js程序，所以它不能像正常的js一样可以进行变量和函数的读取，也不能对dom进行操作。</p>
+<p>最后Web worker必须是在服务器环境下运行。</p>
+<p>最后还是来看一个列子：<a href="/2014/09/19/web-worker/web-worker.html" title="正常情况与使用web worker 生成30000个div所需时间">正常情况与使用web worker 生成30000个div所需时间</a>，页面中显示了运行前后时间差，你也可以F12打开控制台查看更精确的运行时间。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

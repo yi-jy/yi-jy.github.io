@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="Q空间长图预览的简易实现 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="Q空间长图滚动 transition">
+  
+
+  
+
+  <title>Q空间长图预览的简易实现 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">Q空间长图预览的简易实现</h1>
+
+  <time class="post-time">2013-08-30</time>
+
+  <div class="post-content">
+    
+<p>前些天浏览Q空间，发现一些图片下标有个长图的标签，于是忍不住把鼠标放上去，此时看到图片往上滚动起来。当鼠标再次移入时，如果鼠标在图片上半部分，则图片往上滚动。反之鼠标在图片下半部分，则图片往下滚动。越来越觉得腾讯的UE做的不错。好吧，说太多没用，直接上效果图（不过图片录的效果有点卡）：</p>
+<a id="more"></a>
+<img src="/2013/08/30/qzone-long-picture-preview/qLove1.gif" title="鼠标控制长图滚动">
+<p>那么此种效果是如何实现，最初的我以为它是用纯js实现的。可是发现在低版本的浏览器下，鼠标放置图片区域，却没有图片滚动的效果。于是，查看代码及实现原理，发现它是用css的 transition 属性来完成的。</p>
+<p><strong>关键点：</strong></p>
+<ol>
+<li><p>鼠标移入时，利用css3方法来改变图片的margin-top值以达到图片滚动的效果。</p>
+</li>
+<li><p>通过鼠标在图片的位置，来判断图片是向下还是向上滚动。 （clientY, offsetTop）</p>
+</li>
+<li><p>使用 transition : marginTop  duration  linear .  这个css3方法。这里 duration 是指在在一定时间内完成动画效果，因为marginTop值的不断变化（减小），因此要做到图片匀速运动，则需要 duration 是个动态的值。</p>
+</li>
+<li><p>需要判断用户是否为第一次移入图片，如果是，则图片默认往上滚动，如果不是，则通过鼠标位置来判断图片上滚或者下滚。</p>
+</li>
+</ol>
+<p><strong>实例代码如下：</strong></p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#img_box</span>&#123;<span class="attribute">display</span>:block;<span class="attribute">width</span>:<span class="number">335px</span>;<span class="attribute">height</span>:<span class="number">400px</span>;<span class="attribute">overflow</span>:hidden;<span class="attribute">margin</span>:<span class="number">0</span> auto;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">id</span>=<span class="string">"img_box"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"qlove.jpg"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="function"><span class="keyword">function</span> <span class="title">$</span>(<span class="params">selector</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> aResult=[],aEle=<span class="built_in">document</span>.getElementsByTagName(<span class="string">"*"</span>);</span></span><br><span class="line"><span class="javascript">    <span class="keyword">if</span>(<span class="built_in">document</span>.querySelectorAll)&#123;</span></span><br><span class="line"><span class="javascript">        aResult=<span class="built_in">document</span>.querySelectorAll(selector);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">else</span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>,len=aEle.length;i&lt;len;i++)&#123;</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">if</span>(aEle[i].className===selector.replace(<span class="string">"."</span>,<span class="string">""</span>)||aEle[i].id===selector.replace(<span class="string">"#"</span>,<span class="string">""</span>))&#123;</span></span><br><span class="line"><span class="undefined">                aResult.push(aEle[i]);</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">return</span> aResult;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="actionscript">(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> oImgBox=$(<span class="string">"#img_box"</span>)[<span class="number">0</span>],oImg=oImgBox.getElementsByTagName(<span class="string">"img"</span>)[<span class="number">0</span>],iMarginTop=<span class="number">0</span>,oTxt=$(<span class="string">"#txt"</span>)[<span class="number">0</span>],bFirst=<span class="literal">true</span>,bM=<span class="literal">false</span>;</span></span><br><span class="line"><span class="undefined">    </span></span><br><span class="line"><span class="actionscript">    <span class="function"><span class="keyword">function</span> <span class="title">getStyle</span><span class="params">(obj,attr)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">return</span> obj.currentStyle?obj.currentStyle[attr]:getComputedStyle(obj,<span class="literal">false</span>)[attr];</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">    </span></span><br><span class="line"><span class="actionscript">    oImgBox.onmouseover=oImgBox.onmousemove=<span class="function"><span class="keyword">function</span><span class="params">(ev)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">var</span> e=ev||event,</span></span><br><span class="line"><span class="undefined">            mouseY=e.clientY,</span></span><br><span class="line"><span class="undefined">            iH=oImgBox.offsetHeight,</span></span><br><span class="line"><span class="undefined">            iTop=oImgBox.offsetTop,</span></span><br><span class="line"><span class="actionscript">            duration=<span class="number">10</span>;  <span class="comment">//定义初始周期</span></span></span><br><span class="line"><span class="undefined">        </span></span><br><span class="line"><span class="actionscript">        <span class="keyword">if</span>(bFirst)&#123;  <span class="comment">//判断是否第一次移入，如果是，则默认往下滚  </span></span></span><br><span class="line"><span class="undefined">            move(oImg.offsetHeight-iH);</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">if</span>(mouseY&gt;iTop+iH/<span class="number">2</span>&amp;&amp;mouseY&lt;iTop+iH)&#123;</span></span><br><span class="line"><span class="actionscript">                bFirst=<span class="literal">false</span>;</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">        </span></span><br><span class="line"><span class="actionscript">        <span class="keyword">else</span>&#123;</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">if</span>(mouseY&gt;iTop&amp;&amp;mouseY&lt;iTop+iH/<span class="number">2</span>)&#123;    </span></span><br><span class="line"><span class="undefined">                move(oImg.offsetHeight-iH);</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">else</span> <span class="keyword">if</span>(mouseY&gt;iTop+iH/<span class="number">2</span>&amp;&amp;mouseY&lt;iTop+iH)&#123;</span></span><br><span class="line"><span class="undefined">                move(0);</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">        &#125;    </span></span><br><span class="line"><span class="undefined">        </span></span><br><span class="line"><span class="actionscript">        <span class="function"><span class="keyword">function</span> <span class="title">move</span><span class="params">(iTarget)</span></span>&#123;</span></span><br><span class="line"><span class="javascript">            duration=<span class="built_in">Math</span>.abs((-(iTarget)-<span class="built_in">parseInt</span>(iMarginTop))*<span class="number">0.01</span>);</span></span><br><span class="line"><span class="actionscript">            oImg.style.marginTop=-iTarget+<span class="string">"px"</span>; </span></span><br><span class="line"><span class="actionscript">            oImg.style.transition=<span class="string">"margin-top "</span>+duration+<span class="string">"s linear"</span>; </span></span><br><span class="line"><span class="actionscript">            oImg.style.MozTransition=<span class="string">"margin-top "</span>+duration+<span class="string">"s linear"</span>; </span></span><br><span class="line"><span class="actionscript">            timer=setInterval(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">                iMarginTop=getStyle(oImg,<span class="string">"marginTop"</span>);</span></span><br><span class="line"><span class="undefined">            &#125;,30)           </span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">    </span></span><br><span class="line"><span class="actionscript">    oImgBox.onmouseout=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="undefined">        oImg.style.marginTop=iMarginTop;</span></span><br><span class="line"><span class="actionscript">        bFirst=<span class="literal">false</span>;   </span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;)()</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

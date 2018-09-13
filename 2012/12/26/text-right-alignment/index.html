@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="短标题(右边多行)两端对齐的方式 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css文字对其">
+  
+
+  
+
+  <title>短标题(右边多行)两端对齐的方式 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">短标题(右边多行)两端对齐的方式</h1>
+
+  <time class="post-time">2012-12-26</time>
+
+  <div class="post-content">
+    <p>关于文字对齐，上篇说道短标题（二，三，四文字长度）两端对齐的方式，这篇想说的是，短标题(右边多行)两端对齐的方式。</p>
+<p>如下图，实际上，以我现在所知道，要实现下面这种排法，除了表格，或者两个子标签采用浮动的方法外，还有另外两种html的写法。这两种写法都用到了负margin的概念，这在我们平时的排版中显得比较怪异。好在它们大都能兼容各大浏览器。下面详细介绍它们的排版原理和代码组成块。</p>
+<a id="more"></a>
+<img src="/2012/12/26/text-right-alignment/tw_21.jpg" title="文字对齐一">
+<h3 id="方法一：利用字标签的负margin和浮动，父标签的padding"><a href="#方法一：利用字标签的负margin和浮动，父标签的padding" class="headerlink" title="方法一：利用字标签的负margin和浮动，父标签的padding"></a>方法一：利用字标签的负margin和浮动，父标签的padding</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.test</span>&#123;<span class="attribute">font-family</span>:simsun;<span class="attribute">margin</span>:<span class="number">20px</span>;<span class="attribute">width</span>:<span class="number">320px</span>;<span class="attribute">line-height</span>:<span class="number">22px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#test01</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span>&#123;<span class="attribute">padding-left</span>:<span class="number">70px</span>;<span class="attribute">clear</span>:both;<span class="attribute">color</span>:<span class="number">#000</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#test01</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span> <span class="selector-tag">span</span>&#123;<span class="attribute">float</span>:left;<span class="attribute">margin-left</span>:-<span class="number">70px</span>;<span class="attribute">color</span>:red;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"test"</span> <span class="attr">id</span>=<span class="string">"test01"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>你好你好：<span class="tag">&lt;/<span class="name">span</span>&gt;</span>内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内内容1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>你&amp;nbsp;好&amp;nbsp;你：<span class="tag">&lt;/<span class="name">span</span>&gt;</span>内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>你　　好：<span class="tag">&lt;/<span class="name">span</span>&gt;</span>内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>方法总结：行内元素浮动会自动变为块级元素。此类方法虽兼容大部分浏览器，不过对于IE6还是会显示有点怪异的地方，在第一行以后的内容会向前偏出几个像素，请看下列贴图：</p>
+<img src="/2012/12/26/text-right-alignment/tw_3.jpg" title="文字对齐二">
+<h3 id="方法二：利用字标签的负margin，子标签的padding和浮动"><a href="#方法二：利用字标签的负margin，子标签的padding和浮动" class="headerlink" title="方法二：利用字标签的负margin，子标签的padding和浮动"></a>方法二：利用字标签的负margin，子标签的padding和浮动</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.test</span>&#123;<span class="attribute">font-family</span>:simsun;<span class="attribute">margin</span>:<span class="number">20px</span>;<span class="attribute">width</span>:<span class="number">320px</span>;<span class="attribute">line-height</span>:<span class="number">22px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#test02</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span>&#123;<span class="attribute">clear</span>:both;<span class="attribute">color</span>:red;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#test02</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span> <span class="selector-tag">span</span>&#123;<span class="attribute">color</span>:<span class="number">#000</span>;<span class="attribute">padding-left</span>:<span class="number">70px</span>;<span class="attribute">float</span>:left;<span class="attribute">margin-top</span>:-<span class="number">22px</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"test"</span> <span class="attr">id</span>=<span class="string">"test02"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span>你好你好：<span class="tag">&lt;<span class="name">span</span>&gt;</span>内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span>你&amp;nbsp;好&amp;nbsp;你：<span class="tag">&lt;<span class="name">span</span>&gt;</span>内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span>你　　好：<span class="tag">&lt;<span class="name">span</span>&gt;</span>内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>方法总结：此种方法可以兼容各大浏览器，由于浮动的行内元素会自动转换成块级元素，所以这里需要给它设置一个负的margin-top，子标签的负margin值也就是行高的值。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

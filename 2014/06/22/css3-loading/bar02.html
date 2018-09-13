@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+.loading{position:relative;width:300px;height:20px;border-radius:10px;margin:100px auto;background:#C56B19;/*E64221*/}
+.loading:before{position:absolute;top:0;left:0;content:"";width:100%;height:100%;border-radius:10px;
+background:-webkit-gradient(linear, 0 0, 100% 100%,
+ color-stop(0.25,rgba(255,255,255,0.2)), color-stop(0.26,rgba(255,255,255,0.8)),
+ color-stop(0.5,rgba(255,255,255,0.8)),color-stop(0.51,rgba(255,255,255,0.2)),
+ color-stop(0.75,rgba(255,255,255,0.2)),color-stop(0.76,rgba(255,255,255,0.8)),
+ color-stop(1,rgba(255,255,255,0.8)));
+background:linear-gradient(-45deg,
+ rgba(255,255,255,0.2) 25%,
+ rgba(255,255,255,0.8) 26%,
+ rgba(255,255,255,0.8) 50%,
+ rgba(255,255,255,0.2) 51%,
+ rgba(255,255,255,0.2) 75%,
+ rgba(255,255,255,0.8) 76%,
+ rgba(255,255,255,0.8) 100%);
+background-size:30px 30px;
+-webkit-animation:bar02 0.5s 0s linear infinite;
+animation:bar02 0.5s 0s linear infinite;}
+.loading:after{position:absolute;top:1px;left:0;z-index:2;content:"";width:100%;height:49%;border-top-left-radius:10px;border-top-right-radius:10px;
+background:-webkit-gradient(linear, 0 0, 0 100%, color-stop(0.1 ,rgba(255,255,255,0.8)),color-stop(0.3 ,rgba(255,255,255,0.4)));
+background:linear-gradient(180deg,rgba(255,255,255,0.8) 10%,rgba(255,255,255,0.4) 30%);
+}
+.tc{text-align:center;}
+
+@-webkit-keyframes bar02{
+  0% {
+       background-position:0 0;
+    }
+    100% {
+       background-position:30px 0;
+    }
+}
+@keyframes bar02{
+  0% {
+       background-position:0 0;
+    }
+    100% {
+       background-position:30px 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="loading"></div>
+
+
+<div class="tc control">
+  <input type="button" value="改变颜色1"/>
+    <input type="button" value="改变颜色2"/>
+</div>
+
+<!--background-size和background-position要一样，否则会导致动画循环时不顺畅-->
+</body>
+</html>
+
+<script type="text/javascript">
+(function(){
+  var d=document,
+    oLoading=d.querySelector(".loading"),
+    aBtn=d.querySelector(".control").getElementsByTagName("input");
+
+  aBtn[0].onclick=function(){
+    oLoading.style.background="red";
+  }
+
+  aBtn[1].onclick=function(){
+    oLoading.style.background="green";
+  }
+
+})()
+</script>

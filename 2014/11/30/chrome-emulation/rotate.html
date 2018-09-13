@@ -1,0 +1,49 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>无标题文档</title>
+<style type="text/css">
+*{margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;}
+.container{position:relative;width:100%;height:100%;-webkit-perspective:500px;perspective:500px;}
+.des{padding-left:10px;padding-top:10px;line-height:30px;}
+.box{position:absolute;left:50%;width:80px;height:80px;margin-left:-50px;line-height:80px;text-align:center;color:#fff;background:#F60;}
+.box-a{top:120px;}
+.box-b{top:220px;}
+.box-g{top:320px;}
+</style>
+</head>
+
+<body>
+
+
+<div class="container">
+  <p class="des"></p>
+  <div class="box box-a">Alpha</div>
+    <div class="box box-b">Beta</div>
+    <div class="box box-g">Gamma</div>
+</div>
+
+</body>
+</html>
+
+
+<script type="text/javascript">
+(function(){
+  function rotate(event){
+    var oDes =  document.querySelector(".des"),
+      oBoxA = document.querySelector(".box-a"),
+      oBoxB = document.querySelector(".box-b"),
+      oBoxG = document.querySelector(".box-g");
+    oDes.innerHTML = "Alpha(围绕Z轴顺（逆）时针旋转)：" +  Math.round(event.alpha) + "<br/>" + "Beta(围绕X轴前后旋转)：" +  Math.round(event.beta) + "<br/>" + "Gamma(围绕Y轴左右扭转)：" +  Math.round(event.gamma);
+    oBoxA.style.webkitTransform = "rotateZ(" + Math.round(event.alpha) +"deg)";
+    oBoxB.style.webkitTransform = "rotateX(" + Math.round(event.beta) +"deg)";
+    oBoxG.style.webkitTransform = "rotateY(" + Math.round(event.gamma) +"deg)";
+
+  }
+  window.addEventListener("deviceorientation", rotate, false);
+})()
+</script>

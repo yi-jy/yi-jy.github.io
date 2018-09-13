@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>鼠标滚轮测试</title>
+<style type="text/css">
+ul{margin:0;padding:0;}
+#box{width:690px;border:1px solid #ccc;margin:10px;}
+.img_box{height:360px;position:relative;overflow:hidden;}
+#ul{position:absolute;top:0;left:0;}
+#ul li{height:360px;overflow:hidden;background:#ccc;}
+#focus{text-align:center;height:30px;line-height:18px;padding-top:10px;}
+#focus a{display:inline-block;width:18px;height:18px;background:#999;color:#fff;margin-right:10px;border-radius:50%;text-decoration:none;}
+#focus .cur{background:#000;}
+</style>
+</head>
+
+<body style="height:2000px;">
+<div id="box">
+	<div class="img_box">
+        <ul id="ul">
+            <li><img src="http://img01.js.10086.cn/2013/images/index/ad_0.jpg?t=20131111"></li>
+            <li><img src="http://img01.js.10086.cn/2013/images/index/ad_1.jpg?t=20131111"></li>
+            <li><img src="http://img01.js.10086.cn/2013/images/index/ad_3.jpg?t=20131111"></li>
+            <li><img src="http://img01.js.10086.cn/2013/images/index/ad_4.jpg?t=20131111"></li>
+        </ul>
+    </div>
+    <div id="focus">
+    	<a class="cur" href="javascript:;">1</a>
+        <a href="javascript:;">2</a>
+        <a href="javascript:;">3</a>
+        <a href="javascript:;">4</a>
+    </div>
+</div>
+</body>
+</html>
+
+
+<script type="text/javascript">
+(function(){
+	var oBox=document.getElementById("box"),
+		oUl=document.getElementById("ul"),
+		aLi=oUl.getElementsByTagName("li"),
+		liLen=aLi.length,
+		iH=aLi[0].offsetHeight,
+		i=0,
+		iSpeed=0,
+		bOnce=true,
+		oTime=null,
+		mouseVal=0,
+		aA=document.getElementById("focus").getElementsByTagName("a");
+
+	addEvent(oBox,"mousewheel",ulMove);
+	addEvent(oBox,"DOMMouseScroll",ulMove);
+	
+	
+	function ulMove(e){ 
+		if(bOnce){
+			if(showDetail(e)<0){ //下
+				if(i!==liLen-1){
+					i++;
+				}
+				move(oUl,-iH*i);
+			}
+			else{ //上
+				if(i!==0){
+					i--;
+				}
+				move(oUl,-iH*i);
+			}
+			bOnce=false;
+			clearInterval(oTime);
+			oTime=setTimeout(function(){bOnce=true},800);
+			for(var n=0;n<aA.length;n++){
+				aA[n].className="";	
+			}
+				aA[i].className="cur";
+		}
+		// 阻止网页过长，滚动条默认行为
+		if(e.preventDefault){  
+			e.preventDefault();
+		}
+		else{
+			return false;
+		}	
+	}
+	
+	aControl();
+	
+	//焦点控制
+	function aControl(){
+		for(var n=0;n<aA.length;n++){
+			aA[n].index=n;
+			aA[n].onclick=function(){
+				for(var n=0;n<aA.length;n++){
+					aA[n].className="";	
+				}
+					this.className="cur";
+					i=this.index;
+					move(oUl,-iH*(this.index));	
+			}	
+		}	
+	}
+	
+	//鼠标滚动方向
+	function showDetail(e){
+		var e=window.event||e; 
+		if(e.wheelDelta){
+			return mouseVal=e.wheelDelta;
+			//alert(e.wheelDelta);  // ie浏览器 上是120，下是-120；
+		}
+		else{
+			return mouseVal=-e.detail*40;
+			//alert(-e.detail*40);  // 标准浏览器 上是-3，下是3；
+		}
+	}
+	
+	//图片运动
+	function move(obj,iTarget){
+		clearInterval(obj.timer);
+		obj.timer=setInterval(function(){
+			if(obj.offsetTop==iTarget){
+				clearInterval(obj.timer);
+			}
+			else{
+				iSpeed=(iTarget-obj.offsetTop)/8;
+				iSpeed=iSpeed>0?Math.ceil(iSpeed):Math.floor(iSpeed);
+				obj.style.top=obj.offsetTop+iSpeed+"px";
+			}
+		},30);
+	}
+	
+	//事件绑定
+	function addEvent(obj,sEvent,fn){
+		if(obj.attachEvent){
+			obj.attachEvent("on"+sEvent,fn);
+		}
+		else{
+			obj.addEventListener(sEvent,fn,false);
+		}
+	}
+	
+})()
+</script>

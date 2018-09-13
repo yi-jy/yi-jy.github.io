@@ -1,0 +1,6 @@
+body,h3,p{margin:0;padding:0;}
+.flower{width:600px;margin:30px auto;font:12px/20px "microsoft yahei";}
+.flower-img{float:left;margin-right:10px;}
+.flower-name{padding-bottom:8px;font:18px/22px "microsoft yahei";}
+.flower-info{zoom:1;overflow:hidden;}
+.network-status{font-weight:bold;color:red;}

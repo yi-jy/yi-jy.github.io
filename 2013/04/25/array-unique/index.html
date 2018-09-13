@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="数组去重的几种方法 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="数组去重">
+  
+
+  
+
+  <title>数组去重的几种方法 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">数组去重的几种方法</h1>
+
+  <time class="post-time">2013-04-25</time>
+
+  <div class="post-content">
+    <p>对于数组中重复的项，我们通常都需要剔除掉，这种做法被称为 数组去重。数组去重有这么几种做法：</p>
+<a id="more"></a>
+<p><strong>二重循环</strong></p>
+<p>此种方法主要是利用二重循环判断的方法，性能较低。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> unique1=(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> arr1=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">12</span>,<span class="number">3</span>,<span class="number">24</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">12</span>,<span class="number">20</span>],i=<span class="number">0</span>,bAdd=<span class="literal">true</span>,arr2=[];</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;arr1.length;i++)&#123;</span><br><span class="line">        bAdd=<span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">var</span> j=<span class="number">0</span>;j&lt;arr2.length;j++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(arr2[j]===arr1[i])&#123;</span><br><span class="line">                bAdd=<span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125; </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(bAdd)&#123;</span><br><span class="line">            arr2.push(arr1[i]);</span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">	<span class="keyword">return</span> arr2; </span><br><span class="line">&#125;); </span><br><span class="line">alert(unique1());</span><br></pre></td></tr></table></figure>
+<p><strong>排序检测法</strong></p>
+<p>现将数组进行排序，然后将数组的第一个元素赋给临时数组，再循环逐个判断临时数组的最后一个元素。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> unique2=(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> arr1=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">12</span>,<span class="number">3</span>,<span class="number">24</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">12</span>,<span class="number">20</span>],i=<span class="number">0</span>,arr2=[];</span><br><span class="line">    arr1.sort();</span><br><span class="line">    arr2[<span class="number">0</span>]=arr1[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;arr1.length;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(arr1[i]!=arr2[arr2.length<span class="number">-1</span>])&#123;</span><br><span class="line">            arr2.push(arr1[i])</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> arr2;</span><br><span class="line">&#125;);</span><br><span class="line">alert(unique2());</span><br></pre></td></tr></table></figure>
+<p><strong>数组检测法</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> unique3=(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> arr1=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">12</span>,<span class="number">3</span>,<span class="number">24</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">12</span>,<span class="number">20</span>],i=<span class="number">0</span>,arr2=[],temp=&#123;&#125;;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;arr1.length;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(!temp[arr1[i]])&#123;</span><br><span class="line">            arr2.push(arr1[i]);</span><br><span class="line">            temp[arr1[i]]=<span class="number">1</span>;</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> arr2;</span><br><span class="line">&#125;);</span><br><span class="line">alert(unique3());</span><br></pre></td></tr></table></figure>
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

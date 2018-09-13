@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="JavaScript自定义事件 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="JavaScript customevent createEvent dispatchEvent propertychange">
+  
+
+  
+
+  <title>Javascript 自定义事件 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">Javascript 自定义事件</h1>
+
+  <time class="post-time">2017-10-20</time>
+
+  <div class="post-content">
+    <p>作为异步驱动编程模型，事件无疑是JavaScript不可或许的部分。</p>
+<p>在JavaScript所定义的事件中，它们被分为多种类型。有 表单事件（focus、blur、submit等）、window事件（load、unload、resize等）、鼠标事件（mousedown、mousmove、mousup等），键盘类型（keydown、keyup等）。</p>
+<p>针对移动端，还有触摸类型，比如 touchstart、touchmove、touchend、touchcancel 等。另外，HTML5还有各类API事件，比如 dragstart、drag、dragend 等。</p>
+<a id="more"></a>
+<p>当然，上面所涉及到类型，都是系统提供的。要响应点击事件，我们通常会这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">element.addEventListener(<span class="string">'click'</span>, clickFn);</span><br></pre></td></tr></table></figure>
+<p>当用户点击 <code>element</code> 时，就会触发函数 <code>clickFn</code>。但你有没有想过，为什么当我们点击元素后，就会触发绑定的函数呢？</p>
+<p>换言之，如果把 <code>click</code> 事件换成我们自定义的事件，比如系统没有提供的长按事件，回调函数也会执行吗？</p>
+<p>这里假设用户点击元素，按住时间超过1秒，即为 <code>长按</code>，我们定义事件名为 <code>longpress</code>。当用户执行下面代码，<code>longpressFn</code> 能否也能触发？</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">element.addEventListener(<span class="string">'longpress'</span>, longpressFn);</span><br></pre></td></tr></table></figure>
+<p>若你运行过上面的代码，你会发现 <code>longpressFn</code> 并不会执行。原因是，<code>longpress</code> 并非是JavaScript定义的事件，而是我们自定义的。因此无法识别，<code>longpressFn</code> 自然也不会触发。</p>
+<p>这里的 <code>longpress</code> 就是所谓的 “自定义事件”，也被称为 “模拟事件”。</p>
+<p>现在，我们面临的问题是如何让自定义的 <code>longpress</code> 事件生效。而要解决这个问题，通常需要经历 <strong>创建自定义事件</strong> 和 <strong>触发自定义事件</strong> 这两步。</p>
+<h2 id="创建自定义事件"><a href="#创建自定义事件" class="headerlink" title="创建自定义事件"></a>创建自定义事件</h2><p>JavaScript提供了自定义事件的API，即 <code>CustomEvent()</code>，它的使用语法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> evt = <span class="keyword">new</span> CustomEvent(typeArg, customEventInit);</span><br></pre></td></tr></table></figure>
+<p>其中，<code>typeArg</code> 是一个字符串，表示要创建的事件类型。而 <code>customEventInit</code> 是一个可选对象，它包含以下几个属性：</p>
+<ul>
+<li><code>detail</code> 任意的数据类型，表示事件初始化时，需要传递的数据，默认值为 <code>null</code></li>
+<li><code>bubbles</code> 布尔值，表示该事件能否冒泡，默认值为 <code>false</code></li>
+<li><code>cancelable</code> 布尔值，表示该事件是否可以取消，默认值为 <code>false</code></li>
+</ul>
+<p>所以，我们可用使用以下代码去创建一个自定义事件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> evt = <span class="keyword">new</span> CustomEvent(type, &#123;<span class="attr">detail</span>: msg, <span class="attr">bubbles</span>: <span class="literal">true</span>, <span class="attr">cancelable</span>: <span class="literal">true</span>&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="旧版写法"><a href="#旧版写法" class="headerlink" title="旧版写法"></a>旧版写法</h3><p>而针对旧版浏览器，创建事件还有一个已废弃的写法（有的旧浏览器支持）。你必须先在 <code>document</code> 对象上使用 <code>createEvent</code> 来创建一个新的 event对象，如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> evt = <span class="built_in">document</span>.createEvent(type);</span><br></pre></td></tr></table></figure>
+<p>其中，<code>evt</code> 是被创建的 <code>Event对象</code>。<code>type</code> 是一个字符串，表示要创建的事件类型。它包含 “DOM2级事件” 和 “DOM3级事件”，还有其他的规范定义（如SVG），另外，每个事件类型都有其对应的初始化方法。下面列出部分：</p>
+<h4 id="DOM2级"><a href="#DOM2级" class="headerlink" title="DOM2级"></a>DOM2级</h4><table>
+<thead>
+<tr>
+<th>事件模块</th>
+<th>事件类型</th>
+<th>事件初始化方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UI事件</td>
+<td>“UIEvents”</td>
+<td>event.initUIEvent</td>
+</tr>
+<tr>
+<td>鼠标事件</td>
+<td>“MouseEvents”</td>
+<td>event.initMouseEvent</td>
+</tr>
+<tr>
+<td>DOM变动事件</td>
+<td>“MutationEvents”</td>
+<td>event.initMutationEvent</td>
+</tr>
+<tr>
+<td>HTML事件</td>
+<td>“HTMLEvents”</td>
+<td>event.initEvent</td>
+</tr>
+</tbody>
+</table>
+<h4 id="DOM3级"><a href="#DOM3级" class="headerlink" title="DOM3级"></a>DOM3级</h4><table>
+<thead>
+<tr>
+<th>事件模块</th>
+<th>事件类型</th>
+<th>事件初始化方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>自定义事件</td>
+<td>“CustomEvent”</td>
+<td>event.initCustomEvent</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+<p>更多事件类型，可参见 <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/createEvent#Notes" target="_blank" rel="noopener">相关文档</a>。</p>
+<p>这里，我们要自定义事件，选择的事件类型为 <code>CustomEvent</code>，所以需要这样创建：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> evt = <span class="built_in">document</span>.createEvent(<span class="string">'CustomEvent'</span>);</span><br></pre></td></tr></table></figure>
+<p>对应的事件初始化，就是这样的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">evt.initCustomEvent(type, canBubble, cancelable, detail);</span><br></pre></td></tr></table></figure>
+<p>其中，<code>type</code> 为字符串，表示事件类型。<code>bubbles</code> 为布尔值，决定是否事件是否应该向上冒泡。<code>cancelable</code> 决定该事件的默认动作是否可以被取消，即 是否可以用 preventDefault() 方法取消事件。<code>detail</code> 表示初始化事件时，需要传递的数据。</p>
+<h2 id="触发自定义事件"><a href="#触发自定义事件" class="headerlink" title="触发自定义事件"></a>触发自定义事件</h2><p>定义完事件后，接下来便是触发该事件了。也就是在什么时机下，触发下面的 <code>longpressFn</code> 函数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">element.addEventListener(<span class="string">'longpress'</span>, longpressFn);</span><br></pre></td></tr></table></figure>
+<p>与繁杂的 <strong>创建自定义事件</strong> 事件相比，触发回调函数十分简单，只需要调用 <code>dispatchEvent</code> 函数，像这样：</p>
+<figure class="highlight abnf"><table><tr><td class="code"><pre><span class="line">element.dispatchEvent(evt)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>此时，自定义事件绑定的回调函数便会执行。</p>
+<p>结合上面的 <strong>创建自定义事件</strong>，我们进行简单封装：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">triggerCustomEvent</span>(<span class="params">element, type, msg</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> evt;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    evt = <span class="keyword">new</span> CustomEvent(type, &#123;<span class="attr">detail</span>: msg, <span class="attr">bubbles</span>: <span class="literal">true</span>, <span class="attr">cancelable</span>: <span class="literal">true</span>&#125;);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123; <span class="comment">// 旧写法</span></span><br><span class="line">    evt = <span class="built_in">document</span>.createEvent(<span class="string">'CustomEvent'</span>);</span><br><span class="line">    evt.initCustomEvent(<span class="keyword">this</span>.type, <span class="literal">true</span>, <span class="literal">true</span>, msg);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  element.dispatchEvent(evt);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="实现一个长按事件"><a href="#实现一个长按事件" class="headerlink" title="实现一个长按事件"></a>实现一个长按事件</h2><p>通过前面文章的描述，我们可以轻松的实现一个自定义的长按事件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> longpressTimer, mousedownTime;</span><br><span class="line"></span><br><span class="line">element.addEventListener(<span class="string">'longpress'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(e.detail);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">element.addEventListener(<span class="string">'mousedown'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  mousedownTime = <span class="keyword">new</span> <span class="built_in">Date</span>()/<span class="number">1</span>;</span><br><span class="line">  longpressTimer = setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    triggerCustomEvent(element, <span class="string">'longpress'</span>, <span class="string">'你长按了！'</span>);</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">element.addEventListener(<span class="string">'mouseup'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">new</span> <span class="built_in">Date</span>()/<span class="number">1</span> - mousedownTime &lt;= <span class="number">1000</span>) clearTimeout(longpressTimer);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>上面的代码中，记录分别读取了鼠标按下和鼠标释放事件的时间，若这两个事件的时间间隔超过一秒时，便触发自定义事件的回调函数。</p>
+<p>当你在 <code>element</code> 元素上长按时间超过一秒时，控制台会打印出 <code>你长按了！</code>。</p>
+<p>这样，一个自定义的长按事件就完成了。</p>
+<h2 id="IE中的自定义事件"><a href="#IE中的自定义事件" class="headerlink" title="IE中的自定义事件"></a>IE中的自定义事件</h2><p>虽说前面的自定义事件看似已经比较完美了，但很可惜，针对前面提到的 <strong>创建自定义事件</strong> 和 <strong>触发自定义事件</strong>， IE并不支持。</p>
+<p>有人可能知道，要在 IE 浏览器中完成事件模拟，可以把 <code>document.createEventObject</code> 和 <code>fireEvent</code> 结合起来。像这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> evt;</span><br><span class="line"></span><br><span class="line">evt = <span class="built_in">document</span>.createEventObject();</span><br><span class="line">evt.detail = msg;</span><br><span class="line"></span><br><span class="line">element.fireEvent(<span class="string">'on'</span> + type, evt);</span><br></pre></td></tr></table></figure>
+<p>但很快你就会发现，这里的 <code>fireEvent</code> 就是一坑货。因为它只支持IE已经定义了的事件，并不能实现真正意义上的实现自定义事件。</p>
+<p>如果非要在IE中实现自定义事件，也是有办法的。其中，网上比较流行的一种做法，是利用IE的私有事件 <code>propertychange</code>。</p>
+<p>原理：如果元素绑定了 <code>propertychange</code> 事件，那么，只要该元素的属性发生变化，<code>propertychange</code> 所对应的回调函数就能触发。这样，我们便可以将自定义事件（<code>longpress</code>）所对应的回调函数（<code>longpressFn</code>），放在 <code>propertychange</code> 的回调函数中调用。</p>
+<p>用代码简单描述下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line"></span><br><span class="line">element.attachEvent(<span class="string">'longpress'</span>, longpressFn);</span><br><span class="line"></span><br><span class="line">element.attachEvent(<span class="string">'onpropertychange'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  longpressFn();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">element.attachEvent(<span class="string">'mousedown'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  timer = setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    element.setAttribute(<span class="string">'time'</span>, <span class="keyword">new</span> <span class="built_in">Date</span>()/<span class="number">1</span>);</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+<p>如果希望尽可能多的兼容，可将标准DOM和IE的自定义事件再进行组合封装。</p>
+<p>以上，就是JavaScript自定义事件。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="一个基于css3的时钟 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css3-时钟">
+  
+
+  
+
+  <title>一个基于css3的时钟 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">一个基于css3的时钟</h1>
+
+  <time class="post-time">2013-11-20</time>
+
+  <div class="post-content">
+    <p>css3定义了可对元素进行变形和旋转，于是在闲暇的功夫做了一个时钟。此时钟的运行必须在高级浏览器，另如果要在ie10运行，必须给transform加上相应的前缀即可。</p>
+<p>说说时钟的原理，根据时钟的时分秒针走动，我们可以得到：每个小时有30deg，每个刻度为6deg。秒针每走360deg ， 则分针走6deg ，时针走 0.5deg。其中秒针每秒走一次，而分钟位置可通过当前日期对象(假设为oDate)的getMinutes()来获得。那么时针的位置就可以由分钟来确定，即oDate.getMinutes/60*30 。</p>
+<a id="more"></a>
+<p>于是我们可以设置一个定时器timer，每一秒调用一次。</p>
+<p>值得注意的是：css3定义0deg是在3点位置，而时针则是到12点位置，重新清0。于是我们就要判断，当某个针（无论时针，分针，秒针）到达12点的位置，即270deg，则下一秒将其设置为-90deg。这里我们拿秒针做例子：假设oS为当前秒数，nowS为秒针的度数，于是就有：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> nowS=<span class="built_in">parseInt</span>(iS.style.transform.substring(<span class="number">7</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (nowS === <span class="number">270</span>) &#123;</span><br><span class="line">  nowS=<span class="number">-90</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">nowS = oS*<span class="number">6</span> - <span class="number">90</span>;</span><br><span class="line"></span><br><span class="line">iS.style.transform=<span class="string">"rotate("</span> + nowS + <span class="string">"deg)"</span>;</span><br></pre></td></tr></table></figure>
+<p>当然分针类似，而时钟则是由分针来确定，但是要注意每一个小时为30deg。假设oH为当前时数，nowH为时针的度数，oM为当前分数，于是就有：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">nowH = oH*<span class="number">30</span> - <span class="number">90</span> + <span class="built_in">Math</span>.floor(oM/<span class="number">60</span>*<span class="number">30</span>);</span><br></pre></td></tr></table></figure>
+<p>具体的demo页面：<a href="/2013/11/20/css3-clock/css3-clock.html" title="基于css3的时钟">基于css3的时钟</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

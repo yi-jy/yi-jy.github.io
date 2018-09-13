@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="模态弹出框 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="通用弹出框">
+  
+
+  
+
+  <title>模态弹出框 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">模态弹出框</h1>
+
+  <time class="post-time">2014-10-31</time>
+
+  <div class="post-content">
+    <p>最近比较忙，私事公事都比较多，好久没上来。</p>
+<p>网厅改版时，遇到弹出框模块复用的问题，于是在此记录一番。为了良好的用户体验，所以我们经常用好的UI来模拟默认的alert，一般而言，一个网页有一两个弹出框很正常的，但也存在一个网页有多个弹出框的情况。那么问题来了，是用多个不同的弹出框以及多个半透明遮罩层，每一个独立起来呢，还是只用一个透明层，切换多种情况弹出框的隐藏。我们都知道，为了网站弹框的统一，因此很自然的采用同一样式。同一页面里，不同的弹出框的弹出，只是改变了 弹出框的标题 和 弹出框中间的内容，即图中的 弹出框标题（可变） 和 红色框里的三个或以上的黑色框 的显示和隐藏 。</p>
+<a id="more"></a>
+<img src="/2014/10/31/modal-popup/popup32.jpg" title="弹框功能图">
+<p>为了提高代码的利用率，减少页面html结构，统一页面的弹出框，增加弹出框的复用。因此我封装了两个函数，分别为打开弹出框和关闭弹出框：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">commonFn.showPopup(popupHdTit,popupBdShowNode</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">commonFn.closePopup();</span><br></pre></td></tr></table></figure>
+<p>其中 showPopup 有两个参数，分别为当前显示状态弹出框的标题，以及对应中间部分要显示层。同时，本函数修复了ie6的fixed定位，并使不同状态的弹出框垂直水平居中。</p>
+<p>例如，如果要显示文本弹出框，只需要调用函数 commonFn.showPopup(“标题为：文字类型的弹出框”,$(“#popup-text-box”))即可。</p>
+<p>查看实例：<a href="/2014/10/31/modal-popup/mod-popup.html" title="模态弹出框">模态弹出框</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

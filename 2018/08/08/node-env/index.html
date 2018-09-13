@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="Node环境变量设置 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="Node 环境变量 webpack">
+  
+
+  
+
+  <title>Node环境变量设置 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">Node环境变量设置</h1>
+
+  <time class="post-time">2018-08-08</time>
+
+  <div class="post-content">
+    <p>通常情况下，我们需要针对不同环境（开发环境、集成环境、生产环境等），进行相应策略的打包（比如是否替换接口地址，代码是否压缩等）。</p>
+<p>拿 Nodejs 打包工具来说，由于 Nodejs 打包工具运行在 Nodejs 环境中，要识别不同环境，就得配置 Nodejs 环境变量，并且把它当成判断不同环境的依据。</p>
+<a id="more"></a>
+<p>Nodejs 提供了 <code>process.env</code> API，它返回一个包含用户环境信息的对象。当我们给 Nodejs 设置一个环境变量，并且把它挂载在 <code>process.env</code> 返回的对象上，便可以在代码中进行相应的环境判断。</p>
+<p>于是，在Webpack配置文件中，经常会看到类似的代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  mode: process.env.NODE_ENV === <span class="string">'production'</span> ? <span class="string">'production'</span> : <span class="string">'development'</span>,</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>要说明的是，<code>NODE_ENV</code> 这个名称只是开发社区的一种共识，名称内容是可以修改的。如果需要，你也可以把它定义为 <code>NODE_XXX</code>。</p>
+<p>那么问题来了，如何设置 Nodejs 这个环境变量呢？总结下来，可通过以下几种方式。</p>
+<h2 id="在Webpack配置文件直接赋值"><a href="#在Webpack配置文件直接赋值" class="headerlink" title="在Webpack配置文件直接赋值"></a>在Webpack配置文件直接赋值</h2><p>这种方式比较简单粗暴。你只需要在 Webpack 打包配置文件中，直接给 <code>process.env.NODE_ENV</code> 赋值即可。不过，每次在不同环境下打包时，都要手动反复修改它的值。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line">process.env.NODE_ENV = <span class="string">'production'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  mode: process.env.NODE_ENV === <span class="string">'production'</span> ? <span class="string">'production'</span> : <span class="string">'development'</span>,</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="命令行（CLI）设置"><a href="#命令行（CLI）设置" class="headerlink" title="命令行（CLI）设置"></a>命令行（CLI）设置</h2><h3 id="Windows-系统"><a href="#Windows-系统" class="headerlink" title="Windows 系统"></a>Windows 系统</h3><p>Windows 系统下，最常用的命令行面板就是 <code>CMD</code>（Command的简写） 和 <code>Powershell</code>。它们的操作分别如下：</p>
+<h4 id="CMD-Command-或-命令提示符"><a href="#CMD-Command-或-命令提示符" class="headerlink" title="CMD (Command 或 命令提示符)"></a>CMD (Command 或 命令提示符)</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看所有环境变量</span></span><br><span class="line">set</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看单个环境变量（以 NODE_ENV 为例）</span></span><br><span class="line">set NODE_ENV</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 设置单个环境变量（以 NODE_ENV 为例）</span></span><br><span class="line">set NODE_ENV=production</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除单个环境变量（以 NODE_ENV 为例）</span></span><br><span class="line">set NODE_ENV=</span><br></pre></td></tr></table></figure>
+<p>上面的命令行以 <code>NODE_ENV</code> 变量为例，在 CMD 命令面板的操作中，如果 <code>NODE_ENV</code> 没有设置，则通过 <code>set NODE_ENV</code> 命令查看时，会提示 <code>环境变量 NODE_ENV 没有定义</code>。</p>
+<p>当设置完 <code>NODE_ENV</code>（假设设置值为 <code>production</code>），再通过 <code>set NODE_ENV</code> 命令查看时，会返回 <code>NODE_ENV=production</code>。</p>
+<h4 id="Powershell"><a href="#Powershell" class="headerlink" title="Powershell"></a>Powershell</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看所有环境变量</span></span><br><span class="line">ls env:</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看单个环境变量（以 NODE_ENV 为例）</span></span><br><span class="line"><span class="meta">$</span><span class="bash">env:NODE_ENV</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 设置单个环境变量（以 NODE_ENV 为例）</span></span><br><span class="line"><span class="meta">$</span><span class="bash">env:NODE_ENV=<span class="string">"production"</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除单个环境变量（以 NODE_ENV 为例）</span></span><br><span class="line">del env:NODE_ENV</span><br></pre></td></tr></table></figure>
+<p>上面的命令行以 <code>NODE_ENV</code> 变量为例，在 Powershell 命令面板的操作中，若 <code>NODE_ENV</code> 没有设置，则通过 <code>set NODE_ENV</code> 命令查看它时，没有任何提示。</p>
+<p>当设置完 <code>NODE_ENV</code>（假设设置值为 <code>production</code>），再通过 <code>set NODE_ENV</code> 命令查看它时，会返回 <code>production</code>。</p>
+<p><strong>注意点</strong></p>
+<p>上面的环境设置只是临时的，即只针对当前运行窗口的环境有效。当CLI运行窗口关闭以后，相关设置都会丢失。</p>
+<p>另外，虽然通过 CMD 和 Powershell 都能修改环境变量，但它们之间设置的环境变量并不会相互影响，即你在 CMD 可以设置 <code>NODE_ENV</code> 为 <code>production</code>，同时也可以在 Powershell 中设置 <code>NODE_ENV</code> 为 <code>development</code>，这也印证了上面的描述，设置只针对当前运行窗口有效 。</p>
+<p>如果你希望设置一直生效（即 本地设置），可通过 <code>控制面板 -&gt; 系统和安全 -&gt; 系统 -&gt; 高级系统设置 -&gt; 高级 -&gt; 环境变量</code> 这样进行设置（Windows10、可能需要重启）。</p>
+<h3 id="Mac-系统"><a href="#Mac-系统" class="headerlink" title="Mac 系统"></a>Mac 系统</h3><p>相当于 Windows 系统，Mac 系统上的操作就轻松了不少。因为它只集成一种命令行终端，它设置 Nodejs 环境变量的语法如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看所有环境变量</span></span><br><span class="line">env</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看单个环境变量（以 NODE_ENV 为例）</span></span><br><span class="line">echo $NODE_ENV</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 设置单个环境变量（以 NODE_ENV 为例）</span></span><br><span class="line">export NODE_ENV=production</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除单个环境变量（以 NODE_ENV 为例）</span></span><br><span class="line">unset NODE_ENV</span><br></pre></td></tr></table></figure>
+<p>在配置完 Nodejs 环境变量后，你就可以继续运行项目中的打包命令了。</p>
+<h3 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h3><p>Git(Bash)是一款跨平台的命令行终端，我们也可以用它来设置 Nodejs 环境变量，语法如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看所有环境变量</span></span><br><span class="line">env</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看单个环境变量（以 NODE_ENV 为例）</span></span><br><span class="line">echo $NODE_ENV</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 设置单个环境变量（以 NODE_ENV 为例）</span></span><br><span class="line">export NODE_ENV=production</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除单个环境变量（以 NODE_ENV 为例）</span></span><br><span class="line">unset NODE_ENV</span><br></pre></td></tr></table></figure>
+<p>上面的命令行以 <code>NODE_ENV</code> 变量为例，在 Git 命令行操作中，若 <code>NODE_ENV</code> 没有设置，则通过 <code>echo $NODE_ENV</code> 命令查看它时，没有任何提示。</p>
+<p>当设置完 <code>NODE_ENV</code>（假设设置值为 <code>production</code>），再通过 <code>set NODE_ENV</code> 命令查看它时，会返回 <code>production</code>。</p>
+<p><em>需要说明的是，在 Mac 系统下，Git安装后，是集成在系统自带的命令行终端中。</em></p>
+<p>但是，采用 命令行（CLI）设置 的方式来修改 Nodejs 环境变量有一个不好地方。即每次在运行打包命令前，都要先通过 <code>set NODE_ENV=xx</code> 或者 <code>export NODE_ENV=xx</code> 等类似的命令来设置或者切换环境变量（这里指的是重开了命令窗口，或者切换打包环境的情况下），是否觉得这样麻烦？</p>
+<p>幸好，我们还有第二种做法，即 配置 package.json。</p>
+<h2 id="配置-package-json"><a href="#配置-package-json" class="headerlink" title="配置 package.json"></a>配置 package.json</h2><p>在项目配置文件 package.json 中，根据不同的打包命令去设置相应的 Nodejs 环境变量，是一种非常主流的做法。其实本质上来说，只是将在命令行面板设置环境变量的命令语句放到了 <code>package.json</code> 文件中，把 设置环境变量 和 打包 两个命令合并运行而已。</p>
+<p>这种方式，就是将 <code>NODE_ENV</code> 注入到 <code>process.env</code> 对象。不同环境下，设置如下：</p>
+<h3 id="Windows-系统-1"><a href="#Windows-系统-1" class="headerlink" title="Windows 系统"></a>Windows 系统</h3><p>在这种方式下，无论你是使用 CMD (命令提示符) 还是 Powershell 命令行工具，你都可以在 <code>package.json</code> 这样配置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// package.json</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"build"</span>: <span class="string">"set NODE_ENV=production&amp;&amp; npm run clean &amp;&amp; webpack"</span>,</span><br><span class="line">    <span class="string">"clean"</span>: <span class="string">"rimraf ./build &amp;&amp; mkdirp build"</span>,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置完后（<code>mkdirp</code> 是一个生成文件夹的第三方包），你只需要在命令行面板运行 <code>npm run build</code> 即可完成打包。</p>
+<p><strong>注意点</strong></p>
+<p>在 Windows 系统中，你必须移除环境变量命令与 <code>&amp;&amp;</code> 符号之间的空白。否者，配置的命令不能生效！</p>
+<h3 id="Mac-系统-1"><a href="#Mac-系统-1" class="headerlink" title="Mac 系统"></a>Mac 系统</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// package.json</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"build"</span>: <span class="string">"export NODE_ENV=production &amp;&amp; npm run clean &amp;&amp; webpack"</span>,</span><br><span class="line">    <span class="string">"clean"</span>: <span class="string">"rimraf ./build &amp;&amp; mkdirp build"</span>,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面描述可以看到，不论是不同的操作系统，还是不同的命令行终端，虽然目的都是设置 Nodejs 环境变量，但它们的语法都不尽相同。这就带来两个问题：</p>
+<ul>
+<li>在 Windows 开发部署的项目，可能在 Mac 系统无法正常打包</li>
+<li>在跨平台开发的项目上，你还得记住每个命令行终端所使用的语法，也麻烦</li>
+</ul>
+<p>为了解决这一问题，有人开发了 <code>cross-env</code>。</p>
+<h3 id="跨平台-cross-env"><a href="#跨平台-cross-env" class="headerlink" title="跨平台 - cross-env"></a>跨平台 - cross-env</h3><p><a href="https://www.npmjs.com/package/cross-env" target="_blank" rel="noopener">cross-env</a> 是一个跨平台设置环境变量的第三方包，它可以让你只配置一行命令，就能轻松地在多个平台设置环境变量。</p>
+<p>首先，你只需要安装它（由于多个项目在用，所以就全局安装了）：</p>
+<figure class="highlight mel"><table><tr><td class="code"><pre><span class="line">npm install -g <span class="keyword">cross</span>-<span class="keyword">env</span></span><br></pre></td></tr></table></figure>
+<p>然后，在 <code>package.json</code> 文件中进行设置：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// package.json</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"build"</span>: <span class="string">"npm run clean &amp;&amp; cross-env NODE_ENV=production webpack"</span>,</span><br><span class="line">    <span class="string">"clean"</span>: <span class="string">"rimraf ./build &amp;&amp; mkdirp build"</span>,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样，不管你的电脑是 Windows 系统还是 Mac 系统 ，不管你用的 Powershell 还是 Git，你都可以正常设置 Nodejs 环境变量了。</p>
+<p>注意，<code>cross-env NODE_ENV=production &amp;&amp; npm run clean &amp;&amp; webpack</code> 此类的设置不能使环境变量生效。原因是 <code>&amp;&amp;</code> 符号把命令语句分离成了多个，每一个命令执行的环境都是隔离的，而 <code>cross-env</code> 无法作用于其他环境的命令。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,86 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<link rel="stylesheet" href="css/page.css">
+<title>recognizeWith-requireFailure</title>
+</head>
+
+<body>
+
+<div class="container" onselectstart="return false;">
+
+  <div class="hammer-test hammer-test-tap">
+    <p class="test-des">tap & doubletap-点击或双击，测试recognizeWith 或 requireFailure</p>
+    <div class="tap-box"></div>
+  </div>
+
+
+
+</div>
+
+<img src="images/recognizeWith-requireFailure.png" alt="" class="qr-code-img">
+
+<script type="text/javascript" src="js/zepto.min.js"></script>
+<script type="text/javascript" src="js/hammer.min.js"></script>
+<script type="text/javascript">
+
+
+var tapBox = $(".tap-box");
+var mTapBox = new Hammer.Manager(tapBox.get(0));
+
+mTapBox.transform = {
+  scale : 1,
+  rotateX : 0,
+};
+
+tapBox.addClass("transition");
+
+mTapBox.add( new Hammer.Tap({ event: "doubletap", taps: 2 }) );
+mTapBox.add( new Hammer.Tap({ event: "singletap" }) );
+
+// mTapBox.get("doubletap").recognizeWith("singletap"); // 没有recognizeWith，则双击时，既会执行单击，也会执行双击
+mTapBox.get("singletap").requireFailure("doubletap"); // 可以准确判断单击还是双击，未检测到 doubletap 时，仅仅触发 singletap
+
+mTapBox.on("singletap doubletap", function(e) {
+
+  switch(e.type){
+    case "singletap":
+      mTapBox.transform.rotateX = mTapBox.transform.rotateX == 0 ? 60 : 0;
+      console.log(e.type);
+    break;
+    case "doubletap":
+      mTapBox.transform.scale = mTapBox.transform.scale == 1 ? 1.3 : 1;
+      console.log(e.type);
+    break;
+  }
+
+
+  mTapBox.transformArr = [
+    "scale(" + mTapBox.transform.scale + ", " + mTapBox.transform.scale + ")",
+    "rotate3d( 1 , 0 , 0 , " + mTapBox.transform.rotateX + "deg)"
+  ];
+
+  tapBox.css({
+    "-webkit-transform" : mTapBox.transformArr.join(" "),
+    "transform" : mTapBox.transformArr.join(" ")
+  });
+
+   tapBox.html(mTapBox.transformArr.join());
+});
+
+
+
+
+
+</script>
+
+</body>
+</html>
+
+
+
+
+

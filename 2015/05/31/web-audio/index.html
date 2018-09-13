@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="使用 web audio 创建可视化音乐 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="web audio 可视化音乐">
+  
+
+  
+
+  <title>使用 web audio 创建可视化音乐 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">使用 web audio 创建可视化音乐</h1>
+
+  <time class="post-time">2015-05-31</time>
+
+  <div class="post-content">
+    <p>在文章的开头，我们先来看下什么是音乐可视化:</p>
+<a href="/2015/05/31/web-audio/web-audio.html" title="音乐可视化–web audio">音乐可视化–web audio</a>
+<p>没错！这个类似音频解调器的东西就是音乐可视化。我们通过某种手段抓取音频数据，然后根据这些数据及时绘制到画布。要将数据绘制在画布中，我们需要准备一个canvas，有：</p>
+<a id="more"></a>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> canvas = <span class="built_in">document</span>.getElementById(<span class="string">"canvas"</span>);</span><br><span class="line">    canvasCtx = canvas.getContext(<span class="string">"2d"</span>),</span><br><span class="line">    canvasWidth = canvas.width,</span><br><span class="line">    canvasHeight = canvas.height;</span><br></pre></td></tr></table></figure>
+<p>而音频的播放，你必须需要一个audio音频元素。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> audio = <span class="built_in">document</span>.getElementById(<span class="string">"audio"</span>);</span><br></pre></td></tr></table></figure>
+<p>如果只是播放音频，则audio就足够了。但我们要分析音频数据，并将这些数据实时的反馈在画布上，所以需要另外一套方法，即使用本篇的主角–web audio，那让我们来看看如何使用它，步骤如下：</p>
+<h2 id="一、创建-web-audio对象和分析器"><a href="#一、创建-web-audio对象和分析器" class="headerlink" title="一、创建 web audio对象和分析器"></a>一、创建 web audio对象和分析器</h2><p>运行web audio api前，我们必须先创建 web audio对象和分析器：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> audioCtx = <span class="keyword">new</span> (<span class="built_in">window</span>.AudioContext || <span class="built_in">window</span>.webkitAudioContext)(),</span><br><span class="line">    analyser = audioCtx.createAnalyser();  <span class="comment">// 提取音频数据，你需要AnalyserNode，它可以通过createAnalyser创建</span></span><br></pre></td></tr></table></figure>
+<p>音频分析器可以用来提取音频数据，当它创建完成后，接着需要落实到具体的音频上，即将音频元素和web audio对象关联起来：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> audioSource = audioCtx.createMediaElementSource(audio);</span><br></pre></td></tr></table></figure>
+<p>createMediaElementSource被用于创建一个MediaElementAudioSourceNode对象，它的使用方法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">audioCtx.createMediaElementSource(myMediaElement);</span><br></pre></td></tr></table></figure>
+<p>它有一个参数：myMediaElement，抓取音频数据的html多媒体元素，该方法返回html元素。</p>
+<h2 id="二、连接节点和设置数据输出格式"><a href="#二、连接节点和设置数据输出格式" class="headerlink" title="二、连接节点和设置数据输出格式"></a>二、连接节点和设置数据输出格式</h2><p>其次，我们需要将这些节点连接起来，音频源连接到分析器，分析器再连接到音频输出源。这里的输出源是web audio对象下的一个属性。要注意的是，analyser只是分析音频数据，并不会改变音频。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">audioSource.connect(analyser);</span><br><span class="line">analyser.connect(audioCtx.destination);。</span><br></pre></td></tr></table></figure>
+<p>一图胜千言：</p>
+<img src="/2015/05/31/web-audio/web-audio.jpg" title="转换流程">
+<p>然后，接下来就是设置音频信号输出格式。在web audio中，使用快速傅立叶变换(Fast Fourier Transform (fft) )来捕获音频数据，再通过分析器analyser的frequencyBinCount属性来获取存放音频缓冲区的数据长度，将这个数据长度设置为js数据化数组的长度：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">analyser.fftSize = <span class="number">256</span>;</span><br><span class="line"><span class="keyword">var</span> bufferLength = analyser.frequencyBinCount,</span><br><span class="line">    dataArray = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>(bufferLength);</span><br></pre></td></tr></table></figure>
+<h2 id="三、将数据绘制画布"><a href="#三、将数据绘制画布" class="headerlink" title="三、将数据绘制画布"></a>三、将数据绘制画布</h2><p>以上工作都完成后，则需要将数据绘制到canvas中，此处使用 requestAnimationFrame 定时器来更新音频信号。在绘制函数中，我们通过分析器analyser的getByteFrequencyData方法来获取波形数据：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> requestAnimationFrame = <span class="built_in">window</span>.requestAnimationFrame || <span class="built_in">window</span>.mozRequestAnimationFrame || <span class="built_in">window</span>.webkitRequestAnimationFrame;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">draw</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"> </span><br><span class="line">    analyser.getByteFrequencyData(dataArray); </span><br><span class="line"> </span><br><span class="line">    canvasCtx.fillStyle = <span class="string">'rgb(0, 0, 0)'</span>;</span><br><span class="line">    canvasCtx.fillRect(<span class="number">0</span>, <span class="number">0</span>, canvasWidth, canvasHeight);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">var</span> barWidth = (canvasWidth / bufferLength) * <span class="number">2</span>;</span><br><span class="line">        barHeight = <span class="number">0</span> ,</span><br><span class="line">        barX = <span class="number">0</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; bufferLength; i++) &#123;</span><br><span class="line">        barHeight = dataArray[i];</span><br><span class="line">        canvasCtx.fillStyle = <span class="string">"#f7d54e"</span>;</span><br><span class="line">        canvasCtx.fillRect(barX , canvasHeight-barHeight/<span class="number">2</span> , barWidth , barHeight);</span><br><span class="line">        barX += barWidth + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    drawTimer = requestAnimationFrame(<span class="built_in">arguments</span>.callee);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API" target="_blank" rel="noopener">Visualizations with Web Audio API</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode" target="_blank" rel="noopener">AnalyserNode</a></li>
+</ul>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

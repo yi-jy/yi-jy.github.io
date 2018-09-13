@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="javascript中 apply() 和 call() 方法 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="apply() call() this指向">
+  
+
+  
+
+  <title>javascript中 apply() 和 call() 方法 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">javascript中 apply() 和 call() 方法</h1>
+
+  <time class="post-time">2013-05-15</time>
+
+  <div class="post-content">
+    <p>js中的每个函数都包含两个非继承而来的方法：apply() 和 call()。这两个方法的用途都是在特定的作用域中调用函数，实际上等于设置函数体内的this对象的值。</p>
+<a id="more"></a>
+<p>首先，我们来看下apply()：</p>
+<p>apply( )方法接受两个参数：一个是在其中运行函数的作用域，第二个则是参数数组。其中第二个参数可以是array的实例，也可以是arguments对象。下面来看下例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">num1,num2</span>)</span>&#123;</span><br><span class="line">　　<span class="keyword">return</span> num1+num2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">applySum1</span>(<span class="params">num1,num2</span>)</span>&#123;</span><br><span class="line">　　<span class="keyword">return</span> sum.apply(<span class="keyword">this</span>,<span class="built_in">arguments</span>); <span class="comment">// 传入arguments对象</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">applySum2</span>(<span class="params">num1,num2</span>)</span>&#123;</span><br><span class="line">　　<span class="keyword">return</span> sum.apply(<span class="keyword">this</span>,[num1,num2]); <span class="comment">// 传入数组</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">alert(applySum1(<span class="number">10</span>,<span class="number">10</span>)); <span class="comment">//20</span></span><br><span class="line">alert(applySum2(<span class="number">10</span>,<span class="number">10</span>)); <span class="comment">//20</span></span><br></pre></td></tr></table></figure>
+<p>在上面的例子中，applySum1( )在执行sum( )函数时传入了this作为this值(因为是在全局作用域中调用的，所以传入的就是window对象)和arguments对象。而applySum2( ) 同样调用了sum( )函数，但它传入的则是this和一个参数数组。这两个函数都会正常执行并返回正确的结果。</p>
+<p>接下来，我们再来看call( ):</p>
+<p>call( )方法和apply( )方法的作用相同，即最终得到的结果是一样的。它们的区别仅在于接受参数的方式不同。对于call( )而言，第一个参数是this值没有变化，变化的是其与参数都直接传递给函数。换句话说，在使用call( )方法时，传递给函数的参数必须逐个列举出来，如下面的例子所示。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">num1,num2</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> num1+num2; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">callSum</span>(<span class="params">num1,num2</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> sum.call(<span class="keyword">this</span>,num1,num2); </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">alert(callSum2(<span class="number">10</span>,<span class="number">10</span>)); <span class="comment">//20</span></span><br></pre></td></tr></table></figure>
+<p>由此看出，在使用all( )方法的情况下， callSum( )必须明确地传入每一个参数。结果与使用apply( )没有什么不同。</p>
+<p>至于是用apply( )和call( )，完全取决于你采用哪种给函数传递参数的方式最方便。如果你打算直接传入arguments对象，或者包含函数中先接收到的也是一个数组，那么使用apply( )则更方便，否则使用call( )可能更加合适。当然，在不给函数传参的情况，使用哪个方法都无所谓。</p>
+<p>事实上，传参并非apply( )和call( )真正的用武之处，它们正在强大的地方是能够扩充函数赖以运行的作用域。看例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.color=<span class="string">"red"</span>;</span><br><span class="line"><span class="keyword">var</span> o=&#123;<span class="attr">color</span>:<span class="string">"blue"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sayColor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    alert(<span class="keyword">this</span>.color);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sayColor(); <span class="comment">//red</span></span><br><span class="line"></span><br><span class="line">sayColor.call(<span class="keyword">this</span>); <span class="comment">//red</span></span><br><span class="line"></span><br><span class="line">sayColor.call(<span class="built_in">window</span>); <span class="comment">//red</span></span><br><span class="line"></span><br><span class="line">sayColor.call(o); <span class="comment">//blue</span></span><br></pre></td></tr></table></figure>
+<p>这个例子是在前面说明this对象的实例基础上修改而成的。这一次，sayColor( )也是作为全局函数定义的，而且当在全局作用域中调用它时，它确实会显示“red”—-因为对this.color的求值会转成成window .color的求值。而sayColor.call( this )和sayColor.call( window)，则是两种显式地在全局作用域中调用函数的方式，结果当然会显示“red”。但是，当运行sayColor.call( o)时，函数的执行环境不一样了，因为此时函数体内的this对象指向了o，于是显示的结果是“blue”。</p>
+<p>使用call( )和apply( )来扩充作用域最大的好处，就是对象不需要与方法有任何耦合关系。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

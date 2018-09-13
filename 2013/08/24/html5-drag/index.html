@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="dataTransfer对象 files对象 drag drop | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="前端技术，web开发，技术空间">
+  
+
+  
+
+  <title>html5拖放API简介及应用 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">html5拖放API简介及应用</h1>
+
+  <time class="post-time">2013-08-24</time>
+
+  <div class="post-content">
+    <p>通常我们在上传文件时，需要使用 <code>&lt;input type=&quot;file&quot;/&gt;</code> 这样的上传文件标签。而在html5中，它提供了拖放的接口，以下的内容就是对html5拖放的一些事件进行详细的解释和说明，并做了一些简单的应用：</p>
+<a id="more"></a>
+<p>其实可以先来看几个demo：<a href="/2013/08/24/html5-drag/drag01.html" title="单个元素拖放">单个元素拖放</a>，<a href="/2013/08/24/html5-drag/drag02.html" title="多个元素交换">多个元素交换</a>，<a href="/2013/08/24/html5-drag/drag03.html" title="元素的删除">元素的删除</a>，<a href="/2013/08/24/html5-drag/drag04.html" title="多上传文件">多上传文件</a></p>
+<p>上面的demo中涉及到的元素主要有 拖放元素 和 目标元素，下面分别说说它们：</p>
+<h3 id="被拖放元素"><a href="#被拖放元素" class="headerlink" title="被拖放元素"></a>被拖放元素</h3><p>首先，如果使得一个元素能够拖动，就必须让元素有draggable=”true”属性，针对被拖动元素有下列事件：</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dragstart</td>
+<td>被拖拽的元素拖拽前进行触发的事件</td>
+</tr>
+<tr>
+<td>drag</td>
+<td>被拖拽的元素拖拽开始与拖拽结束之间连续触发的事件</td>
+</tr>
+<tr>
+<td>dragend</td>
+<td>被拖拽的元素拖拽结束时，触发的事件</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实例</strong></p>
+<p>知道了以上的知识点，我们可以做了一个简单的实例，这个实例是对一个元素拖放时背景颜色的变化，并在它里面显示拖放的状态：</p>
+<img src="/2013/08/24/html5-drag/drag_box.gif" title="被拖动的元素拖动过程">
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#drag_box</span>&#123;<span class="attribute">width</span>:<span class="number">100px</span>;<span class="attribute">height</span>:<span class="number">100px</span>;<span class="attribute">background</span>:<span class="number">#ccc</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"drag_box"</span> <span class="attr">draggable</span>=<span class="string">"true"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript">(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">$</span>(<span class="params">id</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="built_in">document</span>.getElementById(id);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> oDrag=$(<span class="string">"drag_box"</span>);</span></span><br><span class="line"><span class="actionscript">    oDrag.ondragstart=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.style.background=<span class="string">"green"</span>;</span></span><br><span class="line"><span class="actionscript">   　　　<span class="keyword">if</span>(navigator.userAgent.toLowerCase().indexOf(<span class="string">"msie"</span>)==<span class="number">-1</span>)&#123;</span></span><br><span class="line"><span class="actionscript">      　　 　ev.dataTransfer.setData(<span class="string">'elem'</span>,oDrag);<span class="comment">// 设置数据类型，否则firefox拖动无效</span></span></span><br><span class="line"><span class="undefined">   　　　&#125;</span></span><br><span class="line"><span class="undefined">   &#125;</span></span><br><span class="line"><span class="actionscript">    oDrag.ondrag=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.innerHTML=<span class="string">"拖拽中..."</span>;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="actionscript">    oDrag.ondragend=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.style.background=<span class="string">"#f55"</span>;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.innerHTML=<span class="string">"拖拽结束"</span>;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;)();</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="目标元素"><a href="#目标元素" class="headerlink" title="目标元素"></a>目标元素</h3><p>拖拽元素对应的是目标元素，它也有如下事件：</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dragenter</td>
+<td>被拖拽元素进入目标元素所触发的事件</td>
+</tr>
+<tr>
+<td>dragover</td>
+<td>被拖拽元素进入目标元素之后，离开目标元素之前所连续触发的事件</td>
+</tr>
+<tr>
+<td>dragleave</td>
+<td>被拖拽元素离开目标元素触发的事件</td>
+</tr>
+<tr>
+<td>drop</td>
+<td>在目标元素上释放鼠标触发的事件（也就是把被拖放元素放入目标元素中）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实例</strong></p>
+<p>这个实例，分别记录了被拖放元素在进入和离开目标元素，还有在目标元素里移动以及释放的各种状态，如下：</p>
+<img src="/2013/08/24/html5-drag/target_box.gif" title="在目标元素里的拖放">
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#drag_box</span>&#123;<span class="attribute">width</span>:<span class="number">100px</span>;<span class="attribute">height</span>:<span class="number">100px</span>;<span class="attribute">background</span>:<span class="number">#ccc</span>;<span class="attribute">float</span>:left;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#target_box</span>&#123;<span class="attribute">width</span>:<span class="number">200px</span>;<span class="attribute">height</span>:<span class="number">200px</span>;<span class="attribute">background</span>:<span class="number">#ccc</span>;<span class="attribute">margin-left</span>:<span class="number">150px</span>;<span class="attribute">line-height</span>:<span class="number">200px</span>;<span class="attribute">text-align</span>:center;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"drag_box"</span> <span class="attr">draggable</span>=<span class="string">"true"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"target_box"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript">(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">$</span>(<span class="params">id</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="built_in">document</span>.getElementById(id);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> oDrag=$(<span class="string">"drag_box"</span>),oTarget=$(<span class="string">"target_box"</span>);</span></span><br><span class="line"><span class="actionscript">    oDrag.ondragstart=<span class="function"><span class="keyword">function</span><span class="params">(ev)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.style.background=<span class="string">"green"</span>;</span></span><br><span class="line"><span class="actionscript">   　　　<span class="keyword">if</span>(navigator.userAgent.toLowerCase().indexOf(<span class="string">"msie"</span>)==<span class="number">-1</span>)&#123;</span></span><br><span class="line"><span class="actionscript">        　　　 ev.dataTransfer.setData(<span class="string">'elem'</span>,oDrag);</span></span><br><span class="line"><span class="undefined">   　　　&#125;</span></span><br><span class="line"><span class="undefined">  　&#125;</span></span><br><span class="line"><span class="actionscript">    oDrag.ondragend=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.style.background=<span class="string">"#ccc"</span>;</span></span><br><span class="line"><span class="undefined">    &#125;    </span></span><br><span class="line"><span class="actionscript">    oTarget.ondragenter=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.style.background=<span class="string">"#fc0"</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="actionscript">    oTarget.ondragover=<span class="function"><span class="keyword">function</span><span class="params">(ev)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.innerHTML=<span class="string">"在元素中移动！"</span></span></span><br><span class="line"><span class="actionscript">        ev.preventDefault(); <span class="comment">//在这个过程一定，要加阻止默认事件，否则不能触发drop</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="actionscript">    oTarget.ondragleave=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.innerHTML=<span class="string">""</span>;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.style.background=<span class="string">"#ccc"</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="actionscript">    oTarget.ondrop=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.innerHTML=<span class="string">"在目标元素里释放了！"</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;)(); </span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="dataTransfer对象"><a href="#dataTransfer对象" class="headerlink" title="dataTransfer对象"></a>dataTransfer对象</h3><p>前面的内容只是大体的介绍了些拖拽和拖放的事件，并做了两个实例。但是这不是我们最终的目的，最终的目的当然是在拖动过程中实现数据的交换。</p>
+<p>dataTransfer对象有两个主要方法：setData()和getData()。它们的具体使用如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ev.dataTransfer.setData(dataType,value);</span><br></pre></td></tr></table></figure>
+<p>在拖放元素时把要拖动的数据存入dataTransfer对象中，它有两个函数，第一个参数是数据类型，第二个参数为携带的数据。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ev.dataTransfer.getData(dataType);</span><br></pre></td></tr></table></figure>
+<p>getData()可以在drop的过程中取得由setData()保存的值。只有一个参数，即所存储的数据类型。</p>
+<p>除了以上两个方法外，dataTransfer还有一个setDragImage 方法。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">setDragImage(element,x,y);</span><br></pre></td></tr></table></figure>
+<p>它表示可以用一个图片来设置鼠标拖动的图标（类似css里面的cursor），当然这里不单只是图标，也可以是其他元素，比如说自身;</p>
+<p>另外，dataTransfer对象有一个属性：effectAllowed，它规定被拖动元素拖入目标元素时，鼠标的样式，属性值有如下;</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ev.dataTransfer.effectAllowed=CursorStyle;</span><br></pre></td></tr></table></figure>
+<p>CursorStyle的取值有 uninitialized ，none ，copy，link，move，copyLink，copyMove，linkMove，all。作用如下：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>uninitialized</td>
+<td>没有该被拖动元素放置行为</td>
+</tr>
+<tr>
+<td>none</td>
+<td>被拖动的元素不能有任何行为</td>
+</tr>
+<tr>
+<td>copy</td>
+<td>只允许值为”copy”的dropEffect</td>
+</tr>
+<tr>
+<td>link</td>
+<td>只允许值为”link”的dropEffect</td>
+</tr>
+<tr>
+<td>move</td>
+<td>只允许值为”move”的dropEffect</td>
+</tr>
+<tr>
+<td>copyLink</td>
+<td>允许值为”copy”和”link”的dropEffect</td>
+</tr>
+<tr>
+<td>copyMove</td>
+<td>允许值为”copy”和”link”的dropEffect</td>
+</tr>
+<tr>
+<td>linkMove</td>
+<td>允许值位”link”和”move”的dropEffect</td>
+</tr>
+<tr>
+<td>all</td>
+<td>允许任意dropEffect</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实例</strong></p>
+<p>这个实例是将列表拖入目标元素并进行删除。而且在拖动被拖动元素时设置了鼠标拖动的图标，并且拖入到目标元素也改变了鼠标样式。</p>
+<img src="/2013/08/24/html5-drag/drag_remove.gif" title="拖动删除列表">
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#drag_box</span>&#123;<span class="attribute">width</span>:<span class="number">100px</span>;<span class="attribute">height</span>:<span class="number">100px</span>;<span class="attribute">float</span>:left;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-id">#target_box</span>&#123;<span class="attribute">width</span>:<span class="number">200px</span>;<span class="attribute">height</span>:<span class="number">200px</span>;<span class="attribute">background</span>:<span class="number">#ccc</span>;<span class="attribute">margin-left</span>:<span class="number">150px</span>;<span class="attribute">line-height</span>:<span class="number">200px</span>;<span class="attribute">text-align</span>:center;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"drag_box"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">draggable</span>=<span class="string">"true"</span>&gt;</span>111<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">draggable</span>=<span class="string">"true"</span>&gt;</span>222<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">draggable</span>=<span class="string">"true"</span>&gt;</span>333<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"target_box"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript">(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">$</span>(<span class="params">id</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="built_in">document</span>.getElementById(id);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> oDrag=$(<span class="string">"drag_box"</span>),oTarget=$(<span class="string">"target_box"</span>),aLi=oDrag.getElementsByTagName(<span class="string">"li"</span>),removeEle=<span class="literal">null</span>,oImg=<span class="built_in">document</span>.createElement(<span class="string">"img"</span>);</span></span><br><span class="line"><span class="actionscript">    oImg.src=<span class="string">"logo.png"</span>;</span></span><br><span class="line"><span class="undefined">    </span></span><br><span class="line"><span class="actionscript">    <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;aLi.length;i++)&#123;</span></span><br><span class="line"><span class="actionscript">        aLi[i].ondragstart=<span class="function"><span class="keyword">function</span><span class="params">(ev)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">this</span>.style.background=<span class="string">"green"</span>;</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">if</span>(navigator.userAgent.toLowerCase().indexOf(<span class="string">"msie"</span>)==<span class="number">-1</span>)&#123;</span></span><br><span class="line"><span class="actionscript">                ev.dataTransfer.setData(<span class="string">"text"</span>,ev.target.innerHTML);</span></span><br><span class="line"><span class="undefined">                removeEle=ev.target;</span></span><br><span class="line"><span class="actionscript">                ev.dataTransfer.effectAllowed=<span class="string">"copyLink"</span>;</span></span><br><span class="line"><span class="undefined">                ev.dataTransfer.setDragImage(oImg,0,0);    </span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="actionscript">        aLi[i].ondragend=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">this</span>.style.background=<span class="string">"#ccc"</span>;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">    </span></span><br><span class="line"><span class="actionscript">    oTarget.ondragenter=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.style.background=<span class="string">"#fc0"</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">    </span></span><br><span class="line"><span class="actionscript">    oTarget.ondragover=<span class="function"><span class="keyword">function</span><span class="params">(ev)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.innerHTML=<span class="string">"在元素中移动！"</span></span></span><br><span class="line"><span class="undefined">        ev.preventDefault(); </span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">  </span></span><br><span class="line"><span class="actionscript">    oTarget.ondrop=<span class="function"><span class="keyword">function</span><span class="params">(ev)</span></span>&#123;</span></span><br><span class="line"><span class="undefined">        ev.preventDefault();</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.innerHTML=<span class="string">"元素已被删除！"</span>;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.title=<span class="keyword">typeof</span> removeEle;</span></span><br><span class="line"><span class="undefined">        oDrag.removeChild(removeEle);   </span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;)();</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="files对象"><a href="#files对象" class="headerlink" title="files对象"></a>files对象</h3><p>在html5中，关于拖动api里还介绍了一个files对象。该对象主要是为浏览器读取拖动到浏览器里的外部文件信息和内容提供了接口。并且该对象的所有事件都是在拖动文件释放到目标元素后才执行的，也就是说都是在drop里面触发的。以下对files对象的相关属性和方法进行介绍：</p>
+<p>获取外部拖动文件信息，返回的是一个拖动文件的列表：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ev.dataTransfer.files;</span><br></pre></td></tr></table></figure>
+<p>读取外部拖动文件信息，首先要创建读取对象，然后读取文件信息的url。当读取成功后，此时在对象onload下可以通过result来得到读取文件的信息内容，最后进行相关操作：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">files=ev.dataTransfer.files;</span><br><span class="line">filesReader=<span class="keyword">new</span> FileReader();</span><br><span class="line">filesReader.readAsDataURL(files[<span class="number">0</span>]);</span><br><span class="line">filesReader.onload=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> obj=<span class="built_in">document</span>.createElement(<span class="string">"elem"</span>);</span><br><span class="line">    obj.src=<span class="keyword">this</span>.result;</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>实例</strong></p>
+<p>该实例利用files对象来拖动外部文件到浏览器。</p>
+<img src="/2013/08/24/html5-drag/drag_add1.gif" title="拖动外部文件添加到浏览器">
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#target_box</span>&#123;<span class="attribute">width</span>:<span class="number">100px</span>;<span class="attribute">height</span>:<span class="number">100px</span>;<span class="attribute">background</span>:<span class="number">#ccc</span>;<span class="attribute">line-height</span>:<span class="number">100px</span>;<span class="attribute">text-align</span>:center;<span class="attribute">font-size</span>:<span class="number">12px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-tag">img</span>&#123;<span class="attribute">width</span>:<span class="number">80px</span>;<span class="attribute">height</span>:<span class="number">50px</span>;<span class="attribute">display</span>:block;<span class="attribute">margin</span>:<span class="number">10px</span>;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"target_box"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript">(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="keyword">function</span> <span class="title">$</span>(<span class="params">id</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">return</span> <span class="built_in">document</span>.getElementById(id);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> oTarget=$(<span class="string">"target_box"</span>);</span></span><br><span class="line"><span class="undefined">    </span></span><br><span class="line"><span class="actionscript">    oTarget.ondragenter=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.style.background=<span class="string">"#fc0"</span></span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">    oTarget.ondragover=<span class="function"><span class="keyword">function</span><span class="params">(ev)</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.innerHTML=<span class="string">"在元素中移动！"</span></span></span><br><span class="line"><span class="undefined">        ev.preventDefault(); </span></span><br><span class="line"><span class="undefined">    &#125;  </span></span><br><span class="line"><span class="actionscript">    oTarget.ondrop=<span class="function"><span class="keyword">function</span><span class="params">(ev)</span></span>&#123;</span></span><br><span class="line"><span class="undefined">        ev.preventDefault();</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">this</span>.innerHTML=<span class="string">"元素已添加！"</span>;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">var</span> files=ev.dataTransfer.files; </span></span><br><span class="line"><span class="actionscript">        <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;files.length;i++)&#123;  </span></span><br><span class="line"><span class="actionscript">            <span class="keyword">var</span> filesReader=<span class="keyword">new</span> FileReader(); </span></span><br><span class="line"><span class="undefined">            filesReader.readAsDataURL(files[i]); </span></span><br><span class="line"><span class="actionscript">            filesReader.onload=<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="javascript">                <span class="keyword">var</span> oImg=<span class="built_in">document</span>.createElement(<span class="string">"img"</span>);</span></span><br><span class="line"><span class="actionscript">                oImg.src=<span class="keyword">this</span>.result;</span></span><br><span class="line"><span class="javascript">                <span class="built_in">document</span>.body.appendChild(oImg);</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;)();</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>最后关于html5拖动API，还有一些内容不是太理解，比如dataTransfer对象里数据的设置及参数和数据的读取，还有当把被拖动元素拖到目标元素释放时，在firefox浏览器中会默认打开新窗口，希望找到相关内容进行更多的了解。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

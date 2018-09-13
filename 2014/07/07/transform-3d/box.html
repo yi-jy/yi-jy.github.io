@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style type="text/css">
+  html,body{margin:0;padding:0;}
+  .box{position:relative;width:200px;height:200px;left:60%;top:180px;-webkit-perspective: 1000px;
+  perspective: 1000px;-webkit-perspective-origin: 50% 50%;perspective-origin: 50% 50%;}
+  .box .o{position:absolute;width:10px;height:10px;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);left:50%;top:50%;z-index:1000;border-radius:50%;background: #000;display: none;}
+  .box-main{position:relative;width:200px;height:200px;-webkit-transform-style:preserve-3d;transform-style:preserve-3d;transition:2s all;}
+  .box-side{position:absolute;left:0;top:0;width:200px;height:200px;color:#fff;font-size:20px;line-height:200px;text-align: center;}
+  .front-side{background:rgba(204,000,051,0.5);}
+  .back-side{-webkit-transform:translate3d(0,0,-200px);transform:translate3d(0,0,-200px);background:rgba(000,102,051,0.5);}
+  .top-side{-webkit-transform-origin:50% 0;transform-origin:50% 0;-webkit-transform:rotateX(-90deg);transform:rotateX(-90deg);background:rgba(102,000,051,0.5);}
+  .bottom-side{-webkit-transform-origin:50% 100%;transform-origin:50% 100%;-webkit-transform:rotateX(90deg);transform:rotateX(90deg);background:rgba(051,102,255,0.5);}
+  .top-side span,.bottom-side span,.back-side span{display:block;-webkit-transform:rotateX(180deg);transform:rotateX(180deg);}
+  .left-side{-webkit-transform-origin:0 50%;transform-origin:0 50%;-webkit-transform:rotateY(90deg);transform:rotateY(90deg);background:rgba(000,051,051,0.5);}
+  .left-side span,.right-side span{display:block;-webkit-transform:rotateY(180deg);transform:rotateY(180deg);}
+  .right-side{-webkit-transform-origin:100% 50%;transform-origin:100% 50%;-webkit-transform:rotateY(-90deg);transform:rotateY(-90deg);background:rgba(051,051,000,0.5);}
+
+  .box-front{-webkit-transform:rotate(0);transform:rotate(0);}
+  .box-back{-webkit-transform:rotateX(180deg);transform:rotateX(180deg);}
+  .box-top{-webkit-transform:rotateX(-90deg);transform:rotateX(-90deg);}
+  .box-bottom{-webkit-transform:rotateX(90deg);transform:rotateX(90deg);}
+  .box-left{-webkit-transform:rotateY(90deg);transform:rotateY(90deg);}
+  .box-right{-webkit-transform:rotateY(-90deg);transform:rotateY(-90deg);}
+
+  .user-setting{position: absolute;left:20px;top:20px;}
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <span class="o"></span>
+    <div class="box-main">
+      <div class="box-side front-side"><span>前面</span></div>
+      <div class="box-side back-side"><span>后面</span></div>
+      <div class="box-side top-side"><span>上面</span></div>
+      <div class="box-side bottom-side"><span>下面</span></div>
+      <div class="box-side left-side"><span>左面</span></div>
+      <div class="box-side right-side"><span>右面</span></div>
+    </div>
+  </div>
+
+  <div class="user-setting">
+    <p>提示：请在chrome或firefox浏览器下查看效果</p>
+    <p id="action">
+      <input type="button" class="btn" data-class="box-front" value="前面"/>
+      <input type="button" class="btn" data-class="box-back" value="后面"/>
+      <input type="button" class="btn" data-class="box-top" value="上面"/>
+      <input type="button" class="btn" data-class="box-bottom" value="下面"/>
+      <input type="button" class="btn" data-class="box-left" value="左面"/>
+      <input type="button" class="btn" data-class="box-right" value="右面"/>
+    </p>
+    <p>
+      <select name="" class="or-val">
+        <option>50% 50%</option>
+        <option>0 0</option>
+        <option>100% 0</option>
+        <option>0 100%</option>
+        <option>100% 100%</option>
+      </select>
+      <input type="button" class="btn show-origin" value="显示并设置perspective-origin"/>
+    </p>
+  </div>
+</body>
+</html>
+
+
+<script type="text/javascript">
+  (function(){
+    var EventUtil={
+      addHandler:function(element,type,handler){
+        if(element.addEventListener){
+          element.addEventListener(type,handler,false);
+        }
+        else if(element.attachEvent){
+          element.attachEvent("on"+type,handler);
+        }
+        else{
+          element["on"+type]=handler;
+        }
+      },
+      removeHandler:function(element,type,handler){
+        if(element.removeEventListener){
+          element.removeEventListener(type,handler,false);
+        }
+        else if(element.detachEvent){
+          element.detachEvent("on"+type,handler);
+        }
+        else{
+          element["on"+type]=null;
+        }
+      }
+    }
+
+    function flipBox(){
+      var d=document,
+        oBox=d.querySelector(".box")
+        oBoxMain=d.querySelector(".box-main"),
+        aInput=d.querySelectorAll("input"),
+        oR=d.querySelector(".o"),
+        showOr=d.querySelector(".show-origin"),
+        orVal=d.querySelector(".or-val"),
+        arr=[];
+
+      for (var i = 0; i < aInput.length-1; i++) {
+        EventUtil.addHandler(aInput[i],"click",function(){
+          oBoxMain.className="box-main";
+          oBoxMain.className+=" "+this.getAttribute("data-class");
+        });
+      }
+
+      function setOrPos () {
+        arr=[];
+        oR.style.display="block";
+        oBox.style["-webkit-perspective-origin"]=orVal.options[orVal.selectedIndex].text;
+        oBox.style["perspective-origin"]=orVal.options[orVal.selectedIndex].text;
+        arr=orVal.options[orVal.selectedIndex].text.split(" ");
+        oR.style.left=arr[0];
+        oR.style.top=arr[1];
+      }
+      EventUtil.addHandler(showOr,"click",setOrPos);
+    }
+
+    flipBox();
+
+  })()
+</script>

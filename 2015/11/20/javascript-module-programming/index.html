@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="JavaScript模块化编程的发展 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="JavaScript 模块化编程 commonjs amd cmd">
+  
+
+  
+
+  <title>JavaScript模块化编程的发展 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">JavaScript模块化编程的发展</h1>
+
+  <time class="post-time">2015-11-20</time>
+
+  <div class="post-content">
+    <p>所谓模块，可以简单的理解为一个js文件。比如说，一个 JqueryJS 就是一个模块。有了模块，我们便可以很方便的引用并使用别人编写或封装好的代码，需要什么功能，就引入什么模块。</p>
+<p>引入模块的形式可以分为很多种，最原始的，要从 script标签 说起。</p>
+<a id="more"></a>
+<h2 id="一、最原始的方式-script标签"><a href="#一、最原始的方式-script标签" class="headerlink" title="一、最原始的方式 script标签"></a>一、最原始的方式 script标签</h2><p>页面引用模块最常见的方式，当然是使用 <code>script</code> 标签。如，引入一个 Jquery：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script src=<span class="string">"jquery.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>但这种方式的引入，很容易导致一些问题。最明显的是，模块里的变量相互污染，可能会导致一些模块名会被覆盖，或不能生效。</p>
+<p>开发者必须了解模块的依赖关系，并手动调整模块加载的顺序。</p>
+<p>另外，这种引入形式，大模块会加载很慢，主程序会被阻塞，导致浏览器出现 “假死” 的情况。</p>
+<p>基于这些问题，便出现了模块加载的概念。</p>
+<h2 id="二、CommonJS"><a href="#二、CommonJS" class="headerlink" title="二、CommonJS"></a>二、CommonJS</h2><p>在之前看来，前端根本并没有模块加载的概念，直到2009年 Nodejs 项目的创建。因为该项目将JavaScript应用于服务端，而它的模块系统是参照 CommonJS 写的，这便代表着 “JavaScript模块化编程” 的开始。</p>
+<p>其实，CommonJS 的原名是 ServerJS。之所以更名是因为 ServerJS 社区的人觉得 Nodejs 在基于此规范上有着不错的实践，它们希望把这种规范推广到客户端，因此，将 ServerJS 改为 CommonJS。</p>
+<p>在 CommonJS 中，它提供了一个全局的方法 require()，用于加载模块。比如，我们需要数学方法，则得先这样引入，再使用它：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> math = <span class="built_in">require</span>(<span class="string">'math'</span>);</span><br><span class="line"></span><br><span class="line">math.add(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">renderData();</span><br></pre></td></tr></table></figure>
+<p>很快，当很多前端人员看到这种模式之后，他们想把它引入到客户端（浏览器端）。并且，希望在不改动代码的情况，同时能够被 服务端 和 客户端 正常引用。</p>
+<p>然而，他们忽视了一个重要的问题。即上面的代码在 服务端 运行是完全没问题的，毕竟 math 模块就在本地磁盘，可以说根本无需下载，因此，加载起来非常快。</p>
+<p>但运行在浏览器端的js文件，其中引入的模块是在远程服务器，如果模块很大，或者网速很慢，极有可能导致下载的时候过长，出现浏览器假死的情况。</p>
+<p>也就是说，服务端可以使用”同步加载”（synchronous），但客户端或许要采用”异步加载”（asynchronous）的方式。</p>
+<p>于是，针对客户端的这种状况，开发人员提出了 AMD 的概念。</p>
+<h2 id="三、AMD-和-RequireJS"><a href="#三、AMD-和-RequireJS" class="headerlink" title="三、AMD 和 RequireJS"></a>三、AMD 和 RequireJS</h2><p>AMD，是 Asynchronous Module Definition 的简写，即 异步模块定义。</p>
+<p>那么，何为 异步模块定义。它表示当前模块的加载，不影响主线程代码的运行，所有依赖该模块的代码，都放在一个回调函数中。</p>
+<p>最常见的语法是这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">require</span>([mod], callback);</span><br></pre></td></tr></table></figure>
+<p>那么前面的代码，就可以这样表示：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">require</span>([<span class="string">'math'</span>], <span class="function"><span class="keyword">function</span>(<span class="params">math</span>) </span>&#123;</span><br><span class="line">  math.add(<span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">renderData();</span><br></pre></td></tr></table></figure>
+<p>上面的代码中，加载 math 模块的同时，会继续执行 <code>renderData</code>，直到 math 模块加载完毕，<code>math.add(2, 3)</code> 才会运行。</p>
+<p>目前，基于这种模块加载规范的库主流的有两个，<a href="https://github.com/requirejs/requirejs" target="_blank" rel="noopener">require.js</a> 和 <a href="https://github.com/cujojs/curl" target="_blank" rel="noopener">curl.js</a>。</p>
+<h3 id="RequireJS"><a href="#RequireJS" class="headerlink" title="RequireJS"></a>RequireJS</h3><p>RequireJS 主要包含 require、define 两个函数。其中，require 是引用模块，而 define 是定义模块。</p>
+<p>由于该加载器是基于 AMD，所以，你必须通过 <code>define</code> 来定义模块，若当前模块不依赖其他模块，你可以这样定义：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// main.js</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 主代码</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>如果主代码依赖第三方库，则需要这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// main.js</span></span><br><span class="line">define([<span class="string">'zepot'</span>, <span class="string">'underscore'</span>], <span class="function"><span class="keyword">function</span>(<span class="params">$, _</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>而使用 require 引入模块，语法也类似：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">require</span>([<span class="string">'main'</span>], <span class="function"><span class="keyword">function</span>(<span class="params">main</span>) </span>&#123;</span><br><span class="line">  </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，使用 RequireJS 中 require 方法引入的模块，必须是基于 AMD 规范编写的。</p>
+<p>更多用法和详细介绍可参见 <a href="http://requirejs.org/" target="_blank" rel="noopener">RequireJS 官网</a></p>
+<h2 id="四、CMD-和-SeaJS"><a href="#四、CMD-和-SeaJS" class="headerlink" title="四、CMD 和 SeaJS"></a>四、CMD 和 SeaJS</h2><p>CMD，为 Common Module Definition 的全称，即 通用模块定义。说到 CMD，避免不了提及它的倡导者玉伯和其对应的成品 SeaJS。</p>
+<p>接上面，基于 AMD 的 RequireJS 出来之后，在当时，RequireJS 受到广大开发人员的追捧，一时非常火热，国内很多大公司也在使用。</p>
+<p>但玉伯团队后来在使用 RequireJS 的过程中，遇到了很多坑，尝试不断给 RequireJS 提建议，但似乎都被对方拒绝。在深感无望之后，开始萌发了造轮子的想法（其中缘由详见 <a href="https://github.com/seajs/seajs/issues/588" target="_blank" rel="noopener">前端模块化开发那点历史</a>）。</p>
+<p>于是，就推出了 CMD 的概念，而基于 CMD 这个模块编码规范，便实现了 SeaJS 模块加载器。</p>
+<h3 id="SeaJS"><a href="#SeaJS" class="headerlink" title="SeaJS"></a>SeaJS</h3><p>与 CommonJS 语法类似，SeaJS 也是使用 <code>define</code> 来定义模块：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">define(factory);</span><br></pre></td></tr></table></figure>
+<p>其中，参数 factory 可以是一个函数，也可以是一个对象或字符串，参数类型不同，输出的模块也不同。</p>
+<p>当 factory 为对象、字符串时，表示模块的接口就是该对象、字符串。</p>
+<p>当 factory 为函数时，表示是模块的构造方法。</p>
+<p>而 <code>require</code> 则是用于获取模块，该方法接受 模块标识 作为唯一参数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params">require, exports</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取模块 a 的接口</span></span><br><span class="line">  <span class="keyword">var</span> a = <span class="built_in">require</span>(<span class="string">'./a'</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 调用模块 a 的方法</span></span><br><span class="line">  a.doSomething();</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，SeaJS 中 require 方法的使用场景，必须是在基于 CMD 规范所定义的模块中。</p>
+<p>更多用法和详细介绍可参见 <a href="https://seajs.github.io/seajs/docs/" target="_blank" rel="noopener">SeaJS 官网</a></p>
+<h2 id="五、AMD-和-CMD-的区别"><a href="#五、AMD-和-CMD-的区别" class="headerlink" title="五、AMD 和 CMD 的区别"></a>五、AMD 和 CMD 的区别</h2><p>AMD 和 CMD 都是用于加载模块的规范，这里引用玉伯的话，说下 AMD 与 CMD 区别：</p>
+<ul>
+<li><strong>推广理念有差异</strong> RequireJS 在尝试让第三方类库修改自身来支持 RequireJS，目前只有少数社区采纳。Sea.js 不强推，采用自主封装的方式来“海纳百川”，目前已有较成熟的封装策略。</li>
+<li><strong>执行差异</strong> 对于依赖的模块，AMD 是提前执行，CMD 是延迟执行。不过 RequireJS 从 2.0 开始，也改成可以延迟执行（根据写法不同，处理方式不同）。</li>
+<li><strong>书写差异</strong> CMD 推崇 依赖就近，而 AMD 推崇依赖前置。即 AMD 可在需要使用模块的位置前一行，才引入模块，而 CMD 则必须在参数里先写好所有依赖模块。</li>
+</ul>
+<p>用代码说明下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// CMD</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params">require, exports, module</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> a = <span class="built_in">require</span>(<span class="string">'./a'</span>)</span><br><span class="line">    a.doSomething()</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">var</span> b = <span class="built_in">require</span>(<span class="string">'./b'</span>) <span class="comment">// 依赖可以就近书写</span></span><br><span class="line">    b.doSomething()</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// AMD</span></span><br><span class="line">define([<span class="string">'./a'</span>, <span class="string">'./b'</span>], <span class="function"><span class="keyword">function</span>(<span class="params">a, b</span>) </span>&#123; <span class="comment">// 依赖必须一开始就写好</span></span><br><span class="line">    a.doSomething()</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    b.doSomething()</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="六、UMD-统一规范的使用"><a href="#六、UMD-统一规范的使用" class="headerlink" title="六、UMD 统一规范的使用"></a>六、UMD 统一规范的使用</h2><p>其实，目前主流的模块加载规范，只有 CommonJS 和 AMD。</p>
+<p>如果你希望自己写的插件或工具，既可以被 CommonJS 引用，又能被RequireJS（基于 AMD 实现）引用。同时，若开发者在浏览器端不使用模块加载器的情况，还能正常引用你的代码。那么，你需要 UMD。</p>
+<p>UMD，是 Universal Module Definition 的简写，即通用模块定义。</p>
+<p>它将这两个规范封装成一套代码，为模块引用提供了跨平台解决方案，这样，你的代码就能在多平台运行。</p>
+<p>比如，现在选择器引擎 <a href="https://github.com/ded/qwery/blob/master/src/qwery.js" target="_blank" rel="noopener">qwery</a> 就有类似的实现。</p>
+<p>UMD 的基本代码如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">;(<span class="function"><span class="keyword">function</span> (<span class="params">context, name, definition</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">module</span> != <span class="string">'undefined'</span> &amp;&amp; <span class="built_in">module</span>.exports) &#123;</span><br><span class="line">    <span class="comment">// CommonJS</span></span><br><span class="line">    <span class="built_in">module</span>.exports = definition();</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> define === <span class="string">'function'</span> &amp;&amp; define.amd) &#123;</span><br><span class="line">    <span class="comment">// AMD</span></span><br><span class="line">    define(definition);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// Browser</span></span><br><span class="line">    context[name] = definition();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;(<span class="keyword">this</span>, <span class="string">'Plugin'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 主代码</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">Plugin</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> Plugin;</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+<p>如果你的主代码需要依赖第三方库，则可以这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">;(<span class="function"><span class="keyword">function</span> (<span class="params">context, name, definition</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">module</span> != <span class="string">'undefined'</span> &amp;&amp; <span class="built_in">module</span>.exports) &#123;</span><br><span class="line">    <span class="comment">// CommonJS</span></span><br><span class="line">    <span class="built_in">module</span>.exports = definition(<span class="built_in">require</span>(<span class="string">'zepto'</span>), <span class="built_in">require</span>(<span class="string">'underscore'</span>));</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> define === <span class="string">'function'</span> &amp;&amp; define.amd) &#123;</span><br><span class="line">    <span class="comment">// AMD</span></span><br><span class="line">    define([<span class="string">'zepto'</span>, <span class="string">'underscore'</span>], definition);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// Browser</span></span><br><span class="line">    context[name] = definition();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;(<span class="keyword">this</span>, <span class="string">'Plugin'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$, _</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 主代码</span></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">Plugin</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    $(<span class="built_in">window</span>).scroll(_.throttle(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="comment">// 节流获取滚动距离</span></span><br><span class="line">      <span class="keyword">return</span> $(<span class="built_in">document</span>.body).scrollTop();</span><br><span class="line">    &#125;, <span class="number">100</span>));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> Plugin;</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+<p>另外，倘若你想要检测是否包含 CMD 模块加载器，你也可以加上相应的判断：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> define === <span class="string">"function"</span> &amp;&amp; define.cmd) &#123;</span><br><span class="line">  <span class="comment">// CMD - Sea.js</span></span><br><span class="line">  define(definition);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="七、ES6-Module"><a href="#七、ES6-Module" class="headerlink" title="七、ES6 Module"></a>七、ES6 Module</h2><p>上面所提及的模块加载器都不属于 ECMASCRIPT规范，但你可以把它们理解为模块加载规范的一种另类实现方式。</p>
+<p>其实，再即将到来的ES6中，就包含了 模块加载。</p>
+<p>这样，我们便可以通过原生语法去输出模块：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// math.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>或导入模块：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;add&#125; <span class="keyword">from</span> <span class="string">'./math'</span>;</span><br></pre></td></tr></table></figure>
+<p>除了模块的输出导入，还有一些非常让人期待的<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import" target="_blank" rel="noopener">功能</a>。</p>
+<h2 id="八、总结"><a href="#八、总结" class="headerlink" title="八、总结"></a>八、总结</h2><p>由于 ServerJS 在服务端、桌面端应用比较成功，于是，开发者希望将这套规范推广到客户端，并将社区生态改名为 CommonJS 。但后来发现，CommonJS 是同步加载模块，只适用于服务端。于是，针对客户端提出了AMD，基于该规范实现的库有 RequireJS。后来，玉伯团队在使用 RequireJS 遇到了一些问题，在多次提建议却屡遭被拒的情况下，自己开发了 SeaJS，并提出了 CMD 的概念。</p>
+<p>针对不同的模块加载规范，开发者提供一套跨平台的方案，即 UMD。</p>
+<p>然而，最终，这些都将会被ES6的 Module 所取代。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="伪类与伪元素 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="CSS 伪类 伪元素">
+  
+
+  
+
+  <title>伪类与伪元素 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">伪类与伪元素</h1>
+
+  <time class="post-time">2015-01-13</time>
+
+  <div class="post-content">
+    <p>在重构页面时，除了基本的CSS选择器之外，我们经常还会借助伪类和伪元素，来完成一些特殊的需求。可能，你对于这两种写法已经应用的非常熟练了，但是，如果不刻意梳理，还是避免不了这两个概念的混淆！</p>
+<a id="more"></a>
+<p>如果按照W3C的说法，它们两者都是用于描述 CSS 无法表述的内容。而按照我自己的理解，可以归纳为：</p>
+<p>伪类：文档中实际存在的元素，我们可以通过DOM访问到它们。它只是针对符合某些条件的元素，使用 “假定” 的类名来匹配它们。</p>
+<p>伪元素：伪元素又被称为 幽灵元素，即文档中不存在的元素，DOM无法对其进行访问，它也不是HTML中一个特定的标签。但我们就是可以通过 “虚拟” 的元素来指定它们。</p>
+<h2 id="一、常见伪类和伪元素"><a href="#一、常见伪类和伪元素" class="headerlink" title="一、常见伪类和伪元素"></a>一、常见伪类和伪元素</h2><h3 id="伪类"><a href="#伪类" class="headerlink" title="伪类"></a>伪类</h3><p>伪类大致可分为以下几部分，即：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>伪类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>状态</td>
+<td>link、visited、hover、active、checked、enabled、disabled、empty</td>
+</tr>
+<tr>
+<td>结构</td>
+<td>first-child、last-child、nth-child、nth-last-child、nth-of-type、nth-last-of-type、only-child、only-of-type、not、target</td>
+</tr>
+<tr>
+<td>语言</td>
+<td>dir、lang</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>root、fullscreen</td>
+</tr>
+</tbody>
+</table>
+<h3 id="伪元素"><a href="#伪元素" class="headerlink" title="伪元素"></a>伪元素</h3><p>相对伪类来说，伪元素则比较少，这里以是否能使用双冒号来分类：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>伪元素 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>单、双冒号均可</td>
+<td>before、after、first-letter、first-line</td>
+</tr>
+<tr>
+<td>只能双冒号</td>
+<td>selection、placeholder、backdrop</td>
+</tr>
+</tbody>
+</table>
+<h2 id="二、区别"><a href="#二、区别" class="headerlink" title="二、区别"></a>二、区别</h2><h3 id="与"><a href="#与" class="headerlink" title=": 与 ::"></a><code>:</code> 与 <code>::</code></h3><p>在css2时，这两个概念本身就模糊不清。我们既可以使用单冒号 <code>:</code> 来表示伪类，也可以用它来表示伪元素。这种单冒号的做法，间接上也导致了概念的混淆。</p>
+<p>因此为了加以区分，css3决定伪类使用单冒号 <code>:</code>，比如：</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">a</span>:hover &#123;&#125;</span><br><span class="line"><span class="selector-tag">p</span>:first-child &#123;&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>而伪元素则使用双冒号 <code>::</code>，比如：</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">p</span>::first-line &#123;&#125;</span><br><span class="line"><span class="selector-tag">div</span>::before &#123;&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>但是要注意，因为一些浏览器（IE8以下）不支持双冒号的写法，但为了向下兼容老版浏览器，所以，一些伪元素既支持单冒号写法，又支持双冒号写法。比如 <code>before</code>、<code>after</code>、<code>first-letter</code>、<code>first-line</code>。</p>
+<p>除了这些伪元素，有一些伪元素仅且只支持双冒号的写法，比如 <code>selection</code>、<code>placeholder</code>、<code>backdrop</code>。</p>
+<h3 id="后面是否能接内容"><a href="#后面是否能接内容" class="headerlink" title="后面是否能接内容"></a>后面是否能接内容</h3><p>对于伪类，我们不仅可以在它自身上设置相应的效果。还可以在伪类后面，针对它的子级设置相关样式，比如：</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">ul</span> <span class="selector-tag">li</span>:first-child <span class="selector-tag">span</span> &#123;<span class="attribute">color</span>: red;&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">p</span>:hover <span class="selector-tag">span</span> &#123;<span class="attribute">display</span>: none;&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的代码中，第一行，我们首先利用伪类选择 ul 下的第一个 li，再在此基础上匹配对应的 span 元素，再应用相关样式。</p>
+<p>第二行则是处理 p 标签鼠标经过时，再将此时状态下，p 标签中的 span 隐藏起来。</p>
+<p>但是对于伪元素，你却不能在它后面追加内容，做后续处理。毕竟，伪元素也不会再出现子元素了吧？！</p>
+<p>所以，一个选择器上，伪类可以多个使用。但是伪元素，只能使用一个。</p>
+<h3 id="概念理解"><a href="#概念理解" class="headerlink" title="概念理解"></a>概念理解</h3><p>有些人把 伪类 简单的描述为一种特殊状态或关系，我觉得这种描述很贴切，因为伪类本来就包含 <code>link、visited、hover、active、focus</code> 这些状态，还包括 <code>first-child、last-child、target</code> 等这种结构化的关系。</p>
+<p>另外，有些人又把 伪元素 简单理解为创建了一个新的虚拟元素。但这种理解好像说不过去，虽然说 <code>before、after</code> 的确创建了虚拟元素，但是 <code>placeholder、selection、backdrop</code> 又作何理解呢？</p>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>其实吧，若是从实用角度来看，伪类和伪元素概念混淆了，会影响你页面的开发吗？当然不会！！！ 感觉这点和 BFC 有点像了。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="使用weinre进行跨终端调试 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="weinre 跨终端调试">
+  
+
+  
+
+  <title>使用weinre进行跨终端调试 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">使用weinre进行跨终端调试</h1>
+
+  <time class="post-time">2015-03-06</time>
+
+  <div class="post-content">
+    <p>记得去年11月份我写过一篇名为 <a href="http://yi-jy.com/2014/11/30/chrome-emulation/">《chrome开发工具中emulation的详解》</a> 的文章，介绍了pc端chrome浏览器下开发工具的emulation，它可以模拟终端设备各种特性，这使得我们可以在开发手机页面时用它来模拟页面在手机上的展示情况。尽管emulation做的很不错了，但毕竟是模拟，当测试拿着在终端有bug页面来问你时，你知道仅仅用emulation还是不够的。</p>
+<p>如你所知，跨终端调试是非常繁琐的一个过程。起初为了快速开发，只是将页面边开发边放在emulation里测试，如果展示没有问题就交给了开发。但事后总会有测试跑到你面前来对你说，“这个页面在我的手机上好像有点问题哎”。</p>
+<p>或许你会说，“是嘛？可是我用电脑模拟手机测试了页面没问题啊！？”可是你知道，bug终究还是要解决的。</p>
+<a id="more"></a>
+<p>然后为了尽量保证测试那边零bug，也为了避免在写代码时不被测试打断，于是，在开发WAP页面时，我会先在emulation中测试一边，然后再将页面传到我的网站上，再用终端机测试一边。如果没问题，则直接发给需求人。目前看来，这个方案看上很不错，但也存在一些问题。为啥呢？理由有三点：</p>
+<ol>
+<li>你得有空间和域名，就算没有，你至少需要一个能够在线访问到这个测试页面的代理平台</li>
+<li>如果页面有问题，则需要反复修改，反复上传覆盖，这样一来操作比较繁琐。并且不好定位问题，因为它不能像chrome开发工具一样，调试页面时所见即所得</li>
+<li>手机浏览器存在缓存问题，不能实时生效。遇到这种情况最蛋疼了，有时需要在设置中清除记录，甚至有时清除记录也不能立马生效</li>
+</ol>
+<p>综上，针对移动端调试，我们需要一个更好的方案，即本篇的主角weinre。weinre是web inspector remote 三个单词前两个字母的缩写，它是一款远程调试工具。如果你搭建了它，就可以如下图在pc端调试在移动端呈现的页面，无论页面布局，还是脚本代码。接下来，我们就来说下如何安装和使用它。</p>
+<img src="/2015/03/06/weinre/debug.jpg" title="debug">
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>因为weinre是运行下node环境的，所以必须先安装node。倘若你的电脑没有安装node，你可以参考下我之前写grunt时node的安装。node安装完后，接着安装weinre，在这里我们通过命令行的方式进行安装：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm -g install weinre</span><br></pre></td></tr></table></figure>
+<p>安装完成后，你会看到如下界面，表示安装成功：</p>
+<img src="/2015/03/06/weinre/install.jpg" title="install">
+<p>从这个界面，我们可以看到weinre的默认安装路径是c盘用户名下的 AppData\Roaming\npm\node_modules。</p>
+<p>如果你安装不成功，可以多尝试几次或切换下网络。</p>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>启动weinre的命令为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">weinre --boundHost -all-</span><br></pre></td></tr></table></figure>
+<p>从上一步的安装，我们可以在命令行中输入weinre的默认安装路径，然后再运行以上代码，可以看到如下界面：</p>
+<img src="/2015/03/06/weinre/start.jpg" title="start">
+<p>我们可以看到，weinre在<a href="http://localhost:8080/" target="_blank" rel="noopener">http://localhost:8080/</a> 启动了。<a href="http://localhost:8080/" target="_blank" rel="noopener">http://localhost:8080/</a> 为weinre的默认启动地址。localhos(127.0.0.1)为默认ip，而8080为默认端口号。因为localhost也是127.0.0.1，所以我们也可以通过<a href="http://127.0.0.1:8080/进行访问。" target="_blank" rel="noopener">http://127.0.0.1:8080/进行访问。</a></p>
+<p>因为这个地址很常见，如果你不想别人也访问到这个地址，你也可以更改ip和端口。通过命令行 ipconfig 我们可以得到本机的ip（我的是192.168.20.54），然后我们设置端口号为9090：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">weinre --boundHost <span class="number">192.168</span><span class="number">.20</span><span class="number">.54</span> --httpPort <span class="number">9090</span></span><br></pre></td></tr></table></figure>
+<p>此时，weinre就在<a href="http://192.168.20.54:9090/" target="_blank" rel="noopener">http://192.168.20.54:9090/</a> 启动了。我们访问<a href="http://192.168.20.54:9090/" target="_blank" rel="noopener">http://192.168.20.54:9090/</a> ，就可以看到weinre 的主界面。</p>
+<img src="/2015/03/06/weinre/page.jpg" title="page">
+<p>这个页面主要是介绍weinre，还有一些文档以及demo示例。</p>
+<h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><p>启动完成后，我们就要开始调试页面了，首先我们需要将测试页面放在AppData\Roaming\npm\node_modules\weinre\web这个目录下，假设放入的文件夹名为wap，里面有一个inquiry.html的页面，要测试这个页面，就需要在inquiry.html中加入js代码，以便让weinre可以检测到这个页面，js代码如下（我假定你设置的地址为<a href="http://192.168.20.54:9090）：" target="_blank" rel="noopener">http://192.168.20.54:9090）：</a></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script src=<span class="string">"http://192.168.20.54:9090/target/target-script-min.js#anonymous"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>然后我们点击weinre主界面里的 <a href="http://192.168.20.54:9090/client/#anonymous" target="_blank" rel="noopener">http://192.168.20.54:9090/client/#anonymous</a> ，你会看到如下界面：</p>
+<img src="/2015/03/06/weinre/test01.jpg" title="测试1">
+<p>接下来，我们使用手机链接WiFi，访问需要测试页面的地址：<a href="http://192.168.20.54:9090/wap/inquiry.html" target="_blank" rel="noopener">http://192.168.20.54:9090/wap/inquiry.html</a> , 此时，你会看到上面的界面发生了变化，绿色部分就是我们在手机上访问的页面地址：</p>
+<img src="/2015/03/06/weinre/test02.jpg" title="测试2">
+<p>最后，我们切换到 Elements选项，就可以像文章第一幅图那样调试页面了。值得一提的是，当你在手机端刷新页面，或者访问其他页面时，你会看到Elements界面也会随之刷新。另外，你还可以在Elements界面底部的控制台调试js，目前看来还是比较赞的！</p>
+<p>补充于4月9号：之前可能没有碰到这个问题，即当我们在pc端修改页面时，手机浏览器由于缓存问题不能及时更新过来。<br>解决方法：weinre 的缓存问题可以通过在PC端浏览器强制刷新（ctrl+f5）来解决。即修改页面后，在PC端浏览器强制刷新这个页面（这个页面要在weinre环境下访问），当我们在手机上再次刷新这个页面时，则会实时看到修改。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="saveSvgAsPng 将svg转换为图片 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="drawImage  saveSvgAsPng  toDataURL  window.btoa">
+  
+
+  
+
+  <title>saveSvgAsPng 将svg转换为图片 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">saveSvgAsPng 将svg转换为图片</h1>
+
+  <time class="post-time">2014-08-10</time>
+
+  <div class="post-content">
+    <p>曾经有很多次萌发这样的想法，如果有这么一个功能，可以通过调用某个标签里代码，将这些代码在网页中展现的效果保存为图片，那将是多么酷的事。这篇文章介绍一个将页面svg转换为图片的js库—saveSvgAsPng，这个库只有4kb大小，另外通过此库保存的图片不仅仅局限于png格式，你可以通过调用它的函数来设置其他的图片格式。</p>
+<a id="more"></a>
+<p>首先来看下具体的demo吧： <a href="/2014/08/10/save-svg-as-png/save-svg-as-png.html" title="saveSvgAsPng应用实例">saveSvgAsPng应用实例</a></p>
+<h2 id="如何使用它"><a href="#如何使用它" class="headerlink" title="如何使用它"></a>如何使用它</h2><p>首先我们需要引入saveSvgAsPng.js，如果只是想下载图片的话，你可以在页面里调用以下函数，它包含三个参数：svg元素、下载的文件名以及下载图片的尺寸比例。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">saveSvgAsPng(<span class="built_in">document</span>.getElementById(<span class="string">"diagram"</span>), <span class="string">"diagram.png"</span>, <span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+<p>当然，你也可以通过获取做处理后svg的dataURI，它也有三个参数：svg元素、下载图片的尺寸比例以及一个回调函数，回调函数的参数即为图片的地址：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">svgAsDataUri(<span class="built_in">document</span>.getElementById(<span class="string">"diagram"</span>), <span class="number">1</span>, <span class="function"><span class="keyword">function</span>(<span class="params">uri</span>) </span>&#123;</span><br><span class="line">　　　<span class="comment">//...</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="核心代码及原理"><a href="#核心代码及原理" class="headerlink" title="核心代码及原理"></a>核心代码及原理</h2><p>其实说来，svg是不能直接转化为图片，必须经过canvas做中间处理，而令人兴奋是canvas是可以直接转换为图片。于是我们可以先将svg的代码转换为字符串，再作为 URI 组件进行编码，然后把编码结果作为图片的src，再加载图片，然后使用canvas渲染这个图片，最后把canvas转换为图片。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> mySvg = <span class="built_in">document</span>.querySelector(<span class="string">".mysvg"</span>);</span><br><span class="line">    svgCon = mySvg.outerHTML,</span><br><span class="line">    uri = <span class="string">'data:image/svg+xml;base64,'</span> + <span class="built_in">window</span>.btoa(<span class="built_in">unescape</span>(<span class="built_in">encodeURIComponent</span>(svgCon))),</span><br><span class="line">    image = <span class="keyword">new</span> Image();</span><br><span class="line">image.src = uri ;</span><br></pre></td></tr></table></figure>
+<p><strong>把canvas转换为图片</strong></p>
+<p>如你所知，canvas是可以直接渲染图片，建立2d环境，然后使用drawImage传入图片对象即可。而得到图片的data URI只是它的一个反过程而已，这里借助了toDataURL(‘image/png’)函数，它是canvas的一个方法，目的是将当前canvas的内容转化为图片数据。两种过程分别如下：</p>
+<p>将图片渲染到canvas中：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">image.onload=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">　　<span class="keyword">var</span> canvas = <span class="built_in">document</span>.createElement(<span class="string">'canvas'</span>);</span><br><span class="line">　　canvas.width = image.width;</span><br><span class="line">　　canvas.height = image.height;</span><br><span class="line">　　<span class="keyword">var</span> context = canvas.getContext(<span class="string">'2d'</span>);</span><br><span class="line">　　context.drawImage(image, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>从canvas中获取图片的data URI</strong></p>
+<p>需要说明的是，这样一个地址不是.jpeg、.gif或者png格式的，而是base64格式。我们把这个地址作为一个a标签的链接，并给a标签加入download属性，这是一个html5属性，属性值为下载文件名，这样它就具有被下载的特性。最后将a标签插入到页面，触发点击事件，完成图片下载！</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">mage.onload=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">　　...<span class="comment">// 图片渲染到canvas</span></span><br><span class="line"></span><br><span class="line">　　<span class="keyword">var</span> imgDataUri = canvas.toDataURL(<span class="string">'image/png'</span>);</span><br><span class="line">　　<span class="keyword">var</span> a = <span class="built_in">document</span>.createElement(<span class="string">'a'</span>);</span><br><span class="line">　　a.download = <span class="string">"image.png"</span>;</span><br><span class="line">　　a.href = imgDataUri;</span><br><span class="line">　　<span class="built_in">document</span>.body.appendChild(a);</span><br><span class="line">　　a.click();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为函数中用到的大部分内容都是一些html5属性和方法，因此saveSvgAsPng这个库不能支持低版本的IE浏览器。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://bl.ocks.org/mbostock/6466603" target="_blank" rel="noopener">Saving Browser-based SVGs as Images</a></li>
+<li><a href="http://spin.atomicobject.com/2014/01/21/convert-svg-to-png/" target="_blank" rel="noopener">Save SVG as PNG</a></li>
+</ul>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>css3翻书的实现</title>
+<style type="text/css">
+p{margin:0;padding:0;}
+.book{width:300px;height:400px;margin:30px auto;position:relative;background:#CCC;font-family:times new roman, arial, sans-serif;box-shadow:5px 5px 3px #ccc;}
+.book .page{position:absolute;left:0;top:0;width:296px;height:396px;border:2px solid #333;font-size:14px;line-height:20px;color:#666;text-shadow:1px 1px 1px #aaa;-webkit-transition:1s all;-webkit-transform-origin:0 0;
+ background:-webkit-linear-gradient(left, #fff, #eeeeee);
+ background:-moz-linear-gradient(left, #fff, #eeeeee);
+}
+.book .book-name{bottom:80px;width:100%;font:20px/250px "Microsoft Yahei";text-align:center;}
+.book h2,.book p{position:absolute;}
+.book p{padding:10px;}
+.line{position:absolute;left:-1px;top:0;z-index:99;width:3px;height:100%;background:#000;}
+.page-flip{position:absolute;top:0;width:100%;height:100%;z-index:100000;cursor:pointer;}
+.page-unfold{left:0;}
+.page-fold{left:-300px;}
+.book img{width:150px;height:200px;}
+.page-move01{box-shadow:5px 5px 3px #ccc;
+-webkit-transform-origin:0 0;-moz-transform-origin:0 0;
+-webkit-animation:page-unfold 1s ease-out;-moz-animation:page-unfold 1s ease-out;
+-webkit-transform:rotateY(180deg);-moz-transform:rotateY(180deg);}
+.page-move02{-webkit-transform-origin:0 0;-moz-transform-origin:0 0;
+-webkit-animation:page-fold 1s ease-out;-moz-animation:page-fold 1s ease-out;
+-webkit-transform:rotateY(0deg);-moz-transform:rotateY(0deg);}
+.audio{display:none;}
+@-webkit-keyframes page-unfold{
+  0% {
+    -webkit-transform: rotateY(0deg);
+	-webkit-border-top-right-radius:100px 20px;
+  }
+  30% {
+    -webkit-transform: rotateY(20deg);
+	-webkit-border-top-right-radius:90px 20px;	
+  }
+  50% {
+    -webkit-transform: rotateY(90deg);
+	-webkit-border-top-left-radius:300px 20px;
+    -webkit-border-top-right-radius:300px 20px;
+	padding-top:10px;
+	top:-10px;
+  }
+  75% {
+	-webkit-border-top-left-radius:300px 20px;
+    -webkit-border-top-right-radius:300px 20px;
+	padding-top:10px;
+	top:-10px;
+  }
+  100% {
+    -webkit-transform:rotateY(180deg);
+	border-radius:0;
+	padding-top:0;
+	top:0;
+  }
+}
+
+@-webkit-keyframes page-fold{
+  0% {
+    -webkit-transform: rotateY(180deg);
+	-webkit-border-top-right-radius:100px 20px;
+  }
+  30% {
+    -webkit-transform: rotateY(160deg);
+	-webkit-border-top-right-radius:90px 20px;	
+  }
+  50% {
+    -webkit-transform: rotateY(90deg);
+	-webkit-border-top-left-radius:300px 20px;
+    -webkit-border-top-right-radius:300px 20px;
+	padding-top:10px;
+	top:-10px;
+  }
+  75% {
+	-webkit-border-top-left-radius:300px 20px;
+    -webkit-border-top-right-radius:300px 20px;
+	padding-top:10px;
+	top:-10px;
+  }
+  100% {
+    -webkit-transform:rotateY(0deg);
+	border-radius:0;
+	padding-top:0;
+	top:0;
+  }
+}
+</style>
+</head>
+
+<body>
+<audio src="book.mp3" class="audio" id="audio"></audio>
+<div class="book" id="book">
+	<b class="line"></b>
+    <b class="page-flip page-unfold" id="page-unfold"></b>
+    <b class="page-flip page-fold" id="page-fold" style="display:none;"></b>
+	<div class="page">
+    	<h2 class="book-name">CSS权威指南</h2>
+    </div>
+    <div class="page">
+    	<p>1.CSS即层叠样式表（Cascading Stylesheet）。 在网页制作时采用CSS技术，可以有效地对页面的布局、字体、颜色、背景和其它效果实现更加精确的控制。 </p>
+    </div>
+    <div class="page">
+    	<p>2.只要对相应的代码做一些简单的修改，就可以改变同一页面的不同部分，或者页数不同的网页的外观和格式。</p>
+    </div>
+    <div class="page">
+    	<p>3.CSS3是CSS技术的升级版本，CSS3语言开发是朝着模块化发展的。</p>
+    </div>
+    <div class="page">
+    	<p>4.以前的规范作为一个模块实在是太庞大而且比较复杂，所以，把它分解为一些小的模块，更多新的模块也被加入进来。</p>
+    </div>
+    <div class="page">
+    	<p>5.这些模块包括： 盒子模型、列表模块、超链接方式 、语言模块 、背景和边框 、文字特效 、多栏布局等。</p>
+    </div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+	(function(){
+		var oBook=$("book");
+		var aDiv=oBook.getElementsByTagName("div");
+		var pageUnfold=$("page-unfold");
+		var pageFold=$("page-fold");
+		var audio=$('audio');
+		var len=m=aDiv.length;
+		var iZindex=len;
+		var n=tempZindex=0;
+		for(var i=0;i<aDiv.length;i++){  //页面初始层显示关系
+			m--;
+			aDiv[i].style.zIndex=m;
+		}
+		
+		addEvent(pageUnfold,"click",pageUnfoldFn);
+		addEvent(pageFold,"click",pageFoldFn);
+		
+		function pageUnfoldFn(){
+			if(n!=len){	
+				pageFold.style.display="block";
+				aDiv[n].className="page page-move01";
+				n++;
+				if(n>1){
+					tempZindex=len;
+					setZindex();
+				}	
+				if(n==len){
+					pageUnfold.style.display="none";
+				}
+				playSound();
+			}
+		}
+		
+		function pageFoldFn(){
+			iZindex=len;
+			if(n!=0){
+				n--;
+				pageUnfold.style.display="block";
+				aDiv[n].className="page page-move02";
+				aDiv[n].style.zIndex=iZindex-n;
+				if(n>0){
+					tempZindex=aDiv[n].style.zIndex;
+					setZindex();
+				}
+				if(n==0){
+					pageFold.style.display="none";
+				}
+				playSound();
+			}
+		}
+		
+		function setZindex(){
+			for(var i=0;i<aDiv.length;i++){
+				if(aDiv[i].className=="page page-move01"){
+					aDiv[i].style.zIndex=tempZindex-1;
+				}
+			}
+		}
+
+		function playSound(){
+			audio.currentTime=0;
+			audio.play();
+		}
+	
+		function $(id){
+			return document.getElementById(id);
+		}
+		
+		function addEvent(obj,sEvent,fn){
+			if(obj.attachEvent){
+				obj.attachEvent("on"+sEvent,fn);
+			}
+			else{
+				obj.addEventListener(sEvent,fn,false);
+			}   	
+		}
+	})()
+</script>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="html5消息和震动api | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="Notification Vibration  桌面提示 震动api">
+  
+
+  
+
+  <title>html5消息和震动api | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">html5消息和震动api</h1>
+
+  <time class="post-time">2015-04-09</time>
+
+  <div class="post-content">
+    <p>在html5中提供了越来越多的API，一些是专门针对移动端的，比如手机的倾斜和旋转、还有桌面提示和机体震动。这些功能都和我们日常使用手机息息相关，移动端页面开发中我们可以把它们作为一种通知用户的形式。本文就来说下这两个API。</p>
+<a id="more"></a>
+<h2 id="桌面提示—Notification"><a href="#桌面提示—Notification" class="headerlink" title="桌面提示—Notification"></a>桌面提示—Notification</h2><p>首先，我们要知道什么是桌面提示。或许你在浏览网页时经常会发现网页底部弹出一些消息框，这些只能是针对某个网页的消息弹框，假设我们在浏览其他网页，或最小化浏览器则看不到这个消息框。</p>
+<p>而html5里面notification是桌面提示，它是针对桌面的，它不受你在浏览某个网页，或者浏览器处于最小化状态的限制，所以只要某个页面有Notification事件发生，则会在桌面右下角显示桌面提示弹框。而在手机端，这个以浏览器消息推送的形式展现。是不是非常cool？</p>
+<p>要做到桌面提示，需要注意的是，首先你的浏览器需要支持Notification api ，然后必须得到用户允许通知后（这个和获取地理位置信息类似），即你要检测浏览器权限（PC端不受限制，手机端则需要）才能推送桌面提示，最后就是创建消息了，再发送消息。值得一提的是，桌面提示的功能必须在服务器环境下才能使用。</p>
+<p>接下来，我们就逐步来完成一个桌面提示的功能。</p>
+<p><strong>第一步：window.webkitNotifications。判断是否支持桌面提醒：</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="built_in">window</span>.webkitNotifications)&#123;</span><br><span class="line">	<span class="comment">// 支持桌面提醒</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="comment">// 不支持桌面提醒</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>第二步：window.webkitNotifications。检测通知权限，这里用到window.webkitNotifications对象，它有两个方法如下：</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.webkitNotifications.requestPermission(callback);</span><br></pre></td></tr></table></figure>
+<p>requestPermission方法的作用是去请求用户是否允许桌面提示，它有一个回调函数，即获得用户允许或不允许后进行的后续操作。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.webkitNotifications.checkPermission();</span><br></pre></td></tr></table></figure>
+<p>checkPermission方法是用来判断用户允许与否得到的值，它的值有三个，即0,1,2。其中0表示允许，而1和2则表示不允许。通常，我们都是判断checkPermission的值是否为0再去执行后续创建消息的操作。</p>
+<p><strong>第三步：window.webkitNotifications.createNotification。创建提示消息，这个方法的使用如下，它有三个参数，分别是提示消息图标的url，提示消息的标题以及提示消息的主体内容：</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.webkitNotifications.createNotification(iconURL, title, body);</span><br></pre></td></tr></table></figure>
+<p>当我们创建完消息后，就应该让消息显示，这里也有现成的方法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> desktopTips = <span class="built_in">window</span>.webkitNotifications.createNotification(iconURL, title, body);</span><br><span class="line"></span><br><span class="line">desktopTips.show();</span><br></pre></td></tr></table></figure>
+<p>除了show以外，桌面提示还有以下两种关闭方法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">desktopTips.close();</span><br><span class="line"><span class="comment">//或</span></span><br><span class="line">desktopTips.cancel();</span><br></pre></td></tr></table></figure>
+<p>另外，在触发这些方法的时候，也有一些对应的触发事件，详见表格：</p>
+<table>
+<thead>
+<tr>
+<th>事件属性</th>
+<th>事件描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>onshow</td>
+<td>当消息框显示的时候触发该事件</td>
+</tr>
+<tr>
+<td>onclick</td>
+<td>当点击消息框的时候触发该事件</td>
+</tr>
+<tr>
+<td>onclose</td>
+<td>当消息关闭的时候触发该事件</td>
+</tr>
+<tr>
+<td>onerror</td>
+<td>当出现错误的时候触发该事件</td>
+</tr>
+</tbody>
+</table>
+<p>你可点此处查看：<a href="/2015/04/09/html5-api-message-and-vibration/notification.html" title="桌面提示demo">桌面提示demo</a></p>
+<h2 id="机体震动—Vibration"><a href="#机体震动—Vibration" class="headerlink" title="机体震动—Vibration"></a>机体震动—Vibration</h2><p><strong>设置震动</strong></p>
+<p>使用震动前，我们需要判断浏览器是否支持它，若浏览器不支持Vibration API，则会静默的失败：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="string">"vibrate"</span> <span class="keyword">in</span> navigator)&#123;</span><br><span class="line">    …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以下两种方式都是设置手机震动1s（就如一次性调用）:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">navigator.vibrate(<span class="number">1000</span>);</span><br><span class="line"><span class="comment">//或</span></span><br><span class="line">navigator.vibrate([<span class="number">1000</span>]);</span><br></pre></td></tr></table></figure>
+<p>你也可以间歇性调用震动功能，比如:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">navigator.vibrate([<span class="number">1000</span>, <span class="number">2000</span>, <span class="number">5000</span>]);</span><br></pre></td></tr></table></figure>
+<p>就是手机震动1s，接着暂停2s，然后再震动5s。你也可以根据需要加入更多的时间段。</p>
+<p><strong>清除震动</strong></p>
+<p>如果手机正处于震动中，你可以将vibrate的参数设置为0，它的作用是立即清除震动功能：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">navigator.vibrate(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p>或许你还知道有另外一种清除震动的方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">navigator.vibrate([]);</span><br></pre></td></tr></table></figure>
+<p>但经过我的测试，好像某些浏览器（像UC）不能通过此种方式清除震动。因此为了更好的兼容性，我还是推荐你全部使用 navigator.vibrate(0)</p>
+<p>最后，来看看这个关于 <a href="/2015/04/09/html5-api-message-and-vibration/vibrate.html" title="机体震动demo">机体震动demo</a>。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

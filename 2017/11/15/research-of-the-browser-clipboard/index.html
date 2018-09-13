@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="探究浏览器复制 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="浏览器复制 zeroclipboard clipboardjs select() document.execCommand">
+  
+
+  
+
+  <title>探究浏览器复制 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">探究浏览器复制</h1>
+
+  <time class="post-time">2017-11-15</time>
+
+  <div class="post-content">
+    <p>前两天收到公司安全组反馈的邮件，说他们在扫描官网某个页面时，发现跨站脚本攻击（XSS漏洞）。经排查，发现是此页面包含了复制粘贴功能，为了兼容各大浏览器，该复制粘贴功能是用开源项目 zeroclipboard 实现的，初步怀疑该 XSS漏洞 是由 zeroclipboard 引发的。</p>
+<p>在查阅了相关资料和翻看 zeroclipboard 项目源码之后，果然，在2014年初，github上一位名为<a href="https://github.com/masatokinugawa" target="_blank" rel="noopener">masatokinugawa</a>的用户给 zeroclipboard 项目组的开发人员发了一封邮件，描述了此安全漏洞。</p>
+<a id="more"></a>
+<p>为什么会出现XSS漏洞呢？究其原因是因为 zeroclipboard 使用了flash来处理浏览器的兼容性问题，而出问题的正是在SWF文件上。据说，如果flash文件和应用页面在同一个域名，更容易出现XSS问题。</p>
+<p>于是，zeroclipboard 项目组的研发人员立马修改了flash源文件 ZeroClipboard.as，重新编译后，发布了一个新版本的SWF文件，这样，XSS问题才得到解决。</p>
+<p>至于官网发现的XSS漏洞，可能是因为有些页面很久未经扫描，所以 zeroclipboard 中swf文件的版本没及时更新所致。</p>
+<p>印象里，由于兼容性，浏览器的复制粘贴一直是比较难实现的功能。今天正好，借此问题来说下浏览器中复制粘贴的实现。</p>
+<h2 id="一、zeroclipboard"><a href="#一、zeroclipboard" class="headerlink" title="一、zeroclipboard"></a>一、zeroclipboard</h2><p>前面说到，zeroclipboard 的复制粘贴功能是基于 flash 实现。它的基本原理是这样，页面载入后，ZeroClipboard.swf 文件预加载完毕，并在需要“复制”的按钮上绑定操作事件。当鼠标经过“复制”按钮后，将首次载入 swf 文件，并将透明的flash文件覆盖在“复制”按钮之上，当点击“复制”按钮时，swf 会将要复制的信息写入到剪贴板。</p>
+<p>来简单说下它的用法，根据<a href="https://github.com/zeroclipboard/zeroclipboard" target="_blank" rel="noopener">官网</a>给的示例，只需要经过以下几步。</p>
+<p>首先，将 <code>ZeroClipboard.min.js</code> 和 <code>ZeroClipboard.swf</code> 这两个文件下载至本地，然后在页面里使用它们：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">"copy-button"</span> <span class="attr">data-clipboard-text</span>=<span class="string">"复制成功"</span> <span class="attr">title</span>=<span class="string">"Click to copy me."</span>&gt;</span>Copy to Clipboard<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"ZeroClipboard.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> client = <span class="keyword">new</span> ZeroClipboard( <span class="built_in">document</span>.getElementById(<span class="string">'copy-button'</span>));</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">client.on( <span class="string">"ready"</span>, <span class="function"><span class="keyword">function</span><span class="params">( readyEvent )</span> </span>&#123;</span></span><br><span class="line"><span class="actionscript">  alert( <span class="string">"ZeroClipboard SWF is ready!"</span> );</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">  client.on( <span class="string">"aftercopy"</span>, <span class="function"><span class="keyword">function</span><span class="params">( event )</span> </span>&#123;</span></span><br><span class="line"><span class="actionscript">    alert(event.data[<span class="string">"text/plain"</span>] );</span></span><br><span class="line"><span class="undefined">  &#125;);</span></span><br><span class="line"><span class="undefined">&#125;);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>当刷新页面后，弹出 <code>ZeroClipboard SWF is ready!</code> 表示flash文件已准备就绪。如下图：</p>
+<img src="/2017/11/15/research-of-the-browser-clipboard/sucess-swf-loaded.jpg" title="flash加载成功">
+<p>同时也表示复制功能启用，如下图：</p>
+<img src="/2017/11/15/research-of-the-browser-clipboard/success-guide.jpg" title="复制生效示意">
+<p>当然，你也可以远程引用这些文件，比如使用它提供的CDN资源，但flash文件由于跨域了，因此，需要单独指定，如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script src=<span class="string">"http://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.3.0/ZeroClipboard.min.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">ZeroClipboard.config(&#123;<span class="attr">swfPath</span>: <span class="string">"https://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.3.0/ZeroClipboard.swf"</span> &#125;);</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意：指定的远程flash文件所在的域名协议必须和你当前项目域名的协议一致，否者复制功能不生效。</p>
+<p>如果你的代码不生效，可能出现了以下几种情况：</p>
+<h3 id="未在服务器上运行"><a href="#未在服务器上运行" class="headerlink" title="未在服务器上运行"></a>未在服务器上运行</h3><p>由于 ZeroClipboard 的复制功能是基于 flash 的，而本地浏览器禁用了flash，因此，如果你直接双击在本地打开页面，复制功能将无法正常生效。<strong>必须在本地服务器，或者线上服务器才能运行成功。</strong></p>
+<h3 id="浏览器禁用了flash"><a href="#浏览器禁用了flash" class="headerlink" title="浏览器禁用了flash"></a>浏览器禁用了flash</h3><p>现在有很多浏览器都默认禁用flash。记得第一次用它的时候，折腾了半宿。</p>
+<p>当时在各大浏览器反复测试，只有 360 浏览器极速模式才能运行，Chrome 和 Firefox 始终不生效。并且，控制台又没有任何错误信息输出… 后来发现是由于Chrome 和 Firefox 都默认了禁用 flash！！！之后，找到浏览器的相关文档开启即可。检测当前浏览器是否开启了 flash，以及各浏览器如何设置，可参考<a href="https://helpx.adobe.com/cn/flash-player.html" target="_blank" rel="noopener">这里</a>。</p>
+<p>其实，针对复制功能不生效的情况，你可以通过以下探测代码。这样的话，你便可以针对性的去解决问题：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> client = <span class="keyword">new</span> ZeroClipboard(<span class="built_in">document</span>.getElementById(<span class="string">'copy-button'</span>));</span><br><span class="line"></span><br><span class="line">client.on(<span class="string">"error"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.dir(e);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>例如，在控制台得到报错信息是：</p>
+<img src="/2017/11/15/research-of-the-browser-clipboard/fail.jpg" title="复制失败示意">
+<h3 id="在移动端浏览器无效"><a href="#在移动端浏览器无效" class="headerlink" title="在移动端浏览器无效"></a>在移动端浏览器无效</h3><p>由于zeroclipboard 是基于flash开发的，所以该插件在移动端浏览器根本不生效！！！项目的作者也推荐在移动端使用原生API。</p>
+<p>虽说它具有良好的兼容性，虽然目前大多数网站都采用 zeroclipboard 来处理复制粘贴。但它也存在一些问题：</p>
+<ul>
+<li>看网上的资料和官网的issues，用户在使用 zeroclipboard 时，出现很多无法生效的情况</li>
+<li>基于flash实现，或多或少受到不同浏览器限制以及环境的影响</li>
+<li>页面直接预览无效，必须在服务器环境下运行</li>
+<li>无法在移动端使用</li>
+<li>需要额外引入flash文件，但flash正逐步被淘汰，Adobe 将于 2020 年底停止支持 Flash</li>
+</ul>
+<p>所以，最好还是尝试用JavaScript命令来处理复制操作。</p>
+<h2 id="二、document-execCommand"><a href="#二、document-execCommand" class="headerlink" title="二、document.execCommand"></a>二、document.execCommand</h2><p>随着时代的发展，各大浏览器都更新的比较快，尤其针对移动端，早前一些不支持的浏览器API，现在纷纷都得到支持。比如，浏览器端的复制命令-<code>document.execCommand</code>。</p>
+<p>据来自 <a href="https://caniuse.com/#search=document.execCommand" target="_blank" rel="noopener">caniuse</a> 的数据，无论是PC端还是移动端，<code>document.execCommand</code> 的兼容性还是不错的。甚至很多低版本的浏览器都支持它，iOS safari 更是早在 7.1 版本就支持它 。</p>
+<p>该方法返回一个布尔值，语法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">document</span>.execCommand(aCommandName, aShowDefaultUI, aValueArgument)</span><br></pre></td></tr></table></figure>
+<p>对应的参数为：</p>
+<ul>
+<li>aCommandName：表示执行的命令，详见<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/execCommand#命令" target="_blank" rel="noopener">这里</a></li>
+<li>aShowDefaultUI：是否展示用户界面，一般为 false</li>
+<li>aValueArgument：命令所需对应的额外参数</li>
+</ul>
+<p>如果要完成复制操作，你只需要用到 <code>Copy</code> 命令。该命令表示，拷贝当前页面选中的内容到剪贴板。具体语法如:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">document</span>.execCommand(<span class="string">'Copy'</span>, <span class="literal">false</span>, <span class="literal">null</span>);</span><br></pre></td></tr></table></figure>
+<p>顺便提一下，如果你想要剪切操作，你也可以使用 <code>Cut</code> 命令。本篇内容主要以复制操作为主，剪切操作类似。</p>
+<p>但请注意，要让上面的命令生效，你得满足以下两个条件：</p>
+<ul>
+<li>必须在文档里选中一部分内容。通常做法是选中文本域，利用 <code>select()</code> 方法，并且该方法只适用选中 input 或者 textarea 这种文本域的内容</li>
+<li>只有用户主动处理相关事件（如 click），才能触发 <code>document.execCommand(&#39;Copy&#39;, false, null)</code> 命令，这是为了防止在用户未知的情况，剪贴板中写入用户非预期的内容</li>
+</ul>
+<p>其实，如果在浏览器里直接运行 <code>document.execCommand(&#39;Copy&#39;, false, null)</code>，你会发现，除了IE浏览器返回 <code>true</code>，其他浏览器都返回 <code>false</code>。这也表明，很多浏览器是需要用户交互，才能处理剪贴板里的信息。</p>
+<p>所以，我们把代码整理如下：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"input-clipboard"</span> <span class="attr">value</span>=<span class="string">"测试内容"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">"button-clipboard"</span>&gt;</span>复制<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> inputClipboard = <span class="built_in">document</span>.getElementById(<span class="string">'input-clipboard'</span>),</span></span><br><span class="line"><span class="javascript">  buttonClipboard = <span class="built_in">document</span>.getElementById(<span class="string">'button-clipboard'</span>);</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript">buttonClipboard.onclick = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span></span><br><span class="line"><span class="undefined">  copy(inputClipboard);</span></span><br><span class="line"><span class="undefined">&#125;;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">copy</span><span class="params">(el)</span> </span>&#123;</span></span><br><span class="line"><span class="undefined">  el.select();</span></span><br><span class="line"><span class="javascript">  <span class="built_in">document</span>.execCommand(<span class="string">'Copy'</span>, <span class="literal">false</span>, <span class="literal">null</span>);</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这样就能完成大多数的复制操作。经测试，Windows平台的ie6、chrome、firefox浏览器，Mac平台的chrome、firefox、safari浏览器，都可行！</p>
+<p>虽然上面的代码已经实现大多数需求，但还有一些问题要注意。</p>
+<h3 id="input的大小问题"><a href="#input的大小问题" class="headerlink" title="input的大小问题"></a>input的大小问题</h3><p>有的时候，我们并不想要在UI上显示input，而只想点击按钮就触发复制操作。<code>&lt;input type=&quot;hidden&quot;&gt;</code> 元素虽然可以隐藏input，但无法通过 <code>select()</code> 选中。那么，我们只能通过样式来隐藏input：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"input-clipboard"</span> <span class="attr">value</span>=<span class="string">"测试内容"</span> <span class="attr">style</span>=<span class="string">"width: 0; height: 0; border: 0 none; opacity: 0;"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>而上面的input原生宽高都为 0，也是无法被 <code>select()</code> 选中，所以，还是不能进行复制操作。</p>
+<p>所以，我们暂时给input一个很小的宽度，如下：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"input-clipboard"</span> <span class="attr">value</span>=<span class="string">"测试内容"</span> <span class="attr">style</span>=<span class="string">"width: 1px; height: 0; border: 0 none; opacity: 0;"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>经测试，chrome、firefox等其他浏览器复制都没问题，但在MAC里Safari浏览器却不能正常复制。</p>
+<p>再经反复测试，当input的高度也给一个很小的高度，如：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"input-clipboard"</span> <span class="attr">value</span>=<span class="string">"测试内容"</span> <span class="attr">style</span>=<span class="string">"width: 1px; height: 1px; border: 0 none; opacity: 0;"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>则Safari浏览器也能正常复制了。</p>
+<p>对于复制操作，如果不想让文本域可见（不希望额外的在html里加入文本域），其实还有一种方案，<strong>你可以通过js创建文本域元素，先插入文档，再 select、再执行 document.execCommand，最后移除创建的元素。</strong></p>
+<h3 id="移动端浏览器"><a href="#移动端浏览器" class="headerlink" title="移动端浏览器"></a>移动端浏览器</h3><p>再跑完pc端浏览器后，我们接着在移动端测试。</p>
+<p>经过反复测试，得出以下结论：</p>
+<p>对于android系统，手机版chrome、微信（据说android用户微信6.1版本以上的，用的是QQ浏览器。5.4-6.1之间的版本，有QQ浏览器就用它，没有就用系统原生浏览器）、QQ浏览器都支持。但是，华为原生浏览器、UC浏览器不支持。</p>
+<p>对于iOS系统，微信、QQ浏览器、Safari、UC浏览器均不支持。</p>
+<p>之所以出现iOS浏览器不能复制的情况，是因为iOS不支持 <code>select()</code> 方法，无法选中要复制的元素，自然无法完成复制操作。</p>
+<p>针对iOS浏览器，我们得使用 <code>setSelectionRange()</code> 方法，<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLInputElement/setSelectionRange" target="_blank" rel="noopener">该方法</a>用于选中元素的特定范围。它的使用如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">inputElement.setSelectionRange(selectionStart, selectionEnd, [optional] selectionDirection);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>selectionStart: 被选中的第一个字符的位置</li>
+<li>selectionEnd：被选中的最后一个字符的 下一个 位置</li>
+<li>selectionDirection： 可选，一个指明选择方向的字符串，有”forward”,”backward”和”none” 3个可选值。</li>
+</ul>
+<p>由于一般的需求，都是从起始位置开始复制，所以 <code>selectionStart</code> 为 0，但又因为通常选中内容的长度未知，所以，我们把 <code>selectionEnd</code> 设置一个比较大的值（9999）。那么，我们的 <code>copy</code> 函数就调整为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">copy</span>(<span class="params">el</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (navigator.userAgent.match(<span class="regexp">/iphone|ipad|ipod/i</span>)) &#123; <span class="comment">// iOS browser</span></span><br><span class="line">    el.setSelectionRange(<span class="number">0</span>, <span class="number">9999</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    el.select();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">document</span>.execCommand(<span class="string">'Copy'</span>, <span class="literal">false</span>, <span class="literal">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样，再把页面放到iOS各浏览器里测试一番，复制功能便都生效了！</p>
+<h3 id="Android-原生和-UC浏览器的处理"><a href="#Android-原生和-UC浏览器的处理" class="headerlink" title="Android 原生和 UC浏览器的处理"></a>Android 原生和 UC浏览器的处理</h3><p>现在就剩下android 原生和UC浏览器了，也不知为何这两者不支持，只能试着判断，看看哪些方法出错了，继续调整 <code>copy</code> 方法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">copy</span>(<span class="params">el</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (navigator.userAgent.match(<span class="regexp">/iphone|ipad|ipod/i</span>)) &#123; <span class="comment">// iOS browser</span></span><br><span class="line">    el.setSelectionRange(<span class="number">0</span>, <span class="number">9999</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    el.select();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 文本域选中后，判断该操作是否支持</span></span><br><span class="line">  alert(<span class="built_in">document</span>.execCommand(<span class="string">'Copy'</span>, <span class="literal">false</span>, <span class="literal">null</span>));</span><br><span class="line"></span><br><span class="line">  <span class="built_in">document</span>.execCommand(<span class="string">'Copy'</span>, <span class="literal">false</span>, <span class="literal">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重新在浏览器测试，结果发现，安卓原生浏览器弹出 <code>false</code>，UC浏览器弹出 <code>undefined</code>，其他支持复制操作的浏览器均弹出 <code>true</code>。</p>
+<p>这说明 安卓原生和UC浏览器压根不支持 <code>document.execCommand()</code> 方法。你也可以访问<a href="http://hansifer.com/clipboardCopyTest.html" target="_blank" rel="noopener">clipboardCopyTest</a>，检测当前浏览器对 <code>document.execCommand()</code> 的支持程度。</p>
+<p>对于一些老版本的浏览器，可能会出现不支持 <code>document.execCommand(&#39;Copy&#39;, false, null)</code> 命令，即上面返回的 <code>false</code> 或者 <code>undefined</code>，也可能会因为安全问题而抛出异常。针对这种情况，你得做优雅降级处理，最终整理代码为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">copy</span>(<span class="params">el</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> isSupportCopy = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (navigator.userAgent.match(<span class="regexp">/iphone|ipad|ipod/i</span>)) &#123; <span class="comment">// iOS browser</span></span><br><span class="line">    el.setSelectionRange(<span class="number">0</span>, <span class="number">9999</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    el.select();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    isSupportCopy = <span class="built_in">document</span>.execCommand(<span class="string">'Copy'</span>, <span class="literal">false</span>, <span class="literal">null</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="comment">// 老版浏览器，因为安全问题，会抛出异常</span></span><br><span class="line">    alert(<span class="string">'请按 ctrl+c 复制或使用浏览器里的复制'</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (isSupportCopy) &#123;</span><br><span class="line">    <span class="built_in">document</span>.execCommand(<span class="string">'Copy'</span>, <span class="literal">false</span>, <span class="literal">null</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    alert(<span class="string">'请按 ctrl+c 复制或使用浏览器里的复制'</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">document</span>.execCommand(<span class="string">'Copy'</span>, <span class="literal">false</span>, <span class="literal">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>访问最终的<a href="/2017/11/15/research-of-the-browser-clipboard/demo-final.html" title="demo">demo</a></p>
+<img src="/2017/11/15/research-of-the-browser-clipboard/demo-final.png" title="扫码查看">
+<p>不过，最后要说明，无论是iOS版的UC浏览器、还是Android版的UC浏览器，虽然两者在内容被选中的情况，运行 <code>document.execCommand()</code> 都返回 <code>undefined</code>。但如前面所说，UC浏览器在iOS系统能复制成功，但在Android却复制失败了！！</p>
+<p>UC果然是一个神奇的浏览器！！！！</p>
+<h2 id="三、clipboard-js"><a href="#三、clipboard-js" class="headerlink" title="三、clipboard.js"></a>三、clipboard.js</h2><p>关于浏览器复制功能的实现，除了上面说到的 zeroclipboard 和 原生JavaScript操作。现在比较流行的，还有一个号称现代浏览器的复制库-clipboard.js。</p>
+<p>它的特点是，不依赖flash、不依赖任何框架、gzip压缩后只有3kb。它不仅可以复制文本域的内容，还能复制其他HTML元素的内容，还提供了一些自定义事件。</p>
+<p>其介绍和使用可参见<a href="https://clipboardjs.com/" target="_blank" rel="noopener">clipboardjs 官网</a>，源码可参见<a href="https://clipboardjs.com/" target="_blank" rel="noopener">clipboardjs-github</a>。</p>
+<p>经测试，结果如下：</p>
+<p>pc端浏览器，几乎都支持（IE浏览器需要ie9+）。</p>
+<p>对于android系统，手机版chrome、微信、QQ浏览器都支持。但不支持华为的原生浏览器，UC浏览器也不支持。</p>
+<p>对于iOS系统，微信、QQ浏览器、手机Safari、UC浏览器支持。</p>
+<p>在使用clipboard.js时，如果担心某个浏览器不支持它，你可以通过clipboard.js提供了 <code>Clipboard.isSupported()</code> 方法进行检测，再相应的对UI进行处理。</p>
+<h2 id="四、HTML5-API-Clipboard"><a href="#四、HTML5-API-Clipboard" class="headerlink" title="四、HTML5 API - Clipboard"></a>四、HTML5 API - Clipboard</h2><p><a href="https://developer.mozilla.org/en-US/docs/Web/API/ClipboardEvent" target="_blank" rel="noopener">Clipboard</a> 是一个用于处理剪贴板信息相关的API，它提供了 <code>cut</code> 、<code>copy</code> 和 <code>paste</code> 事件，通过它们，你可以设置或获取剪贴板里面的信息。</p>
+<p>不过该API现在还处于工作草案状态，目前还在不断变动中，因此当今大多数浏览器未实现它。</p>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>zeroclipboard 是最早实现浏览器复制，并且兼容性还不错的开源项目。但随着浏览器的发展，很多主流浏览器都开始屏蔽或默认禁用flash。而该项目是基于 flash 实现的，所以，它的应用场景越来越狭窄，况且该项目仅适用于PC端。</p>
+<p>针对zeroclipboard的处境，开源社区又出现了 clipboard.js，它主要面向现代浏览器，特点是不依赖flash、不依赖任何框架、gzip后只有3kb。可适用绝大多数PC端和移动端浏览器，当复制操作不生效时，进行了优雅降级处理，会给出 <code>Press Ctrl+C to copy</code> 的提示。因此，该库也是现在浏览器复制的主流方案。</p>
+<p>抛开社区的开源项目，如果我们自己去实现一个复制功能，可以使用 <code>select()</code> 方法并结合 <code>document.execCommand(&#39;Copy&#39;, false, null)</code> 命令。</p>
+<p>但要注意，iOS浏览器并不支持 <code>select()</code> 方法，你需要使用 <code>setSelectionRange()</code> 方法进行替代。</p>
+<p>另外，Android版的原生和UC浏览器，不支持 <code>document.execCommand(&#39;Copy&#39;, false, null)</code> 命令。当复制操作失效时，你得给出相关提示。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

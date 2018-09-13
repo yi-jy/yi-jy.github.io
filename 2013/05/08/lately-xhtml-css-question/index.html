@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="最近xhtml和css的几个问题 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="改变上传默认样式 resize属性">
+  
+
+  
+
+  <title>最近xhtml和css的几个问题 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">最近xhtml和css的几个问题</h1>
+
+  <time class="post-time">2013-05-08</time>
+
+  <div class="post-content">
+    <p>xhtml和css在前端世界里可能是最基础的两门语言，但是有些东西并非我们想象的那么简单，就和生活中一样，越简单的东西越容易忽略。以下是我近来碰的问题，在此稍作总结：</p>
+<a id="more"></a>
+<p><strong>第一：你了解textarea的resize属性吗？</strong></p>
+<p>文本区域textarea，在浏览器FireFox、Chrome、Safari下会在右下角有个拖拽的三角，这就是所谓的属性resize属性，它允许用户自由拖拽，以获得更多书写内容空间。但这会影响页面外观，造成不好的用户体验，于是，很多时候我们在制作页面时，我们直接resize :none  从而禁止了它。</p>
+<p>resize主要有以下几个属性：</p>
+<p>both：可以调节textarea元素的宽和高；<br>horizontal：只能可以调节textarea元素的宽；<br>vertical：只能可以调节textarea元素高；<br>none：不能可以调节textarea元素的尺寸；</p>
+<img src="/2013/05/08/lately-xhtml-css-question/resize.jpg" title="textarea的resize属性">
+<p><strong>第二：absolute元素如何“智能”应对窗口缩放？</strong></p>
+<p>这问题看得有点摸不着头脑。这种问题一般出现在小显示器上，在大显示器下，我们缩小窗口高度时，会导致下面的定位元素覆盖同父级的一些非定位元素，好吧，我承认我讲的有点乱。还是来看示意图吧。</p>
+<img src="/2013/05/08/lately-xhtml-css-question/abs014.jpg" title="绝对定位元素覆盖普通层">
+<p>上图中微博登陆层覆盖了普通登陆层，为什么会出现这种情况呢？因为绝对定位元素的bottom值是相对于与父级元素的高度来定的，在样式中，我们设置父级元素的高度为100%，当窗口高度减少时，父级元素高度不断减少，定位元素自然会跟着上升，最后出现覆盖“登陆层”的情况。</p>
+<p>那么如何解决？试想如果给父级设置一个min-height，则当缩放窗口高度变小时，父级元素的高度减到min-height时就不再减小，定位元素就会固定在bottom处了，问题就得到解决，如下图：</p>
+<img src="/2013/05/08/lately-xhtml-css-question/abs021.jpg" title="绝对定位元素未覆盖普通层">
+<p><strong>第三：如何更改 <code>&lt;input type=&quot;file&quot;/&gt;</code> 默认显示样式？</strong></p>
+<p>更改 <code>&lt;input type=&quot;file&quot;/&gt;</code> 的显示样式，开什么玩笑？这东西的外貌就和select一样天性难改，而且在各个浏览器也显示不一样，重置样式就免谈了。可是我们可爱的设计师们并不会理会这些，然后设计一个漂亮的按钮用作上传文件，通过审核后直接扔了过来，接下来，好吧，把痛苦留给我！</p>
+<p><code>&lt;input type=&quot;file&quot;/&gt;</code> 在各大浏览器的默认样式：</p>
+<p>firefox下：</p>
+<img src="/2013/05/08/lately-xhtml-css-question/file_ie_ff.jpg" title="IE和Firefox下的file">
+<p>Chrome下：</p>
+<img src="/2013/05/08/lately-xhtml-css-question/file_chrome.jpg" title="Chrome下的file">
+<p>Opera下：</p>
+<img src="/2013/05/08/lately-xhtml-css-question/file_opera.jpg" title="Opera下的file">
+<p>由上面的图可以看到，<code>&lt;input type=&quot;file&quot;/&gt;</code> 令我们头疼的不仅是改变不了它的天生外观，而且在各个浏览器还形态多变， 好嘛，反正不一样，正好一起解决。但是如何解决呢？还好这个世界上有模拟这个东西，话说当初计算机就是模拟人体的结构来完成的，而程序语言则是模拟人的思想，扯远了。我们是这样想的，尝试改变 <code>&lt;input type=&quot;file&quot;/&gt;</code> 外观这条路是行不通的，于是直接把它变为不可见（做法是将其透明度设为0），然后再在它外面套一个div，改变此div的属性(通常是加背景)。这样的话，我们看到的页面，既有设计师漂亮的界面，也有 <code>&lt;input type=&quot;file&quot;/&gt;</code> 的上传功能。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">.box&#123;width:100px;height:30px;overflow:hidden;line-height:30px;font-size:12px;text-align:center;background:green;color:#fff;border-radius:5px;position:relative;&#125;</span><br><span class="line">.box .val&#123;position:absolute;display:block;width:100%;height:100%;&#125;</span><br><span class="line">.box .upload&#123;width:100%;height:100%;overflow:hidden;opacity:0;filter:alpha(opacity=0);font-size:100px;border:none;&#125;</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">”box”</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">”val”</span>&gt;</span>上传吧！<span class="tag">&lt;/<span class="name">span</span>&gt;</span>　</span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">”file”</span> <span class="attr">value</span>=<span class="string">”上传吧！”</span> <span class="attr">class</span>=<span class="string">”upload”/</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>下图为改造的上传input：</p>
+<img src="/2013/05/08/lately-xhtml-css-question/file_new1.jpg" title="改造后IE,Chrome,Firefox,Opera下的file">
+<p>注意点：在css中我们把 <code>&lt;input type=&quot;file&quot;/&gt;</code> 加入font-size:100px，这是为了防止用户点不到上传按钮的情况。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

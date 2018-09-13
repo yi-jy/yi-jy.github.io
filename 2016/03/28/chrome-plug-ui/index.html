@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="chrome插件开发之UI界面交互 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="chrome插件开发">
+  
+
+  
+
+  <title>chrome插件开发之UI界面交互 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">chrome插件开发之UI界面交互</h1>
+
+  <time class="post-time">2016-03-28</time>
+
+  <div class="post-content">
+    <p>在chrome插件开发中，除了前一篇所述的基本特性外，还有一些与浏览器相关的功能，比如右键菜单（contextMenus）、以及桌面通知（notifications）等。</p>
+<p>接下来，我们就这两项功能做个介绍：<br><a id="more"></a></p>
+<h2 id="一、右键菜单"><a href="#一、右键菜单" class="headerlink" title="一、右键菜单"></a>一、右键菜单</h2><p>什么是chrome插件里的右键菜单，来看下我开发的chrome插件-获取图片属性的截图：</p>
+<img src="/2016/03/28/chrome-plug-ui/contextMenus.jpg" title="contextMenus">
+<p>chrome插件开发允许开发者在右键菜单里添加插件的功能项（可以多项），但需要满足以下两个条件：</p>
+<ol>
+<li>在manifest.json的icons中添加16*16的图标，作为我们添加功能项的标识</li>
+<li>在manifest.json的permissions中添加contextMenus，像这样：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="string">"permissions"</span>: [</span><br><span class="line">    <span class="string">"contextMenus"</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>要右键显示插件菜单，就必须创建、更新它。关于 contextMenus，chrome给开发提供了 create、update 方法。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">chrome.contextMenus.create(createProperties, callback);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>createProperties–必选，值为一个对象，包含了多个属性。分别是”type”, “checked”, “id”, “title”, “contexts”, “parentId”。</li>
+<li>type–可选，值为数组。菜单类型，默认数组里的项为 “normal” , 还有 “checkbox”, “radio”, “separator”。</li>
+<li>checked–可选，值为布尔值。当type为checkbox或者radio时，可指定此属性。</li>
+<li>id–可选，值为整数。菜单项唯一标识符。</li>
+<li>title–可选，值为字符串。菜单里的内容。</li>
+<li>contexts–可选，值为数组。指定了用户右键页面里的相关内容时才会在菜单里出现插件项。默认数组里的项为 page，还有 “all”, “page”, “frame”, “selection”, “link”, “editable”, “image”, “video”, “audio”, “launcher”。</li>
+<li>parentId–可选，值为整数或字符串。创建子菜单时，指定父菜单项标识符。</li>
+<li>callback–设置改变后，执行的回调函数。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">chrome.contextMenus.update(createProperties, callback);</span><br></pre></td></tr></table></figure>
+<p>update方法与create类似。当我们在页面里操作其他元素时，只需要更新创建的子菜单内容即可。比如我们创建了一个对图片右键，菜单里便能查看图片相关属性的选项。而当查看下一张图片时，更新图片属性即可。</p>
+<p>了解了关于右键菜单的相关API后，我们在 manifest.json 引入 “background”属性，这个属性值是一个后台js文件，里面的内容用于创建右键菜单。而要操作页面内容，我们又要引入 “content_scripts”，通过它将操作的对象发送到后台js文件，然后在后台js中更新菜单项即可。</p>
+<p>关于contextMenus，我写了一个对图片右键预览其属性的chrome插件！<a href="/2016/03/28/chrome-plug-ui/contextMenus.zip" title="点击下载">点击下载</a></p>
+<h2 id="二、桌面通知"><a href="#二、桌面通知" class="headerlink" title="二、桌面通知"></a>二、桌面通知</h2><p>曾经我在博文中提到过 <a href="http://www.yi-jy.com/2015/04/09/html5%E6%B6%88%E6%81%AF%E5%92%8C%E9%9C%87%E5%8A%A8api/" target="_blank" rel="noopener">HTML5-API-Notification</a>，可惜它的浏览器支持度好像不是很高。先来看下我做的chrome插件-桌面提醒的截图：</p>
+<img src="/2016/03/28/chrome-plug-ui/notifications.jpg" title="notifications">
+<p>和右键菜单一样，要开启桌面提醒，需在 manifest.json 的 permissions 中添加 notifications：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="string">"permissions"</span>: [</span><br><span class="line">    <span class="string">"notifications"</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>然后调用notifications中相关的API方法，chrome为开发者提供了 create，update，clear ，getAll，getPermissionLevel 方法。在这里，我们主要说下create，update，clear方法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">chrome.notifications.create(notificationId, options, callback);</span><br></pre></td></tr></table></figure>
+<p>以上方法表示创建标识符为notificationId的桌面提醒。</p>
+<ul>
+<li>notificationId–桌面提醒的唯一标识符</li>
+<li>options–值为对象。包含属性”type”，”iconUrl”，”title”，”message”，”contextMessage”，”buttons”等</li>
+<li>type–必选，值为字符串。桌面提醒类型 , 可取值有 “basic”, “image”, “list”，”progress”。</li>
+<li>iconUrl–可选，值为字符串。桌面提醒左侧图标。</li>
+<li>title–可选，值为字符串。桌面提醒右侧标题。</li>
+<li>message–可选，值为字符串。桌面提醒右侧正文。</li>
+<li>contextMessage–可选，值为字符串。桌面提醒右侧浅灰色的字，一般作为提示类或附带文字。</li>
+<li>buttons–可选，值为数组，数组每项为对象。对象包含”title”和”iconUrl”属性，它们的属性值分为字符串。表示桌面提醒的附加图标和文字说明。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">chrome.notifications.update(notificationId, options, <span class="function"><span class="keyword">function</span> <span class="title">callback</span>);</span></span><br></pre></td></tr></table></figure>
+<p>以上方法表示更新指定的notificationId的桌面提醒，比如说倒计时关闭，我们就需要更新倒计时的秒数。</p>
+<ul>
+<li>notificationId–桌面提醒的唯一标识符</li>
+<li>options–与上面的create方法相同</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">chrome.notifications.clear(notificationId, callback);</span><br></pre></td></tr></table></figure>
+<p>以上方法表示关闭指定的notificationId的桌面提醒。</p>
+<ul>
+<li>notificationId–桌面提醒的唯一标识符</li>
+<li>callback–关闭后，执行的回调函数。</li>
+</ul>
+<p>关于notifications，我写了一个每隔8s就弹出随机消息，并伴有声音提示的chrome插件！<a href="/2016/03/28/chrome-plug-ui/notifications.zip" title="点击下载">点击下载</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

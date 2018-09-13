@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="transform属性与Perspective 3d的关系 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="backface-visibility perspective-origin rotate scale skew translate">
+  
+
+  
+
+  <title>transform属性与Perspective 3d的关系 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">transform属性与Perspective 3d的关系</h1>
+
+  <time class="post-time">2014-07-07</time>
+
+  <div class="post-content">
+    <p>Css3中transform主要有rotate、scale、skew、translate四个属性。我们在这里并不会详细介绍他们中的每个特性，因为很多文档或者chm文件都可以查阅相关资料。这篇文章主要讲述的是这些属性分别在普通2d环境与3d透视情况下的表现和差异。接下来，我们就结合demo逐个说明：</p>
+<a id="more"></a>
+<h2 id="rotate"><a href="#rotate" class="headerlink" title="rotate"></a>rotate</h2><p>其实rotate可以有多种设置形式，大体分为rotate(xdeg)，rotateX(xdeg)，rotateY(ydeg)，rotateZ(zdeg)。当然在3d的情况，你也可以使用rotate3d(0,0,1,zdeg)来代替rotateZ(zdeg)。好吧！首先，我们先来看demo，再去分析它们的表现。</p>
+<p>查看  <a href="/2014/07/07/transform-3d/rotate.html" title="rotate demo">rotate demo</a></p>
+<p>通过查看demo，我们可以得知3d透视对于rotate(xdeg)和rotateZ(zdeg)没有什么影响，正值顺时针旋转，负值逆时针旋转。</p>
+<p>而rotateX(xdeg)和rotateY(ydeg)则在普通2d环境与3d透视下表现出差异，如我们所知，rotateX是围绕x轴旋转，rotateY是围绕y轴旋转。在2d环境下，rotateX和rotateY作用的效果分别是在高度和宽度减小。</p>
+<p>而在3d透视中，rotateX表现为当旋转度数为正时元素顶部向屏幕里面旋转，底部向屏幕外面旋转，旋转度数为负时则情况相反。对于rotateY，旋转度数为正时元素左边向屏幕外旋转，右边向屏幕里面旋转，负度数也是表现为相反。</p>
+<h2 id="scale"><a href="#scale" class="headerlink" title="scale"></a>scale</h2><p>scale的功能是对元素进行缩放，我们通过demo中的对比，发现scale属性在2d与3d环境下无表现差异。</p>
+<p>查看 <a href="/2014/07/07/transform-3d/scale.html" title="scale demo">scale demo</a></p>
+<h2 id="skew"><a href="#skew" class="headerlink" title="skew"></a>skew</h2><p>skew 属性主要是对元素进行倾斜，skewX是以X轴倾斜，skewY是以Y轴倾斜，与scale一样，在2d与3d透视环境中，skew也是表现一致。不过要注意，3d透视会对元素进行微量模糊。</p>
+<p>查看 <a href="/2014/07/07/transform-3d/skew.html" title="skew demo">skew demo</a></p>
+<h2 id="translate"><a href="#translate" class="headerlink" title="translate"></a>translate</h2><p>在某种程度说来，translate与rotate有点类似。rotate是根据x、y、z轴旋转，而translate则是在x、y、z轴方向移动。Translate3d(x,y,z)表示分别在x轴、y轴，z轴方向移动x、y、z单位的距离。当translate只有一个参数时，则表现为translateX，当然你也可以用translate3d(x,0,0)代替之。而且要注意，z的值不能为百分比。</p>
+<p>同样，我们还是先来看demo。查看 <a href="/2014/07/07/transform-3d/translate.html" title="translate demo">translate demo</a></p>
+<p>分析demo，我们发现translateX和translateY不受不同环境的影响。而translateZ在普通的2d环境没有任何效果，但在3d透视中，z为正数表现为元素向屏幕外移动（视觉上变大），z为负数表现为向屏幕里面移动（视觉上变小）。</p>
+<h2 id="backface-visibility"><a href="#backface-visibility" class="headerlink" title="backface-visibility"></a>backface-visibility</h2><p>backface-visibility有两个参数，即visible（默认参数）和hidden。当参数visible时，表示元素翻转到180deg（背面），背面可见。而参数hidden则是元素翻转到180deg，背面不可见。你可以点击它的demo看效果；</p>
+<p>查看 <a href="/2014/07/07/transform-3d/backface-visibility.html" title="backface-visibility demo">backface-visibility demo</a></p>
+<p>2d环境下，就是根据参数来显示或隐藏背面。而在3d透视中，当翻转涉及到多个元素，visible表现为元素多次翻转后才显示背面元素，而hidden则表现为瞬间翻转显示背面元素，好像未完成整个翻转。</p>
+<h2 id="perspective-origin"><a href="#perspective-origin" class="headerlink" title="perspective-origin"></a>perspective-origin</h2><p>这个属性主要表示元素3d旋转的中心点，默认为perspective-origin: 50% 50% 。如果你要深入了解perspective-origin这个属性，可以查看文章最后的盒子demo并试着改变相应的perspective-origin。</p>
+<p>最后，来看一个有关transform与perspective 3d 的 <a href="/2014/07/07/transform-3d/box.html" title="盒子特效">盒子特效</a>。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

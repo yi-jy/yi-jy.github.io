@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="ES6-let-const | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="es6">
+  
+
+  
+
+  <title>ES6中的 Let 与 Const | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">ES6中的 Let 与 Const</h1>
+
+  <time class="post-time">2016-05-04</time>
+
+  <div class="post-content">
+    <p>在 ES6 中新增 <code>let</code> 和 <code>const</code> 命令，它们都是用于声明一个值。<a id="more"></a></p>
+<h2 id="一、Let"><a href="#一、Let" class="headerlink" title="一、Let"></a>一、Let</h2><p><code>let</code> 命令相当于 <code>var</code> 的迭代版。 </p>
+<p><code>let</code> 声明变量的语法和 <code>var</code> 类似，如以下命令就表示用 <code>let</code> 声明变量 b 的值为 2：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">let</span> b = <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="1-1-块级作用域"><a href="#1-1-块级作用域" class="headerlink" title="1.1 块级作用域"></a>1.1 块级作用域</h3><p>需要注意的是，使用 <code>let</code> 声明的变量只能在其所在的块级作用域才能使用。什么意思？请看以下代码对比。</p>
+<p>使用 <code>var</code> 方式：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(a); <span class="comment">// 1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(a); <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+<p>而使用 <code>let</code> 方式：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(a); <span class="comment">// 1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(a); <span class="comment">// 报错: a is not defined</span></span><br></pre></td></tr></table></figure>
+<p>通过以上两段代码，可以知道变量 a 是在 if 代码块中，使用 <code>let</code> 声明的，所以第二段代码中后面那个 <code>console.log(a)</code> 就报错了。</p>
+<p>另外，如果尝试着在 <code>let</code> 语句前读取变量，也会报上面的错误。因此 <code>let</code> 不会像 <code>var</code> 一样存在变量前置(提升)。</p>
+<p>类似的，while、switch、for 等代码块中声明的变量，在它们外部都不能正常读取到。</p>
+<p>我们再来看一个经典的例子，有一组 li 列表，用户点击其中的 li 列表项，获取对应的索引值。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>aa<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>bb<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>cc<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如果使用 <code>var</code> 来写：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> li = <span class="built_in">document</span>.querySelectorAll(<span class="string">'li'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; li.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">    li[i].onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(i);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>你会发现，无论点击那个 li 列表项，都是显示 3，即 <code>i</code> 循环后的值。这就是因为没有 块级作用域 的关系。</p>
+<p>如果使用 <code>let</code> 声明，则轻松的解决上述问题：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; li.length; i++) &#123;</span><br><span class="line">    li[i].onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(i);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-2-不能重复声明"><a href="#1-2-不能重复声明" class="headerlink" title="1.2 不能重复声明"></a>1.2 不能重复声明</h3><p>使用 <code>var</code> 可以覆盖前面的变量：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">var</span> a = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(a); <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+<p>但 <code>let</code>，则不允许重复声明：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">let</span> a = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(a); <span class="comment">// 报错：Identifier 'a' has already been declared</span></span><br></pre></td></tr></table></figure>
+<p>当然了，如果多次使用 <code>let</code> 命令去声明同一变量，也是会报错的。 </p>
+<p>同时，也不能像下面这样重新定义函数的形参。但在函数中新的代码块里定义形参，也没有问题：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 报错：Identifier 'num' has already been declared</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> num = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 正常运行</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> num = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="二、Const"><a href="#二、Const" class="headerlink" title="二、Const"></a>二、Const</h2><p><code>const</code> 只能用于声明一个<strong>只读</strong>常量。也就是说，通过 <code>const</code> 声明的值，后期不能修改。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> DOMAIN = <span class="string">'http://www.xx.com'</span>;</span><br><span class="line"></span><br><span class="line">DOMAIN = <span class="string">'http://www.aa.com'</span>; <span class="comment">// 报错：Assignment to constant variable</span></span><br></pre></td></tr></table></figure>
+<p>另外，在使用 <code>const</code> 时，不仅要声明常量，同时也要给该常量赋值。不能像 <code>var</code> 那样可以只声明，后期再赋值。比如，以下代码会报错，会提示需要初始化声明的常量：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> DOMAIN; <span class="comment">// 报错：Missing initializer in const declaration</span></span><br></pre></td></tr></table></figure>
+<p>而对于前面讲到的 块级作用域 和 不能重复声明 ，<code>const</code> 同样适用。</p>
+<p>并且，对于常量而言，最好是使用 大写 字母来定义变量名，这也是业界统一的做法。</p>
+<h2 id="三、关于-let-和-const-的使用"><a href="#三、关于-let-和-const-的使用" class="headerlink" title="三、关于 let 和 const 的使用"></a>三、关于 let 和 const 的使用</h2><p>如果项目是使用 ES6+ 开发，那么我们大可以抛弃 <code>var</code> 这种定义方式，在代码中全部使用 let 和 const，毕竟它们有诸多好处，也符合未来开发规范，推动 ES6+ 发展。</p>
+<p>但看网上很多人纠结是使用 let，还是 const？其中，有人这样说到：</p>
+<ul>
+<li>据说，JavaScript内部引擎对 const 做了特别的优化，所以，多用 const，会提升代码执行效率</li>
+<li>所有的函数都应该定义为常量</li>
+</ul>
+<p>所以，非常建议在代码中全部使用 const。从上面的说法来看，虽然第一点我无从得知，但第二点，我还是比较认同的，毕竟，你不会去重新定义一个函数。但是，如果存在变量的话，你该用 let 还是 得用！</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

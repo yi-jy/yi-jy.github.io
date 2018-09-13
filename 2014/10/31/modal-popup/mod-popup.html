@@ -1,0 +1,121 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>网站通用弹出层</title>
+<link rel="stylesheet" type="text/css" href="popup.css">
+</head>
+
+<body style="height:1000px">
+
+<div id="mod-popup" class="fixed mod-popup">
+  <div class="fixed popup-mask"></div>
+  <div class="fixed popup-box">
+    <div class="clearfix popup-box-hd">
+      <h3>弹出层标题</h3>
+      <a class="close-popup" href="javascript:;" title="关闭">X</a>
+    </div>
+    <div class="popup-box-bd">
+
+      <!-- 此层显示，当前弹出层标题为  文字类型的弹出框-->
+      <div class="popup-con-box popup-text-box" id="popup-text-box">
+        <p>请您在新打开的页面完成签约，签约完成前请不要关闭该页面！</p>
+        <p class="popup-action">
+          <a class="blue-btn confirm-btn" href="#">确 定</a>
+        </p>
+      </div>
+
+      <!-- 此层显示，当前弹出层标题为  表格类型的弹出框 -->
+      <div class="popup-con-box popup-tab-box" id="popup-tab-box">
+        <div class="recharge-info-tab">
+                    <table class="recharge-confirm-tab" width="100%">
+                        <tr>
+                            <th width="21%">充值号码</th>
+                            <th width="16%">归属地</th>
+                            <th width="21%">支付金额</th>
+                            <th width="21%">实际到账</th>
+                            <th width="21%">支付方式</th>
+                        </tr>
+                        <tr>
+                            <td><span class="number-val">1391384***</span></td>
+                            <td>南京</td>
+                            <td><span class="number-val">100元</span></td>
+                            <td><span class="number-val">105元</span></td>
+                            <td>南京</td>
+                        </tr>
+                    </table>
+                </div>
+        <p class="popup-action">
+          <a class="gray-btn cancel-btn" href="#">取 消</a>
+          <a class="red-btn confirm-btn" href="#">确 定</a>
+        </p>
+      </div>
+
+      <!-- 此层显示，当前弹出层标题为  列表类型的弹出框 -->
+      <div class="popup-con-box popup-list-box" id="popup-list-box">
+        <div class="popup-package-list">
+          <ul class="clearfix">
+                      <li class="package-item"><a href="javascript:;">流量套餐01</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐02</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐03</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐04</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐05</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐06</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐07</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐08</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐09</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐11</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐12</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐13</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐14</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐15</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐16</a></li>
+                      <li class="package-item"><a href="javascript:;">流量套餐17</a></li>
+                  </ul>
+        </div>
+        <p class="popup-action">
+          <a class="gray-btn cancel-btn" href="#">取 消</a>
+          <a class="green-btn next-btn" href="#">下一步</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<p class="example-show"><a href="javascript:;" class="showTextPop">打开文字弹出层</a></p>
+<p class="example-show"><a href="javascript:;" class="showTabPop">打开表格弹出层</a></p>
+<p class="example-show"><a href="javascript:;" class="showListPop">打开列表弹出层</a></p>
+
+</body>
+</html>
+
+
+<script src="jquery-1.8.0.min.js"></script>
+<script src="popup.js"></script>
+<script type="text/javascript">
+  $(function(){
+
+    var $showTextPop = $(".showTextPop"),
+      $showTabPop = $(".showTabPop"),
+      $showListPop = $(".showListPop"),
+      $closePopup = $(".mod-popup .close-popup");
+
+    $showTextPop.bind("click",function(){
+      commonFn.showPopup("标题为：文字类型的弹出框",$("#popup-text-box"));
+    })
+
+    $showTabPop.bind("click",function(){
+      commonFn.showPopup("标题为：表格类型的弹出框",$("#popup-tab-box"));
+    })
+
+    $showListPop.bind("click",function(){
+      commonFn.showPopup("标题为：列表类型的弹出框",$("#popup-list-box"));
+    })
+
+    $closePopup.bind("click",function(){
+      commonFn.closePopup();
+    })
+  })
+</script>

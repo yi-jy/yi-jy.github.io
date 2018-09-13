@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="使用 Source Map 调试线上代码 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="sourcemap debug">
+  
+
+  
+
+  <title>使用 Source Map 调试线上代码 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">使用 Source Map 调试线上代码</h1>
+
+  <time class="post-time">2018-01-25</time>
+
+  <div class="post-content">
+    <p>通常情况下，为了减少请求数和文件下载体积，保证页面以最快的时间载入，线上文件的代码都是经过打包工具合并压缩过的。甚至有的时候，为了防止不法分子或者竞争对手来反编译你的源码，我们会进一步对代码进行混淆或者加密。</p>
+<a id="more"></a>
+<p>虽然，我们可以用很多方式来进行线上代码调试，比如通过 fiddler 或者 charles 相关工具进行抓包，然后代理到本地文件。但是对于一些混淆的、可读性差的代码，问题的定位还是有点麻烦的。</p>
+<p>这个时候，我们借助 <code>Source Map</code> 功能。</p>
+<p>如果你打开 <code>http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js</code> 这个文件，并且滚到页面底部，你会发现这个jquery源码的最后一行是这样的：</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">//@ sourceMappingURL=jquery.<span class="built_in">min</span>.<span class="keyword">map</span></span><br></pre></td></tr></table></figure>
+<p>这便表示该压缩文件支持Source Map。并且它的同目录下，有一个 <code>.map</code> 后缀的文件。即 <a href="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.map" target="_blank" rel="noopener">jquery.min.map</a>。该 map文件 是一个js对象，里面保存了源码的相关信息。</p>
+<p>简单来说，源码在打包编译时，使用打包工具或者线上工具生成一个 map 文件，这个map文件将压缩的文件与源文件建立一个映射关系。debug时，浏览器解析的是编译后，而开发者在调试时，工具面板则是源代码。</p>
+<p>该map文件可以放在远程服务器，也可以存放本地。我们来看下如何使用 Source Map 来 debug。</p>
+<h2 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h2><p>为了更加直观的对比，我们这里就拿 jquery 文件来做测试。我们在本地页面写一个 <code>container</code> 元素，并给它加个点击事件，然后执行它对应的 <code>balabala</code> 方法。</p>
+<p>注意，要使用 sourcemap 功能，你的chrome浏览器必须开启相关设置，可通过 <code>Setting(按F1) -&gt; Preferences-Sources -&gt; 勾选Enable JavaScript source maps -&gt; 勾选Enable CSS source maps</code>。</p>
+<p>如果开启了这些选项，则 map 文件会随页面一起下载。接着说下面两种情况：</p>
+<p><strong>没有使用 source Map 文件的情况：</strong></p>
+<p>此情况下，是引用本地的一个压缩混淆的 jquery 文件，版本是 <code>1.8.0</code>，文件内容的底部没有 <code>//@ sourceMappingURL=jquery.min.map</code>，即它本地或者其他地方没有对应的 map 文件。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span>xxx<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"jquery-1.8.0.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">$(<span class="string">'.container'</span>).on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">  $(<span class="keyword">this</span>).balabala();</span></span><br><span class="line"><span class="undefined">&#125;);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>当我们点击 <code>container</code> 元素时，因为它没有对应的 <code>balabala</code> 方法，所以报错了。控制台是这样的：</p>
+<img src="/2018/01/25/sourcemap-debug/no-map1.png" title="没有map的控制台报错1">
+<p>当我们点击 jquery 对应的报错方法，会跳到 source 界面：</p>
+<img src="/2018/01/25/sourcemap-debug/no-map2.png" title="没有map的控制台报错2">
+<p>嗯，代码是压缩的。我们可以尝试用chrome自带的格式化工具 <code>{}</code>，之后是这样的：</p>
+<img src="/2018/01/25/sourcemap-debug/no-map3.png" title="没有map的代码展开">
+<p>可以看到代码还是混淆的状态，根本无法与源文件对应上。</p>
+<p>于是，我们接着尝试着使用提供了 source map 的远程 <code>http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js</code>。</p>
+<p><strong>使用了 source Map 文件的情况：</strong></p>
+<p>同样的，在保证其他代码不变的情况下，我们将本地的 jquery 文件替换成远程的 1.9.0 版本。即：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span>xxx<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">$(<span class="string">'.container'</span>).on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">  $(<span class="keyword">this</span>).balabala();</span></span><br><span class="line"><span class="undefined">&#125;);</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>此时，点击 <code>container</code> 元素，仍然会出现文章第一张图的报错信息。但当我们点击报错信息时，你会惊讶的发现，sources 面板里所展示就是压缩、混淆前的源文件：</p>
+<img src="/2018/01/25/sourcemap-debug/map.png" title="有map的调试">
+<p>原始的代码行、列，以及原始的函数、变量名，一切都一清二楚。这样，我们就能愉快的调试了。</p>
+<p>另外，我们还可以通过相应的 map 文件来调试 less 文件，原理与上面的类似。</p>
+<h2 id="如何生成-source-map"><a href="#如何生成-source-map" class="headerlink" title="如何生成 source map"></a>如何生成 source map</h2><p>既然 source map 这么好用，那么如何生成它呢？</p>
+<p>其实，一些主流的编译工具，比如 gulp、webpack 都支持生成 sourcemap。只需要按照文档设置相关选项即可。比如，webpack 的配置选项就多达七项，你可以根据具体情况来配置。通常情况下，你只需要这样配置即可：</p>
+<figure class="highlight clean"><table><tr><td class="code"><pre><span class="line"><span class="keyword">module</span>.exports = &#123;</span><br><span class="line">  devtool: <span class="string">"source-map"</span>,</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>生成的source map文件，可以存放在远程服务器，也可以放在本地服务器。</p>
+<p>在之前，市面上流行两种形式的文件指定，分别是以 <code>@</code> 和 <code>#</code>符号开头的。之后 <code>//@ sourceURL</code> 和 <code>//@ sourceMappingURL</code> 已经被废弃了, 目前都建议使用 <code>//# sourceURL=</code> 和 <code>//# sourceMappingURL=</code> 这种形式。即你看到的文件指定都是这种形式的：</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">//</span><span class="comment"># sourceMappingURL=...</span></span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://www.ruanyifeng.com/blog/2013/01/javascript_source_map.html" target="_blank" rel="noopener">JavaScript Source Map 详解</a></li>
+<li><a href="http://bubkoo.com/2014/01/05/introduction-to-javascript-source-maps/" target="_blank" rel="noopener">JavaScript Source Map 介绍</a></li>
+</ul>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

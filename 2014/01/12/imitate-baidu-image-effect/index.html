@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="仿百度图库不同方向划入效果 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="百度图库效果 鼠标移入移出方向">
+  
+
+  
+
+  <title>仿百度图库不同方向划入效果 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">仿百度图库不同方向划入效果</h1>
+
+  <time class="post-time">2014-01-12</time>
+
+  <div class="post-content">
+    <p>或许你看到这个标题有些疑惑，没关系，首先来看一个地址。</p>
+<p><a href="http://image.baidu.com/search/index?tn=baiduimage&amp;ipn=r&amp;ct=201326592&amp;cl=2&amp;lm=-1&amp;st=-1&amp;fm=index&amp;fr=&amp;hs=0&amp;xthttps=111121&amp;sf=1&amp;fmq=&amp;pv=&amp;ic=0&amp;nc=1&amp;z=&amp;se=1&amp;showtab=0&amp;fb=0&amp;width=&amp;height=&amp;face=0&amp;istype=2&amp;ie=utf-8&amp;word=%E9%99%88%E5%A5%95%E8%BF%85&amp;oq=%E9%99%88%E5%A5%95%E8%BF%85&amp;rsp=-1" target="_blank" rel="noopener">百度图库鼠标效果</a></p>
+<p>这个页面是百度图库列表，当我们鼠标移入图片时，会发现图片底部会显示其相关信息层，鼠标移出信息层隐藏，当然这里的主角不是鼠标移入移出信息层的显隐。那么主角是什么？</p>
+<a id="more"></a>
+<p>通过鼠标在图片间不断的移入移出，我们会注意到鼠标从上移入，则信息层会从上进入，鼠标向下移出，则信息层从下退出，左右方向也类似。于是我们可以知道信息层进入和退出的方向，是根据鼠标移入移出的方向来决定。那么这种效果如何实现？</p>
+<p>说说原理，首先是html结构，元素的运动必须脱离文档流，假设hover为绝对定位的信息层，move为在hover里上下左右运动的层，move里面包含透明背景层bg和文字描述层des。示例图和html结构分别如下：</p>
+<img src="/2014/01/12/imitate-baidu-image-effect/mousepic.jpg" title="鼠标滑动分析图">
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">li</span> <span class="attr">data-title</span>=<span class="string">"图片01"</span>&gt;</span></span><br><span class="line">　<span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"http://yi-jy.com/demo/images/pic.jpg"</span>&gt;</span></span><br><span class="line">　<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"hover"</span>&gt;</span></span><br><span class="line">　　<span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">"move"</span>&gt;</span></span><br><span class="line">　　　　<span class="tag">&lt;<span class="name">b</span> <span class="attr">class</span>=<span class="string">"bg"</span>&gt;</span><span class="tag">&lt;/<span class="name">b</span>&gt;</span></span><br><span class="line">　　　　<span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"des"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">　　<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">　<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>鼠标移入时，在当前列表插入hover结构，鼠标移出时，当前列表移除整个hover结构。</p>
+<p>然后是通过js判断鼠标方向，那么如何判断鼠标移入移出的方向呢？假设图片的宽和高分别为w 和 h，则有：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> w = $(<span class="keyword">this</span>).width(); </span><br><span class="line"><span class="keyword">var</span> h = $(<span class="keyword">this</span>).height(); </span><br><span class="line"><span class="keyword">var</span> x = (e.pageX - <span class="keyword">this</span>.offsetLeft - (w / <span class="number">2</span>)) * (w &gt; h ? (h / w) : <span class="number">1</span>); </span><br><span class="line"><span class="keyword">var</span> y = (e.pageY - <span class="keyword">this</span>.offsetTop - (h / <span class="number">2</span>)) * (h &gt; w ? (w / h) : <span class="number">1</span>); </span><br><span class="line"><span class="keyword">var</span> direction = <span class="built_in">Math</span>.round((((<span class="built_in">Math</span>.atan2(y, x) * (<span class="number">180</span> / <span class="built_in">Math</span>.PI)) + <span class="number">180</span>) / <span class="number">90</span>) + <span class="number">3</span>) % <span class="number">4</span>;</span><br><span class="line"><span class="comment">//判断方向direction的值分别为： 0 上，1 右 ，2 下，3 左</span></span><br></pre></td></tr></table></figure>
+<p>最后通过direction的值来执行相应的函数。</p>
+<p>具体的demo页面： <a href="/2014/01/12/imitate-baidu-image-effect/imitate-baidu-image-effect.html" title="仿百度图库鼠标效果">仿百度图库鼠标效果</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

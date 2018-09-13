@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="ES6-string-regulare-expression | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="ES6 字符串 正则 变量拼接">
+  
+
+  
+
+  <title>ES6中的字符串与表达式 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">ES6中的字符串与表达式</h1>
+
+  <time class="post-time">2016-05-08</time>
+
+  <div class="post-content">
+    <p>在以往，我们都是通过单引号 <code>&#39;&#39;</code> 或 双引号<code>&quot;&quot;</code> 以及加号 <code>+</code> 这些连接符，来拼接字符串和变量 。比如，以下方式：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> num = <span class="number">5</span>,</span><br><span class="line">    price = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'There are have '</span> + num + <span class="string">' orange, and total $'</span> + price);</span><br><span class="line"><span class="comment">// 'There are have 5 orange, and total $10'</span></span><br></pre></td></tr></table></figure>
+<p>这种拼接方式其实很繁琐，特别是在变量和字符串都很多、或者字符串本身就有这些连接符的情况下。因为要反复写 <code>+</code>、<code>&#39;&#39;</code> 等这些连接符，并且这种拼接方式也很容易出错。<a id="more"></a></p>
+<p>针对以上ES5的问题，ES6 对字符串进行了一些方法和属性上的扩展。</p>
+<h2 id="一、模板字符串"><a href="#一、模板字符串" class="headerlink" title="一、模板字符串"></a>一、模板字符串</h2><p>为了更轻松的拼接字符串，ES6 引入了反引号 <code></code> 和美元符 $ 加花括号 {} 的形式，如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> num = <span class="number">5</span>,</span><br><span class="line">    price = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">`There are have <span class="subst">$&#123;num&#125;</span> orange, and total $<span class="subst">$&#123;price&#125;</span>`</span>);</span><br><span class="line"><span class="comment">// There are have 5 orange, and total $10</span></span><br></pre></td></tr></table></figure>
+<p>以上代码中，单引号被换成了反引号，变量则采用美元符加花括号的形式。这样一来，拼接字符串的工作就方便多了。</p>
+<p>如果 <code>${}</code> 里放置不是变量，而是字符串。则直接输入该字符串。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">`Hello <span class="subst">$&#123;<span class="string">`world`</span>&#125;</span>`</span>); <span class="comment">// 'Hello world'</span></span><br></pre></td></tr></table></figure>
+<p>如果 <code>${}</code> 里放置不是变量，而是js代码。则直接运行该js代码，并且 <code>${}</code> 中还可以再嵌套变量。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> number = <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> num*<span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">`The number is <span class="subst">$&#123;fn(number)&#125;</span>`</span>); <span class="comment">// The number is 10</span></span><br></pre></td></tr></table></figure>
+<h3 id="1-1-反引号转义"><a href="#1-1-反引号转义" class="headerlink" title="1.1 反引号转义"></a>1.1 反引号转义</h3><p>如果你要输入反引号本身，使用反斜杠转义下即可，用法和正则类似：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">`o\`k`</span>); <span class="comment">// 'o`k'</span></span><br></pre></td></tr></table></figure>
+<h3 id="1-2-多行字符串"><a href="#1-2-多行字符串" class="headerlink" title="1.2 多行字符串"></a>1.2 多行字符串</h3><p>使用单引号定义的变量，通常只能单行，如果强行多行的话，则会报错，如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> str1 = <span class="string">'a</span></span><br><span class="line"><span class="string">b</span></span><br><span class="line"><span class="string">c'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(str1);</span><br><span class="line"><span class="comment">// 报错：Invalid or unexpected token</span></span><br></pre></td></tr></table></figure>
+<p>但如果使用反引号定义变量，则可以输出包含多行字符串的变量，并且包括其中的空白符（换行符、缩进）都会被原原本本的输出来。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> str2 = <span class="string">`a</span></span><br><span class="line"><span class="string">b</span></span><br><span class="line"><span class="string">c`</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(str2);</span><br><span class="line"><span class="comment">//'a</span></span><br><span class="line"><span class="comment">//b</span></span><br><span class="line"><span class="comment">//c'</span></span><br></pre></td></tr></table></figure>
+<h2 id="二、标签模板"><a href="#二、标签模板" class="headerlink" title="二、标签模板"></a>二、标签模板</h2><p>前面说到的 <code>模板字符串</code> 虽然很实用，但真正发挥威力的是 <code>标签模板</code>。</p>
+<p>所谓的 <code>标签模板</code>，就是在反引号 <code></code> 之前加入一个标识符，类似函数调用的效果，请看代码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params">num</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> num*<span class="number">2</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(fn<span class="string">`10`</span>); <span class="comment">// 20</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(fn(<span class="number">10</span>)); <span class="comment">// 20</span></span><br></pre></td></tr></table></figure>
+<p>上面两种运行结果是等价的，其中第一种就是 <code>标签模板</code>。 其中这里的 <code>fn</code> 就是标签，我们可以自定义，而 <code>10</code> 就是标签(函数)的参数。</p>
+<p>如果标签的参数里有变量，则情况就会变得复杂些，还是用一个例子来说明：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">tag</span>(<span class="params">literals, ...substitutions</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">console</span>.log(literals, literals.length); </span><br><span class="line">    <span class="comment">// ["There are have ", " orange, and total $", "", raw: Array[3]] 3</span></span><br><span class="line">    <span class="built_in">console</span>.log(substitutions, substitutions.length); </span><br><span class="line">    <span class="comment">// [5, 10] 2</span></span><br><span class="line">	<span class="built_in">console</span>.log(...substitutions); </span><br><span class="line">	<span class="comment">// 5 10</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> result = <span class="string">""</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; substitutions.length; i++) &#123;</span><br><span class="line">        result += literals[i];</span><br><span class="line">        result += substitutions[i];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    result += literals[literals.length - <span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> num = <span class="number">5</span>,</span><br><span class="line">    price = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(tag<span class="string">`There are have <span class="subst">$&#123;num&#125;</span> orange, and total $<span class="subst">$&#123;price&#125;</span>`</span>);</span><br><span class="line"><span class="comment">// There are have 5 orange, and total $10</span></span><br></pre></td></tr></table></figure>
+<p>由上面的代码可以知道，<code>tag</code> 函数的第一个形参为非变量的数组，这个数组是被变量拆分开来的。而第二个形参则是一组变量依次排列组成的数组。</p>
+<p>虽然</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">tag<span class="string">`There are have <span class="subst">$&#123;num&#125;</span> orange, and total $<span class="subst">$&#123;price&#125;</span>`</span></span><br></pre></td></tr></table></figure>
+<p>并没有按照 <code>tag</code> 函数所定义的形式传参，但是 <code>tag</code> 函数里的代码反应了如何将各个参数拼接起来，最终输出整个字符串。</p>
+<p>如果你问我 <code>标签模板</code> 有什么用？我会告诉你，功夫都在 <code>tag</code> 函数里。因为 <code>tag</code> 函数中把参数分成了很多部分，因此你当然可以对每部分进行相应的处理，最终输出我们想要的字符串。</p>
+<h2 id="三、原始字符串-String-raw"><a href="#三、原始字符串-String-raw" class="headerlink" title="三、原始字符串 - String.raw()"></a>三、原始字符串 - String.raw()</h2><p>在写代码时，我们都希望按照预期输出字符串，但有时候：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">`a\nb`</span>);</span><br><span class="line"><span class="comment">//'a</span></span><br><span class="line"><span class="comment">//b'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">`\/`</span>); <span class="comment">// '/'</span></span><br></pre></td></tr></table></figure>
+<p>我们想要输出的是 <code>a\nb</code> 和 <code>\/</code>，而并非js编译后的内容。 所以，ES6 提供了 <code>String.raw</code> 方法，用来返回原始的字符串。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="built_in">String</span>.raw<span class="string">`a\nb`</span>);</span><br><span class="line"><span class="comment">// 'a\nb'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">String</span>.raw<span class="string">`\/`</span>); <span class="comment">// '\/'</span></span><br></pre></td></tr></table></figure>
+<p>除了上面反引号的用法，还有如下函数调用的形式：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">String</span>.raw(&#123;<span class="attr">raw</span>: str&#125;, val1, val2, val3)</span><br></pre></td></tr></table></figure>
+<p>它的原生实现和使用大致如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">String</span>.raw = <span class="function"><span class="keyword">function</span> (<span class="params">strings, ...values</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">console</span>.log(strings); <span class="comment">// &#123;raw: "abc"&#125;</span></span><br><span class="line">    <span class="built_in">console</span>.log(values, values.length); <span class="comment">// [0, 1] 2</span></span><br><span class="line">    <span class="built_in">console</span>.log(...values); <span class="comment">// 0 1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> output = <span class="string">''</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> index = <span class="number">0</span>; index &lt; values.length; index++) &#123;</span><br><span class="line">        output += strings.raw[index] + values[index];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    output += strings.raw[index];</span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">String</span>.raw(&#123; <span class="attr">raw</span>: <span class="string">'abcd'</span> &#125;, <span class="number">0</span>, <span class="number">1</span>)); <span class="comment">// 'a0b1c'</span></span><br></pre></td></tr></table></figure>
+<h2 id="四、其他字符串方法"><a href="#四、其他字符串方法" class="headerlink" title="四、其他字符串方法"></a>四、其他字符串方法</h2><h3 id="4-1-includes-startsWith-endsWith"><a href="#4-1-includes-startsWith-endsWith" class="headerlink" title="4.1 includes(), startsWith(), endsWith()"></a>4.1 includes(), startsWith(), endsWith()</h3><p>如果要检测字符串中是否存在某个字符串，我们通常会使用 <code>indexOf</code> 方法。而 ES6 又新增了三个方法，以方便我们更加精确的检测字符串：</p>
+<ul>
+<li>includes() 返回布尔值，表示是否在字符串中找到某个字符，找到返回 true，反之则为 false 。</li>
+<li>startsWith() 返回布尔值，表示字符串是否以某个字符开始，是返回 true，反之则为 false 。</li>
+<li>endsWith() 返回布尔值，表示字符串是否以某个字符结尾，是返回 true，反之则为 false 。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">'Hello world!'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(str.includes(<span class="string">'llo'</span>)); <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(str.startsWith(<span class="string">'Hello'</span>)); <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(str.endsWith(<span class="string">'!'</span>));  <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(str.includes(<span class="string">'xlo'</span>)); <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(str.startsWith(<span class="string">'ello'</span>)); <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(str.endsWith(<span class="string">'!!'</span>));  <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<p>值得注意的是，这三个方法都能接受第二个参数，该参数为开始搜索字符串的位置索引。</p>
+<p>不同的是，<code>includes()</code> 和 <code>startsWith()</code> 方法是从第二个参数所在字符串的位置开始匹配。但 <code>endsWith()</code> 方法则是从字符串的第0位到第二个参数所在字符串的位置，这样一个范围进行匹配。</p>
+<p>用一些代码来验证：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">'Hello world!'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(str.includes(<span class="string">'llo'</span>, <span class="number">2</span>)); <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(str.includes(<span class="string">'llo'</span>, <span class="number">3</span>)); <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(str.startsWith(<span class="string">'o'</span>, <span class="number">1</span>)); <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(str.startsWith(<span class="string">'o'</span>, <span class="number">4</span>)); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(str.endsWith(<span class="string">'wor'</span>, <span class="number">3</span>));  <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(str.endsWith(<span class="string">'wor'</span>, <span class="number">9</span>));  <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>要包含 llo 字符，必须从字符串的第 2 位开始查找。</p>
+<p>要以 o 字符开始，必须从字符串的第 4 位开始查找。</p>
+<p>要以 wor 字符结束，必须是字符串的前 9 位。</p>
+<p>另外，如果传入的第二个参数为数字字符串，比如 ‘9’ ，则函数会自动把它转换为数字 9。</p>
+<h3 id="4-2-repeat"><a href="#4-2-repeat" class="headerlink" title="4.2 repeat()"></a>4.2 repeat()</h3><p>除了上面新增的那三个方法外，ES6 还增加了 <code>repeat()</code> 方法，用户可以给它传递一个数字作为参数，表示重复该字符串的次数，该方法返回一个包含原始字符串的新字符串。</p>
+<p>来个例子：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'hello'</span>.repeat(<span class="number">2</span>)); <span class="comment">// 'hellohello'</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">' world'</span>.repeat(<span class="number">3</span>)); <span class="comment">// ' world world world'</span></span><br></pre></td></tr></table></figure>
+<p>看，这对于循环输出一些文本特别有用。</p>
+<p>注意，如果你传入的参数为一些特殊值，则该方法输出情况如下：</p>
+<ul>
+<li>0： 输出空字符串</li>
+<li>大于0小于1： 输出空字符串</li>
+<li>大于1的小数点：向下取整输出字符串的倍数</li>
+<li>小于0大于-1：输出空字符串</li>
+<li>小于-1：错误：Invalid count value</li>
+<li>数字字符串：向下取整输出字符串的倍数</li>
+<li>非数字：输出空字符串</li>
+</ul>
+<p>用点代码来验证：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'hello'</span>.repeat(<span class="number">0</span>)); <span class="comment">// ''</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'hello'</span>.repeat(<span class="number">0.6</span>)); <span class="comment">// ''</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'hello'</span>.repeat(<span class="number">2.6</span>)); <span class="comment">// 'hellohello'</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'hello'</span>.repeat(<span class="number">-0.6</span>)); <span class="comment">// ''</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'hello'</span>.repeat(<span class="number">-1.1</span>)); <span class="comment">// 错误：Invalid count value</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'hello'</span>.repeat(<span class="string">'-3'</span>)); <span class="comment">// 'hellohellohello'</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'hello'</span>.repeat(<span class="string">'abc'</span>)); <span class="comment">// ''</span></span><br></pre></td></tr></table></figure>
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

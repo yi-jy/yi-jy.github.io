@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="关于BFC | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="bfc 块级格式化范围">
+  
+
+  
+
+  <title>关于BFC | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">关于BFC</h1>
+
+  <time class="post-time">2013-06-09</time>
+
+  <div class="post-content">
+    <p>不知道何时起，BFC这个概念在前端界被传的神乎其神，那些面试官更是如此，上来一句就是，你是如何理解BFC的？</p>
+<p>BFC，即Block Formatting Context（块级格式化范围），指的是由于元素使用了某些CSS属性，从而影响了它周围元素（包括嵌套元素）和自身的布局呈现方式。通俗的来讲，它就是一种布局方式，也许你之前用过这种方法来处理页面布局的兼容性，但是你可能并不知道BFC这样一个概念。</p>
+<a id="more"></a>
+<h3 id="BFC形成条件"><a href="#BFC形成条件" class="headerlink" title="BFC形成条件"></a>BFC形成条件</h3><ul>
+<li>float的值不为”none”</li>
+<li>overflow的值不为”visible”</li>
+<li>display的值为 “table-cell”, “table-caption”, or “inline-block”中的任何一个</li>
+<li>position的值为 “absolute” 或 “fixed”中的任何一个</li>
+</ul>
+<h3 id="BFC的实例"><a href="#BFC的实例" class="headerlink" title="BFC的实例"></a>BFC的实例</h3><h4 id="1-解决嵌套元素的边距重叠问题"><a href="#1-解决嵌套元素的边距重叠问题" class="headerlink" title="1.解决嵌套元素的边距重叠问题"></a>1.解决嵌套元素的边距重叠问题</h4><p>关于边距重叠，我们来看一个实例：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box1"</span> <span class="attr">style</span>=<span class="string">"width:200px;height:100px;background:green;"</span>&gt;</span></span><br><span class="line">　　<span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box2"</span> <span class="attr">style</span>=<span class="string">"width:100px;height:50px;margin:10px auto 0;background:red;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>我们想要实现的是，box2应该有10px的上边距，结果页面呈现的是box2上边与box1重叠了，而是box1有10px的上边距。如下图：</p>
+<img src="/2013/06/09/css-bfc/BFC-margin1-12.jpg" title="未创建BFC的box1">
+<p>这就是发生了边距重叠，于是我们利用创建BFC的条件，给id为box1的元素加一个 overflow:auto ：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box1"</span> <span class="attr">style</span>=<span class="string">"width:200px;height:100px;background:green;overflow:auto"</span>&gt;</span></span><br><span class="line">　　<span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box2"</span> <span class="attr">style</span>=<span class="string">"width:100px;height:50px;margin:10px auto 0;background:red;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>从而，得到我们想要的效果：</p>
+<img src="/2013/06/09/css-bfc/BFC-margin1-21.jpg" title="box1创建了BFC">
+<p>当然，你也可以给box1加一像素边框，同样可以达到类似的效果。</p>
+<p>关于边距重叠，我们再来看一个实例：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box1"</span> <span class="attr">style</span>=<span class="string">"width:100px;height:100px;margin:10px;background:green;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box2"</span> <span class="attr">style</span>=<span class="string">"width:100px;height:100px;margin:20px 10px;background:red;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>我们想要实现的是，box1的下边与box2的上边有30px的距离，但是页面呈现的布局是：</p>
+<img src="/2013/06/09/css-bfc/BFC-margin1-31.jpg" title="相邻元素垂直边距重叠">
+<p>可以看到它们之间只有20px的间距，这说明也发生了边距的重叠。这里要说明下，如果上下都有边距，那么页面渲染的是取更大的边距。如果是负边距的话，则取的是绝对值较大的边距。</p>
+<h4 id="2-阻止非浮动元素被浮动覆盖"><a href="#2-阻止非浮动元素被浮动覆盖" class="headerlink" title="2. 阻止非浮动元素被浮动覆盖"></a>2. 阻止非浮动元素被浮动覆盖</h4><p>关于浮动元素的覆盖，我们再来看一个实例：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box1"</span> <span class="attr">style</span>=<span class="string">"width:100px;height:50px;background:green;float:left;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box2"</span> <span class="attr">style</span>=<span class="string">"width:200px;height:100px;background:red;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>我们想要实现的是，box1与box2在同一行，并且box2是紧挨着box1右侧，但页面呈现的布局是：</p>
+<img src="/2013/06/09/css-bfc/BFC-float11.jpg" title="未创建BFC-浮动元素覆盖">
+<p>显然浮动元素覆盖了未浮动的元素，此时给box2创建一个BFC，给box2加上overflow:hidde属性，从而得到这样的效果：</p>
+<img src="/2013/06/09/css-bfc/BFC-float2.jpg" title="创建BFC-浮动元素未覆盖">
+<h4 id="3-清除元素的内部浮动"><a href="#3-清除元素的内部浮动" class="headerlink" title="3. 清除元素的内部浮动"></a>3. 清除元素的内部浮动</h4><p>我们经常会碰到由于嵌套元素的浮动而导致父级元素高度塌陷的问题，关于清除元素的内部浮动，我们来看一个实例：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"one"</span>&gt;</span></span><br><span class="line">　　<span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box1"</span> <span class="attr">style</span>=<span class="string">"width:100px;height:100px;float:left;background:red;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">　　<span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box2"</span> <span class="attr">style</span>=<span class="string">"width:100px;height:100px;float:left;background:green;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"two"</span>&gt;</span></span><br><span class="line">　　<span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box3"</span> <span class="attr">style</span>=<span class="string">"width:100px;height:100px;float:left;background:orange;"</span>&gt;</span>　<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">　　<span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box4"</span> <span class="attr">style</span>=<span class="string">"width:100px;height:100px;float:left;background:purple;"</span>&gt;</span>　<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>通过以上代码，由于div是块级元素，所以你可能认为box1与box2在第一行，box3与box4在第二行，可是，页面布局却呈现如下：</p>
+<img src="/2013/06/09/css-bfc/BFC-float3.jpg" title="未创建BFC浮动排列">
+<p>由于id为one和id为two的这两个元素的子元素设置了浮动属性，所以父级元素高度无法撑开，导致id为one和id为two的元素在同一行。解决方法是，给id为one和id为two的元素加上height:auto;overflow:hidden;属性，或者直接给id为one的元素加display:inline-block; 这些都是通过创建BFC来解决的。最终，我们得到如下效果：</p>
+<img src="/2013/06/09/css-bfc/BFC-float4.jpg" title="创建BFC浮动排列">
+<p>关于BFC，必定还有更多的，更深的研究。CSS的强大自然不是几段文字所能描述的。相信此篇博客，只是BFC的一个开始。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

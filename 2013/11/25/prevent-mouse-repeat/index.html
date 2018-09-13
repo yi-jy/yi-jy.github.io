@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="鼠标滚轮不重复执行事件解决方案 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="鼠标滚动 重复触发">
+  
+
+  
+
+  <title>鼠标滚轮不重复执行事件解决方案 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">鼠标滚轮不重复执行事件解决方案</h1>
+
+  <time class="post-time">2013-11-25</time>
+
+  <div class="post-content">
+    <p>在前些日子的有博文介绍过鼠标滚轮，但都是其相关方法和属性，以及其兼容性方面的内容。而这篇文章主要是说明鼠标滚轮下不重复执行事件的问题和解决方案。</p>
+<a id="more"></a>
+<p>因为鼠标滚轮事件是一个重复不断的过程，因此用户在滚动鼠标滚轮时，在鼠标滚轮下的需要执行的函数会重复发生，比如，我们需要通过鼠标滚轮来控制多屏滑动，或者希望鼠标滚动来控制轮播图的切换，根本就无法知道用户滚动的幅度大小，那么就无法确定（e.wheelDelta||e.detail）的值，而轮播图的原理就通过对应的索引值来显示对应的图。</p>
+<p>所以我们希望的结果是，用户鼠标无论是向下或者向上滚动时，不管他滚动幅度大小，<strong>都只执行一次相关函数</strong>。</p>
+<p>解决方案：设定一个布尔变量bOnce，开始设置其值为true。再设置一个延时定时器</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> oTime=setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;bOnce=<span class="literal">true</span>&#125;,<span class="number">800</span>);</span><br></pre></td></tr></table></figure>
+<p>滚动鼠标后设置bOnce为false，触发oTime。只有bOnce为真的时候才能执行鼠标滚轮下的函数，这样无论用户滚动滚轮快慢，鼠标滚动下的函数都只触发一次。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (bOnce) &#123;</span><br><span class="line">   </span><br><span class="line">   doSomething…  <span class="comment">//鼠标滚轮下的事件</span></span><br><span class="line">   </span><br><span class="line">   bOnce=<span class="literal">false</span>;</span><br><span class="line">   clearInterval(oTime);</span><br><span class="line">   oTime=setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;bOnce=<span class="literal">true</span>&#125;,<span class="number">800</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>具体的demo页面：<a href="/2013/11/25/prevent-mouse-repeat/prevent-mouse-repeat.html" title="鼠标滚轮操作轮播图">鼠标滚轮操作轮播图</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

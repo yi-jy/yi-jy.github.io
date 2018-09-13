@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="一个web音乐播放器 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="audio web音乐播放器">
+  
+
+  
+
+  <title>一个web音乐播放器 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">一个web音乐播放器</h1>
+
+  <time class="post-time">2014-03-28</time>
+
+  <div class="post-content">
+    
+<p>最近经常使用网页听歌，于是萌发了自己写一个web播放器的念头。然后它就出来了，哈~该播放器主要基于html5中的audio元素。播放器可兼容chrome，firfox，ie10等支持html5的主流浏览器。时间关系，播放器里的代码还有待优化~，以下介绍下该款播放器：</p>
+<a id="more"></a>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><ol>
+<li>播放暂停：支持播放和暂停，再次播放时，会在上次暂停点继续播放。</li>
+<li>播放模式：支持列表循环、随机播放、单曲循环三种播放模式。默认为列表循环播放，自动下曲。</li>
+<li>歌词显示：歌词滚动显示，并且当前歌词高亮。</li>
+<li>音量调节：可通过拖拽音量按钮来调节播放音量大小。</li>
+<li>进度控制：可拖动进度按钮来控制歌曲的播放进度。</li>
+<li>列表滚动：由于歌曲列表可视歌曲最多六首，当歌曲多余六首，列表会出现滚动条。而该播放器可根据当前播放歌曲来滚动列表，保证当前播放歌曲在列表可见，类似歌词滚动。</li>
+</ol>
+<h2 id="问题点"><a href="#问题点" class="headerlink" title="问题点"></a>问题点</h2><p>1 . currentTime的计算。可通过audio的currentTime属性来获取当前播放点，但如果改变audio的src，audio.currentTime会重置为0。以当歌曲暂停时，需保存currentTime。</p>
+<p>2 . 歌词匹配。 由于lrc文件里的歌词格式不统一。有一个时间点对应一句歌词的形式：</p>
+<blockquote>
+<p>[00:12.54]天空刚下了几场雨<br>[00:16.40]看街上路人不多</p>
+</blockquote>
+<p>还有不同时间点对应同一歌词的形式：</p>
+<blockquote>
+<p>[02:31.87][00:54.33]请你别拖 拖 拖 大声的说出口<br>[02:38.84][01:01.77]请你要痛就痛给我个快活<br>[03:41.27][02:45.83][01:08.38]如果说你要走 我不会留</p>
+</blockquote>
+<p>另外歌词的头部还有无关信息，这些都需要分情况通过正则去剔除和匹配。</p>
+<p>3 . 歌词的加载。我们是通过ajax读取歌词返回到前台，在本地ajax可以正常读取lrc文件，但在服务器上却无法识别，不知何故，但迫于时间关系，只好将lrc文件替换成txt文件。</p>
+<p>4 . 当前歌词的高亮。通过问题点2，我们可以设置1秒的定时器去lrc文件里匹配当前歌词，但会有极少部分歌曲的播放与歌词会出现延迟零点几秒。</p>
+<p>…</p>
+<p><a href="https://github.com/joy-yi0905/music-player" target="_blank" rel="noopener">一个web音乐播放器</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

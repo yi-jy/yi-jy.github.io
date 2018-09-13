@@ -1,0 +1,42 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>无标题文档</title>
+</head>
+
+<body>
+<div class="screen-status"></div>
+</body>
+</html>
+
+
+<script type="text/javascript">
+(function(){
+  var initScreenW = document.documentElement.clientWidth || document.body.clientWidth,
+    tempScreenW = 0 ;
+  function testScreenStatus(){
+    tempScreenW = document.documentElement.clientWidth || document.body.clientWidth;
+    if("onorientationchange" in window){
+      if(window.orientation==180||window.orientation==0){
+        alert("现在是：竖屏");
+        }
+      if(window.orientation==90||window.orientation==-90){
+        alert("现在是：横屏");
+      }
+    }
+    else{
+      if(tempScreenW>initScreenW+50){
+        alert("现在是：横屏");
+      }
+      else{
+        alert("现在是：竖屏");
+      }
+    }
+  }
+  testScreenStatus();
+  window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", testScreenStatus,false);
+})()
+</script>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="数组的操作 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="数组删除元素  数组声明 数组截取  数组排序  数组添加元素">
+  
+
+  
+
+  <title>数组的操作 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">数组的操作</h1>
+
+  <time class="post-time">2013-03-07</time>
+
+  <div class="post-content">
+    <p>数组在JavaScript应用非常普遍，下面的文章主要介绍数组的相关使用和方法。</p>
+<a id="more"></a>
+<h2 id="一、创建数组和声明"><a href="#一、创建数组和声明" class="headerlink" title="一、创建数组和声明"></a>一、创建数组和声明</h2><p>创建数组有两种方式：</p>
+<p>创建数组有两种方式：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=<span class="keyword">new</span> <span class="built_in">Array</span>(<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>);</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=<span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">3</span>);  <span class="comment">// 创建一个长度为3的数组</span></span><br><span class="line">arr=[<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>]; <span class="comment">// 创建一个长度为3的数组</span></span><br></pre></td></tr></table></figure>
+<p>数组的声明：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=[<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>] ; <span class="comment">// 创建数组，并初始化了三个元素</span></span><br></pre></td></tr></table></figure>
+<h2 id="二、数组的长度"><a href="#二、数组的长度" class="headerlink" title="二、数组的长度"></a>二、数组的长度</h2><p>javascript给了我们一个数组长度的属性：假设定义了一个数组arr，那么数组的长度就为：<code>arr.length</code> 。</p>
+<p>当然有趣的是，数组的长度可以在数组声明之后去改变，数组改变后的长度如果小于原数组长度，则会删除原数组后面的元素，直到数组长度等于改变后的长度。如果数组改变后的长度大于原数组长度，则会在数组后面加入空元素，直到数组长度等于改变后的长度。</p>
+<p>你想要快速的清空一个数组，只需要 <code>arr.length=0</code> 即可。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=[<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>];  <span class="comment">// 创建数组，并初始化了三个元素</span></span><br><span class="line">arr.length=<span class="number">2</span>;   <span class="comment">// 改变数组的长度</span></span><br><span class="line">alert(arr.length);  <span class="comment">// 结果为2，arr=["aa","bb"]</span></span><br></pre></td></tr></table></figure>
+<h2 id="三、数组的后面插入和删除元素"><a href="#三、数组的后面插入和删除元素" class="headerlink" title="三、数组的后面插入和删除元素"></a>三、数组的后面插入和删除元素</h2><p>后面插入元素 push：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=[<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>];  </span><br><span class="line">arr.push(<span class="string">"dd"</span>,<span class="string">"ee"</span>); <span class="comment">// 结果为 arr=["aa","bb","cc","dd","ee"]</span></span><br></pre></td></tr></table></figure>
+<p>后面删除元素 pop，值得说是，删除元素pop不像push可以多个元素操作，它只能删除数组的最后一个元素，即使你给它很多参数，也只是删除一个。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=[<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>];  </span><br><span class="line">arr.pop(); <span class="comment">// 结果为 arr=["aa","bb"]</span></span><br></pre></td></tr></table></figure>
+<h2 id="四、数组的前面插入和删除元素"><a href="#四、数组的前面插入和删除元素" class="headerlink" title="四、数组的前面插入和删除元素"></a>四、数组的前面插入和删除元素</h2><p>前面插入元素 unshift</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=[<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>];  </span><br><span class="line">arr.unshift(“dd”,”ee”); <span class="comment">// 结果为 arr=["dd","ee","aa","bb","cc"]</span></span><br></pre></td></tr></table></figure>
+<p>前面删除元素 shift，在删除元素方面，shift和pop一样，它只能删除数组的最前一个元素，即使你给它很多参数，也只是删除一个。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=[<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>];  </span><br><span class="line">arr.shift( ); <span class="comment">// 结果为 arr=["bb","cc"]</span></span><br></pre></td></tr></table></figure>
+<h2 id="五、数组的中间插入和删除元素"><a href="#五、数组的中间插入和删除元素" class="headerlink" title="五、数组的中间插入和删除元素"></a>五、数组的中间插入和删除元素</h2><p>前面两大点介绍了从数组的前面和后面分别插入和删除元素的方法。可是实践中，不单单只是会数组的前后操作，有时也会从数组的中间进行操作。那么如何从数组中间进行元素的操作呢？javascript给我们提供一个 splice。</p>
+<p>语法：arr. splice(元素位置 , 元素个数  , 插入的元素);</p>
+<p>如何理解splice这个函数呢，元素位置是指从数组的那个元素开始操作。元素个数是从该元素位置删除“元素个数”个元素，若为0，则不删除。插入的元素是指删除（或者不删除）操作后，在该元素位置后插入元素。下面看代码，就一目了然：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=[<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>];</span><br><span class="line">arr. splice(<span class="number">1</span>,<span class="number">2</span>,<span class="string">"xx"</span>,<span class="string">"oo"</span>,<span class="string">"pp"</span>);   <span class="comment">// 第1个位置删除2个元素，再添加 "xx","oo","pp" 这三个元素</span></span><br><span class="line">alert(arr);  <span class="comment">// 结果为 arr=["aa","xx","oo","pp"]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr=[<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>];</span><br><span class="line">arr. splice(<span class="number">1</span>,<span class="number">0</span>,<span class="string">"xx"</span>,<span class="string">"oo"</span>,<span class="string">"pp"</span>); <span class="comment">// 第1个位置不删除元素，再添加 "xx","oo","pp" 这三个元素</span></span><br><span class="line">alert(arr);  <span class="comment">// 结果为 arr=["aa","xx","oo","pp","bb","cc"]</span></span><br></pre></td></tr></table></figure>
+<h2 id="六、数组的截取"><a href="#六、数组的截取" class="headerlink" title="六、数组的截取"></a>六、数组的截取</h2><p>slice() 方法可从已有的数组中返回选定的元素。</p>
+<p>语法：arr.slice(start,end);</p>
+<p>start 必需。规定从何处开始选取。如果是负数，那么它规定从数组尾部开始算起的位置。也就是说，-1 指最后一个元素，-2 指倒数第二个元素，以此类推。</p>
+<p>end可选。规定从何处结束选取。该参数是数组片断结束处的数组下标。如果没有指定该参数，那么切分的数组包含从 start 到数组结束的所有元素。如果这个参数是负数，那么它规定的是从数组尾部开始算起的元素。</p>
+<p>注意：slice并不会修改数组，而是返回一个子数组。如果想删除数组中的一段元素，应该使用方法 Array.splice( )。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=[<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>];</span><br><span class="line">arr. slice(<span class="number">1</span>,<span class="number">-1</span>);</span><br><span class="line">alert(arr. slice(<span class="number">1</span>,<span class="number">-1</span>));   <span class="comment">// 结果为 arr=["bb"]  </span></span><br><span class="line">alert(arr);  <span class="comment">// 结果为 arr=["aa","bb","cc"]  不会改变arr</span></span><br></pre></td></tr></table></figure>
+<h2 id="七、数组的连接–concat"><a href="#七、数组的连接–concat" class="headerlink" title="七、数组的连接–concat"></a>七、数组的连接–concat</h2><p>用于拼接一个或多个数组：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=[<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>];</span><br><span class="line"><span class="keyword">var</span> arr2=[<span class="string">"xx"</span>,<span class="string">"oo"</span>]</span><br><span class="line">alert(arr.concat(arr2));  <span class="comment">//结果为  ["aa","bb","cc","xx","oo"]</span></span><br><span class="line"></span><br><span class="line">注意：concat并不会修改数组，而是返回一个子数组。</span><br></pre></td></tr></table></figure>
+<h2 id="八、数组的连接–join"><a href="#八、数组的连接–join" class="headerlink" title="八、数组的连接–join"></a>八、数组的连接–join</h2><p>join() 方法用于把数组中的所有元素放入一个字符串。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=[<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>];</span><br><span class="line">arr.join(<span class="string">"-"</span>); </span><br><span class="line">alert(arr.join());  <span class="comment">//结果为 aa,bb,cc</span></span><br><span class="line">alert(arr.join(<span class="string">"-"</span>)); <span class="comment">//结果为  aa-bb-cc</span></span><br></pre></td></tr></table></figure>
+<p>注意：concat并不会修改数组，而是返回一个字符串。</p>
+<h2 id="九：数组的排序"><a href="#九：数组的排序" class="headerlink" title="九：数组的排序"></a>九：数组的排序</h2><p>reverse( ):  数组的反转 ,颠倒其元素的顺序</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=[<span class="string">"aa"</span>,<span class="string">"bb"</span>,<span class="string">"cc"</span>,<span class="string">"dd"</span>];</span><br><span class="line">alert(arr.reverse());   <span class="comment">//结果为 arr=["dd","cc","bb","aa"]</span></span><br><span class="line"></span><br><span class="line">sort(fn )  : 该方法用于对数组的元素进行排序。fn可选。规定排序顺序。必须是函数</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr=[<span class="string">"32"</span>,<span class="string">"2"</span>,<span class="string">"1"</span>,<span class="string">"0"</span>,<span class="string">"12"</span>];</span><br><span class="line">alert(arr.sort());   <span class="comment">//结果为 arr=["0","1","12","32"] 是按照首位数字进行排序，而非大小</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr=[<span class="string">"yix"</span>,<span class="string">"alex"</span>,<span class="string">"buddy"</span>,<span class="string">"jason"</span>];  </span><br><span class="line">alert(arr.sort());   <span class="comment">//结果为 arr=["alex","buddy","jason","yix"] 是按照首位字母进行排序</span></span><br></pre></td></tr></table></figure>
+<p>如果想要实现数组的排序，可以使用以下函数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr=[<span class="string">"12"</span>,<span class="string">"33"</span>,<span class="string">"43"</span>,<span class="string">"5"</span>];</span><br><span class="line"><span class="keyword">var</span> max=arr.sort(<span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>)</span>&#123;</span><br><span class="line"><span class="keyword">return</span> (a-b);&#125;)</span><br><span class="line">alert(max+<span class="string">":"</span>+max[max.length<span class="number">-1</span>]);   <span class="comment">//结果为 arr=["5","12","33","43"]  : 43</span></span><br></pre></td></tr></table></figure>
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

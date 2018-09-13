@@ -1,0 +1,223 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>RTE</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<link href="rte.css" type="text/css" rel="stylesheet"/>
+</head>
+
+<body>
+
+<div class="rte" >
+  <div class="rte-hd">
+    <div class="toolbar" id="toolbar" onselectstart="return false;">
+      <ul class="clearfix">
+        <li class="item">
+          <span class="current" title="粗体" data-command="bold">&#xe615;</span>
+        </li>
+                <li class="item">
+                  <span class="current" title="斜体" data-command="italic">&#xe682;</span>
+                </li>
+                <li class="item">
+                  <span class="current" title="下划线" data-command="underline">&#xf0091;</span>
+                </li>
+                <li class="item">
+                  <span class="current" title="中划线" data-command="strikethrough">&#xf00a1;</span>
+                </li>
+        <li class="item layer-item size-item">
+          <span class="current" title="字号">&#xe642;</span>
+          <ul class="layer sub-menu size-menu">
+            <li><a class="select-btn" href="javascript:;" title="1" data-command="fontsize" data-value="1">1</a></li>
+            <li><a class="select-btn" href="javascript:;" title="2" data-command="fontsize" data-value="2">2</a></li>
+            <li><a class="select-btn" href="javascript:;" title="3" data-command="fontsize" data-value="3">3</a></li>
+            <li><a class="select-btn" href="javascript:;" title="4" data-command="fontsize" data-value="4">4</a></li>
+            <li><a class="select-btn" href="javascript:;" title="5" data-command="fontsize" data-value="5">5</a></li>
+            <li><a class="select-btn" href="javascript:;" title="6" data-command="fontsize" data-value="6">6</a></li>
+            <li><a class="select-btn" href="javascript:;" title="7" data-command="fontsize" data-value="7">7</a></li>
+          </ul>
+        </li>
+        <li class="item layer-item color-item">
+          <span class="current" title="文字颜色"  data-value="">&#xf0097;</span>
+                    <input type="hidden" value="" id="color-input"/>
+        </li>
+        <li class="item layer-item bgcolor-item">
+          <span class="current" title="文字背景色" data-value="">&#xf0097;</span>
+          <input type="hidden" value="" id="bgcolor-input"/>
+        </li>
+        <li class="item layer-item">
+          <span class="current" title="文字方向">&#xf017f;</span>
+          <ul class="layer sub-menu">
+            <li><a class="select-btn" href="javascript:;" title="文字居左" data-command="justifyleft">&#xf017f;</a></li>
+            <li><a class="select-btn" href="javascript:;" title="文字居中" data-command="justifycenter">&#xf0180;</a></li>
+            <li><a class="select-btn" href="javascript:;" title="文字居右" data-command="justifyright">&#xf0181;</a></li>
+          </ul>
+        </li>
+        <li class="item layer-item">
+          <span class="current" title="文字缩进">&#xf0184;</span>
+          <ul class="layer sub-menu">
+            <li><a class="select-btn" href="javascript:;" title="文字左缩进" data-command="indent">&#xf0184;</a></li>
+            <li><a class="select-btn" href="javascript:;" title="文字右缩进" data-command="outdent">&#xf0185;</a></li>
+          </ul>
+        </li>
+        <li class="item layer-item">
+          <span class="current" title="添加列表">&#xe622;</span>
+          <ul class="layer sub-menu">
+            <li><a class="select-btn" href="javascript:;" title="添加无序列表" data-command="insertorderedlist">&#xe622;</a></li>
+            <li><a class="select-btn" href="javascript:;" title="添加有序列表" data-command="insertunorderedlist">&#xe601;</a></li>
+          </ul>
+        </li>
+        <li class="item layer-item self-item">
+          <span class="current" title="插入媒体">&#x3446;</span>
+          <ul class="layer sub-menu">
+            <li><a class="select-btn" href="javascript:;" title="插入图片" self-command="insertimage">&#x3446;</a></li>
+            <li><a class="select-btn" href="javascript:;" title="插入链接" self-command="createlink">&#xf00da;</a></li>
+            <li><a class="select-btn" href="javascript:;" title="插入日期" self-command="inserttime">&#xf0092;</a></li>
+          </ul>
+        </li>
+        <li class="item layer-item self-item">
+          <span class="current" title="插入表情" self-command="insertface">&#xf00c3;</span>
+                    <div class="layer emoticon">
+                      <ul class="clearfix">
+                          <li><img src="e01.gif"/></li>
+                            <li><img src="e02.gif"/></li>
+                            <li><img src="e03.gif"/></li>
+                            <li><img src="e04.gif"/></li>
+                            <li><img src="e05.gif"/></li>
+                            <li><img src="e06.gif"/></li>
+                            <li><img src="e07.gif"/></li>
+                            <li><img src="e08.gif"/></li>
+                            <li><img src="e09.gif"/></li>
+                            <li><img src="e10.gif"/></li>
+                            <li><img src="e11.gif"/></li>
+                            <li><img src="e12.gif"/></li>
+                            <li><img src="e13.gif"/></li>
+                            <li><img src="e14.gif"/></li>
+                            <li><img src="e15.gif"/></li>
+                            <li><img src="e16.gif"/></li>
+                            <li><img src="e17.gif"/></li>
+                            <li><img src="e18.gif"/></li>
+                            <li><img src="e19.gif"/></li>
+                            <li><img src="e20.gif"/></li>
+                            <li><img src="e21.gif"/></li>
+                            <li><img src="e22.gif"/></li>
+                            <li><img src="e23.gif"/></li>
+                            <li><img src="e24.gif"/></li>
+                            <li><img src="e25.gif"/></li>
+                            <li><img src="e26.gif"/></li>
+                            <li><img src="e27.gif"/></li>
+                            <li><img src="e28.gif"/></li>
+                            <li><img src="e29.gif"/></li>
+                            <li><img src="e30.gif"/></li>
+                            <li><img src="e31.gif"/></li>
+                            <li><img src="e32.gif"/></li>
+                            <li><img src="e33.gif"/></li>
+                            <li><img src="e34.gif"/></li>
+                            <li><img src="e35.gif"/></li>
+                            <li><img src="e36.gif"/></li>
+                        </ul>
+                    </div>
+        </li>
+        <li class="item layer-item self-item">
+          <span class="current" title="插入特殊符号" self-command="insertsymbol">&#xe63a;</span>
+                    <div class="layer symbol">
+                      <ul class="clearfix">
+                          <li>♠</li>
+                            <li>♣</li>
+                            <li>♧</li>
+                            <li>♡</li>
+                            <li>♥</li>
+                            <li>♂</li>
+                            <li>♀</li>
+                            <li>☼</li>
+                            <li>◐</li>
+                            <li>◑</li>
+                            <li>☺</li>
+                            <li>☻</li>
+                            <li>☎</li>
+                            <li>☏</li>
+                            <li>√</li>
+                            <li>★</li>
+                            <li>℃</li>
+                            <li>℉</li>
+                            <li>⊙</li>
+                            <li>■</li>
+                            <li>□</li>
+                            <li>△</li>
+                            <li>▽</li>
+                            <li>卐</li>
+                            <li>♪</li>
+                            <li>♬</li>
+                            <li>Ψ</li>
+                            <li>∮</li>
+                            <li>€</li>
+                            <li>￡</li>
+                            <li>≈</li>
+                            <li>≠</li>
+                            <li>≤</li>
+                            <li>≥</li>
+                            <li>∞</li>
+                            <li>∈</li>
+                        </ul>
+                    </div>
+        </li>
+        <li class="item layer-item self-item">
+          <span class="current" title="插入表格" self-command="inserttable">&#xe616;</span>
+                    <div class="layer table-info">
+                      <p>行数： <input type="text" class="tab-row"/></p>
+                        <p>列数： <input type="text" class="tab-col"/></p>
+                        <p><input type="button" value="确定" class="tab-confirm"/></p>
+                    </div>
+        </li>
+        <li class="item layer-item">
+          <span class="current" title="回退">&#xf013a;</span>
+          <ul class="layer sub-menu">
+            <li><a class="select-btn" href="javascript:;" title="撤销" data-command="undo">&#xf013a;</a></li>
+            <li><a class="select-btn" href="javascript:;" title="重复" data-command="redo">&#xf013b;</a></li>
+          </ul>
+        </li>
+        <li class="item remove-item">
+          <span class="current" title="清除格式" data-command="removeformat">&#xe669;</span>
+        </li>
+        <li class="item self-item save-item">
+          <span class="current" title="保存" self-command="save">&#xe602;</span>
+        </li>
+        <li class="item self-item new-item">
+          <span class="current" title="新建" self-command="new">&#xe686;</span>
+        </li>
+                <li class="item self-item preview-item">
+          <span class="current" title="预览" self-command="preview">&#xe736;</span>
+        </li>
+                 <li class="item self-item html-item">
+          <span class="current" title="html" self-command="html">html</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="rte-bd">
+    <div class="rte-main" id="rte-main"></div>
+        <textarea class="rte-textarea" id="rte-textarea"></textarea>
+  </div>
+</div>
+
+<div class="rte-popup" id="ret-popup">
+  <div class="mask"></div>
+    <div class="rte-popup-box">
+      <div class="popup-box-hd">
+          <h3 class="popup-box-tit">正文预览</h3>
+            <a class="close-popup" id="close-popup" href="javascript:;">X</a>
+        </div>
+        <div class="popup-box-bd" id="popup-box-bd"></div>
+    </div>
+</div>
+
+</body>
+</html>
+<script type="text/javascript" src="base.js"></script>
+<script type="text/javascript" src="colorTake.js"></script>
+<script type="text/javascript" src="rte.js"></script>
+<script type="text/javascript">
+
+</script>
+

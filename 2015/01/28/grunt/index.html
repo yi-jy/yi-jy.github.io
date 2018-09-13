@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="Grunt-自动化构建工具 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="grunt 优化图片 压缩文件 自动化构建">
+  
+
+  
+
+  <title>Grunt-自动化构建工具 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">Grunt-自动化构建工具</h1>
+
+  <time class="post-time">2015-01-28</time>
+
+  <div class="post-content">
+    <p>一般而言，我会把项目代码分成两份，这两份代码内容是相同的，一份用于本地开发或者修改，另一份放在svn。在svn上的代码是与开发的工程并存的，我们前端只需要把本地开发好的文件提交到svn，开发再将svn的文件同步到服务器。在提交的过程中，我们需要做如下处理：</p>
+<p>首先，js压缩工具压缩js</p>
+<p>其次，css压缩工具压缩css</p>
+<a id="more"></a>
+<p>然后，合并多个js和css</p>
+<p>最后，压缩和优化图片，进行覆盖</p>
+<p>对于多个文件还需要重复以上操作…</p>
+<p>如果我说上述工作只需要一两行命令就能完成，你相信吗？或许你不信，但却真的可以做到，是的，那就是grunt，它可以帮助我们完成自动化构建工程。具体如何使用呢？请看下文：</p>
+<h2 id="第一步："><a href="#第一步：" class="headerlink" title="第一步："></a>第一步：</h2><p>因为grunt是基于nodejs环境运行的，所以需要先下载nodejs，进入<a href="http://nodejs.org/download/" target="_blank" rel="noopener">http://nodejs.org/download/</a> 选择对应系统的nodejs安装包，然后打开命令编辑器（cmd），输入：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install -g grunt-cli</span><br></pre></td></tr></table></figure>
+<p>安装完成之后，你会看到这么个界面：</p>
+<img src="/2015/01/28/grunt/grunt01.jpg" title="grunt01">
+<p>你也可以输入这么一行代码，测试是否安装成功：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">grunt -versions</span><br></pre></td></tr></table></figure>
+<p>如果安装成功，则可以看到grunt的版本号，如下界面：</p>
+<img src="/2015/01/28/grunt/grunt02.jpg" title="grunt02">
+<p>如果之前安装过grunt，你需要卸载它，则可以输入：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm uninstall -g grunt</span><br></pre></td></tr></table></figure>
+<h2 id="第二步："><a href="#第二步：" class="headerlink" title="第二步："></a>第二步：</h2><p>在安装node的根目录新建一个文件，文件名为package.json。打开package.json，加入如下代码，这些代码是官网给出的</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"my-project-name"</span>,</span><br><span class="line">  <span class="string">"version"</span>: <span class="string">"0.1.0"</span>,</span><br><span class="line">  <span class="string">"author"</span>: <span class="string">"Your Name"</span>,</span><br><span class="line">  <span class="string">"devDependencies"</span>: &#123;</span><br><span class="line">    <span class="string">"grunt"</span>: <span class="string">"~0.4.5"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好了，现在开始我们的第一个任务，压缩js文件，既然要有压缩js文件的功能，就必须安装相应的插件，于是我们来到官网需找插件。</p>
+<h2 id="第三步："><a href="#第三步：" class="headerlink" title="第三步："></a>第三步：</h2><p>打开官网 <a href="http://gruntjs.com/plugins" target="_blank" rel="noopener">http://gruntjs.com/plugins</a> ，找到相应的压缩js的插件</p>
+<img src="/2015/01/28/grunt/grunt03.jpg" title="grunt03">
+<p>进入到相应页面：<a href="https://www.npmjs.com/package/grunt-contrib-uglify" target="_blank" rel="noopener">https://www.npmjs.com/package/grunt-contrib-uglify</a></p>
+<p>插件的版本号可以在这个页面右侧栏看到，其中右侧栏还包含了发布作者的信息、github地址以及相关证书。增加完之后，我们回到命令编辑器，输入对应的工程目录。假设我的node目录为：F:\node , 项目路径为：F:\test。</p>
+<p>因为我们在命令编辑器中操作的是grunt，所以需要找到对应的路径，在命令编辑器中：</p>
+<p>先输入 f:</p>
+<p>回车，输入 cd node</p>
+<p>回车，再输入</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install runt-contrib-uglify</span><br></pre></td></tr></table></figure>
+<p>插件安装完成后，我们就会看到这样一个界面：</p>
+<img src="/2015/01/28/grunt/grunt04.jpg" title="grunt04">
+<p>在命令编辑器可以看到插件的信息（版本号0.7.0），于此同时，你也会发现在node_modules文件夹下多了grunt-contrib-uglify插件的文件。</p>
+<p>然后我们需要在package.json这个配置文件里面增加相应插件的代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"my-project-name"</span>,</span><br><span class="line">  <span class="string">"version"</span>: <span class="string">"0.1.0"</span>,</span><br><span class="line">  <span class="string">"author"</span>: <span class="string">"Your Name"</span>,</span><br><span class="line">  <span class="string">"devDependencies"</span>: &#123;</span><br><span class="line">    <span class="string">"grunt"</span>: <span class="string">"~0.4.5"</span>,</span><br><span class="line">    <span class="string">"grunt-contrib-uglify"</span>: <span class="string">"~0.7.0"</span> <span class="comment">// 新增代码  “插件名称” : “~版本号” </span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="第四步："><a href="#第四步：" class="headerlink" title="第四步："></a>第四步：</h2><p>然后再在node根目录新建Gruntfile.js，这个js文件的功能是将工程中需要处理的文件与package.json结合起来，并且通过控制对应的插件去设置需要处理的文件，以及处理后的文件目录或输出文件名，Gruntfile.js的基本代码如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">grunt</span>) </span>&#123;</span><br><span class="line">    grunt.initConfig(&#123;</span><br><span class="line">      pkg: grunt.file.readJSON(<span class="string">'package.json'</span>), <span class="comment">// 将js与json文件关联在一起</span></span><br><span class="line">      uglify : &#123;</span><br><span class="line">        options :&#123;  <span class="comment">// 可选</span></span><br><span class="line">            separates : <span class="string">""</span></span><br><span class="line">        &#125;,</span><br><span class="line">        min: &#123;</span><br><span class="line">            expand : <span class="literal">true</span>,</span><br><span class="line">            cwd    : <span class="string">'../test'</span>,</span><br><span class="line">            src    : [<span class="string">'*/*.js'</span>],</span><br><span class="line">            dest   : <span class="string">'../test'</span>,</span><br><span class="line">            ext    : <span class="string">'.min.js'</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 从node目录加载压缩js文件的插件</span></span><br><span class="line">    grunt.loadNpmTasks(<span class="string">'grunt-contrib-uglify'</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 执行对应的grunt任务</span></span><br><span class="line">    grunt.registerTask(<span class="string">'default'</span>, [<span class="string">'uglify:min'</span>]);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>以上代码的功能是将test文件下所有目录中的js文件全部压缩。</p>
+<p>例如test文件下有一个a文件夹，a中有base.js 。则上面的代码在执行完grunt命令后会在a中增加一个base.min.js，这个文件就是a.js的压缩版。</p>
+<p>如果你只是想把对应的文件压缩，不想新增.min.js文件。可把ext的值设为：’.js’ 。</p>
+<p>uglify 中的 options 是可选的。在合并多个js文件时非常有用，为什么呢？请看下面的问题：</p>
+<p>我在测试合并插件（grunt-contrib-concat）的时候，由于js文件中存在末尾没有加分号的语句，那么就会出现以下问题。假设合并的文件分别为a.js 和 b.js：</p>
+<p>a.js 中：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">…</span><br><span class="line"><span class="keyword">var</span> getStyle = <span class="function"><span class="keyword">function</span>(<span class="params">ele,attr</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ele.currentStyle ? ele.currentStyle[attr] : getComputedStyle(ele,<span class="literal">false</span>)[attr];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>b.js 中：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"> …</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+<p>那么，当合并完成，b.js里的自调用匿名函数的第一对括号会当做函数调用，此时就会导致错误。这也是为什么有些人会在写自调用匿名函数时，会在前后都加上分号，目的就是为了防止以上错误。</p>
+<p>而在grunt中，我们便可以把separates 的值设为 ‘;’ 用于链接各个js文件。这样也能避免js错误。</p>
+<p><strong>设置参数解释：</strong></p>
+<p>expand : 为true时，用*代替的文件名处理完输出后也为其具体名<br>cwd : 需要处理文件的共同目录，或者说根目录（父目录）<br>src : 需要处理的单独文件 ，即对于的子目录。它的值为一个数组<br>dest : 处理完文件的存放目录<br>ext : 处理完文件的后缀名</p>
+<h2 id="第五步："><a href="#第五步：" class="headerlink" title="第五步："></a>第五步：</h2><p>最后，我们需要执行grunt命令。回到命令编辑器，输入：grunt</p>
+<p>当grunt命令执行完后，会看到这么一个界面：</p>
+<img src="/2015/01/28/grunt/grunt05.jpg" title="grunt05">
+<p>这样，我们就完成了js文件压缩。打开每个文件夹，都可看到新生成且后缀名为 .min.js 的文件。</p>
+<p>如果你还想要用grunt合并css文件、压缩图片或者其他功能，可以重复第三、四、五步骤。</p>
+<p>倘若你不想每次在新增插件的时候，都像下面这样手动添加载入插件的代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">grunt.loadNpmTasks(<span class="string">'grunt-contrib-uglify'</span>); <span class="comment">// 加载js压缩插件</span></span><br><span class="line">grunt.loadNpmTasks(<span class="string">'grunt-contrib-cssmin'</span>); <span class="comment">// 加载css压缩插件</span></span><br><span class="line">grunt.loadNpmTasks(<span class="string">'grunt-contrib-concat'</span>) ; <span class="comment">// 加载文件合并插件</span></span><br></pre></td></tr></table></figure>
+<p>那么你可以安装 load-grunt-tasks插件，然后在Gruntfile.js加入以下代码，它的功能与上面代码等价。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 加载在package.json声明的全部插件</span></span><br><span class="line"><span class="built_in">require</span>(<span class="string">'load-grunt-tasks'</span>)(grunt);</span><br></pre></td></tr></table></figure>
+<p>目前我用到的主要有以下几个插件：</p>
+<p><strong>grunt-contrib-uglify</strong></p>
+<p>压缩js文件，上文有介绍。</p>
+<p><strong>grunt-contrib-cssmin</strong> </p>
+<p>压缩css文件，用法与压缩js的插件类似。</p>
+<p><strong>grunt-contrib-concat</strong> </p>
+<p>合并多个文件，Gruntfile中只需要设置src和des，即：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">concat   : &#123;</span><br><span class="line">    options :&#123;  <span class="comment">// 可选</span></span><br><span class="line">        separates : <span class="string">""</span></span><br><span class="line">    &#125;,</span><br><span class="line">    css : &#123;</span><br><span class="line">        src    : [<span class="string">'../test/a/*.css'</span>,<span class="string">'../test/b/*.css'</span>],</span><br><span class="line">        dest   : <span class="string">'../test/all.css'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>grunt-contrib-imagemin</strong></p>
+<p>压缩图片，这个插件会对指定文件里的图片进行压缩，你不能设置输出的名称，因为它是直接对图片本身进行压缩。对于不同格式的图片，只需要把src的值图片的后缀名变为 .{jpg,png,gif} 即可。</p>
+<p>关于grunt的内容就暂时介绍这么多，如果你想了解更多，请访问它的官网 <a href="http://gruntjs.com" target="_blank" rel="noopener">http://gruntjs.com</a> 。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

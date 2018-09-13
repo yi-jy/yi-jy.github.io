@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="Css3与loading动画 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css3 loading动画">
+  
+
+  
+
+  <title>Css3与loading动画 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">Css3与loading动画</h1>
+
+  <time class="post-time">2014-06-22</time>
+
+  <div class="post-content">
+    <p>作为页面数据加载的符号，loading图标可谓深入人心。由于新技术的推进，我们或许早已厌倦图片形式的loading，取而代之的是想要用代码去实现之。由于我目前服务的公司对于一些现代浏览器技术的应用比较保守，虽然大部分营销活动都有在使用，但是一些重要的页面还是比较谨慎，有时候加班只是为了用图片去覆盖一些css3属性，o(╯□╰)o。</p>
+<p>本文主要讲的是如何使用css3代码、无图地实现各种常见的loading，旨在阐述思路。对于一些复杂的loading动画，可能需要其他方法或加深拓展。好了，开始进入正文：</p>
+<a id="more"></a>
+<p>一般而言，loading动画主要分为两大类，第一种是圆形或者环形，另一种则是条形，这两种又分别为静态动画和动态动画。如你所知，静态动画指的是图标所有动画帧周而复始的播放，这种动画与数据加载多少无关。而动态动画则是根据网页数据加载的百分比来显示当前进度。那么，我们现在就来分析下这两种常见的loading动画以及它们的动画形式。</p>
+<h2 id="条形loading"><a href="#条形loading" class="headerlink" title="条形loading"></a>条形loading</h2><p>首先我例举了两种条形loading动画以及一种动态的loading动画，如下图，然后接下来我们大体说下如何用代码来实践它们：</p>
+<img src="/2014/06/22/css3-loading/bar01.gif" title="条形加载1">
+<img src="/2014/06/22/css3-loading/bar02.gif" title="条形加载2">
+<img src="/2014/06/22/css3-loading/bar-move.gif" title="条形加载3">
+<h3 id="条形loading一"><a href="#条形loading一" class="headerlink" title="条形loading一"></a>条形loading一</h3><p>条形loading一中一共有个10个圆，四种状态。每个圆经历的状态分别是首先透明度为1、扩大1.6倍，然后透明度为0.95、扩大1.4倍，接着透明度为0.85、扩大1.2倍，最后变成默认状态即透明度为0.5、不扩大倍数。每个圆依次间隔  周期/圆个数 个单位时间（即animation延迟时间）执行动画。可参见 <a href="/2014/06/22/css3-loading/bar01.html" title="demo">demo</a></p>
+<h3 id="条形loading二"><a href="#条形loading二" class="headerlink" title="条形loading二"></a>条形loading二</h3><p>第二个条形动画主要是用元素的background-gradient和background-size属性，这里动画改变的是background-position值，需要注意的是，background-size和background-position的值需要相同，否则会导致动画循环时不顺畅。可参见 <a href="/2014/06/22/css3-loading/bar02.html" title="demo">demo</a></p>
+<h3 id="条形loading三"><a href="#条形loading三" class="headerlink" title="条形loading三"></a>条形loading三</h3><p>条形动画三是动态的loading动画，它是根据当前网页数据加载了多少来显示进度条，通常是结合ajax来设置进度条的width属性，当然这里的demo只是一个模拟，使用的是假的数据载入。可参见 <a href="/2014/06/22/css3-loading/bar03.html" title="demo">demo</a></p>
+<h2 id="圆形loading"><a href="#圆形loading" class="headerlink" title="圆形loading"></a>圆形loading</h2><p>关于圆形loading动画，我这里例举了四种圆形loading动画以及一种动态的loading动画，下图可见，代码实践往下看：</p>
+<img src="/2014/06/22/css3-loading/circle01.gif" title="圆形加载1">
+<img src="/2014/06/22/css3-loading/circle02.gif" title="圆形加载2">
+<img src="/2014/06/22/css3-loading/circle03.gif" title="圆形加载3">
+<img src="/2014/06/22/css3-loading/circle04.gif" title="圆形加载4">
+<img src="/2014/06/22/css3-loading/circle-move.gif" title="圆形加载5">
+<h3 id="圆形loading一"><a href="#圆形loading一" class="headerlink" title="圆形loading一"></a>圆形loading一</h3><p>圆形loading一是两个同心圆，然后设置外圆的转动。可参见 <a href="/2014/06/22/css3-loading/circle01.html" title="demo">demo</a></p>
+<h3 id="圆形loading二"><a href="#圆形loading二" class="headerlink" title="圆形loading二"></a>圆形loading二</h3><p>这个圆形loading动画类似单摆，需要注意的是蓝色圆运动了大于50%周期是在黑色圆后面绕回，因此蓝色圆要在50%时改变其z-index。但是动画改变z-index是一个逐渐的过程，比如我们在50%设置z-indx为-1，而在100%设置为1的做法显然是行不通，因为50%-100%的过程也是z-index的值由-1变为1的过程，所以z-index的改变要在相邻动画帧。可参见 <a href="/2014/06/22/css3-loading/circle02.html" title="demo">demo</a></p>
+<h3 id="圆形loading三"><a href="#圆形loading三" class="headerlink" title="圆形loading三"></a>圆形loading三</h3><p>圆形loading三需要使用圆角属性来实现箭头主体的弯度，再用元素的两个边框结合旋转（rotate）属性来完成箭头部分。最后设置父级元素360deg动画。可参见 <a href="/2014/06/22/css3-loading/circle03.html" title="demo">demo</a></p>
+<h3 id="圆形loading四"><a href="#圆形loading四" class="headerlink" title="圆形loading四"></a>圆形loading四</h3><p>这个动画的原理和条形一类似，都是依次改变每个圆的大小（scale）和透明度。如果每个x小圆不好定位的话，可以先用作图软件绘制默认状态下的圆，这样很容易得到每个圆的坐标。可参见 <a href="/2014/06/22/css3-loading/circle04.html" title="demo">demo</a></p>
+<h3 id="圆形loading五"><a href="#圆形loading五" class="headerlink" title="圆形loading五"></a>圆形loading五</h3><p>最后一个圆形loading动画也是动态的显示百分比，首先是利用边框和圆角制作左右两个半圆，先用层覆盖左半圆，同时右半圆不显示，然后开始顺时针转动左半圆，直到转动了180deg（50%）时，隐藏左半圆的覆盖层，同时显示右半圆。可参见 <a href="/2014/06/22/css3-loading/circle05-move.html" title="demo">demo</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="css 优先级 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css优先级 css权重 !important">
+  
+
+  
+
+  <title>css 优先级 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">css 优先级</h1>
+
+  <time class="post-time">2013-01-09</time>
+
+  <div class="post-content">
+    <p>关于CSS的优先级，面试的时候用到最多。这是css排版必须掌握，也是很多网页前端开发人员比较容易忽视的知识点。下面，这篇文章将详细说说CSS的优先级情况，看看它们到底有什么规律：</p>
+<a id="more"></a>
+<h3 id="第一：CSS存放位置的优先级规律"><a href="#第一：CSS存放位置的优先级规律" class="headerlink" title="第一：CSS存放位置的优先级规律"></a>第一：CSS存放位置的优先级规律</h3><p>标签内嵌样式 &gt; 页面内部样式表 &gt; 外联样式表</p>
+<p>这里有一点要注意：“页面内部样式表”  的位置一定要比“ 外联样式表”  离定义样式标签的距离近，否则“外联样式表”的优先级会比 “页面内容样式表”的高。所以这条规律总结是离标签内容最近的样式才具有最高的权重性。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"yx.css"</span> <span class="attr">type</span>=<span class="string">"text/css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span>/&gt;</span> （这里外联样式为：#test p.pra&#123;color:red;&#125;）  <span class="tag">&lt;<span class="name">!–页面内部样式表–</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#test</span> <span class="selector-tag">p</span><span class="selector-class">.pra</span>&#123;<span class="attribute">color</span>:green;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span> <span class="tag">&lt;<span class="name">!–外联样式表–</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"test"</span> <span class="attr">class</span>=<span class="string">"test"</span> &gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">"pra"</span> <span class="attr">style</span>=<span class="string">"color:yellow;color:#C09;"</span>&gt;</span>这是一段文字！<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">!–标签内嵌样式–</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>通过前面所说的规律，我们可知 标签的字体颜色最终为  <code>color:#C09;</code></p>
+<h3 id="第二：样式选择器规律"><a href="#第二：样式选择器规律" class="headerlink" title="第二：样式选择器规律"></a>第二：样式选择器规律</h3><p>important的权重为1,0,0,0</p>
+<p>ID的权重为0,1,0,0</p>
+<p>类的权重为0,0,1,0</p>
+<p>标签的权重为0,0,0,1</p>
+<p>伪类的权重，属性的权重为0,0,1,0</p>
+<p>伪对象的权重为0,0,0,1</p>
+<p>通配符的权重为0,0,0,0</p>
+<p>每一个选择器都有一个对应的数值，通过上面的数据我们知道important的权重型最高为1000，通配符的权重型最低为0；在对各样式计算权重数值时，我们有如下方法：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#test</span> <span class="selector-tag">p</span><span class="selector-class">.pra</span>&#123;<span class="attribute">color</span>:green<span class="meta">!important</span>;&#125;   <span class="comment">/*权重为100+1+10+1000=1111*/</span></span><br><span class="line"></span><br><span class="line"><span class="selector-id">#test</span> <span class="selector-tag">p</span><span class="selector-class">.pra</span>&#123;<span class="attribute">color</span>:green;&#125;   <span class="comment">/*权重为100+1+10=111*/</span></span><br></pre></td></tr></table></figure>
+<p>等依次类推……</p>
+<h3 id="第三：当样式选择器规律-遇到-css存放位置的优先级规律-时"><a href="#第三：当样式选择器规律-遇到-css存放位置的优先级规律-时" class="headerlink" title="第三：当样式选择器规律 遇到 css存放位置的优先级规律 时"></a>第三：当样式选择器规律 遇到 css存放位置的优先级规律 时</h3><p>假如有如下代码：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"yx.css"</span> <span class="attr">type</span>=<span class="string">"text/css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span>/&gt;</span>（这里外联样式为：#test p.pra&#123;color:red!important;&#125;）</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#test</span> <span class="selector-tag">p</span><span class="selector-class">.pra</span>&#123;<span class="attribute">color</span>:green<span class="meta">!important</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"test"</span> <span class="attr">class</span>=<span class="string">"test"</span> &gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">"pra"</span> <span class="attr">style</span>=<span class="string">"color:yellow;"</span>&gt;</span>这是一段文字！<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>那么，请问这里颜色什么？ 通过浏览器测试，标签的字体颜色最终为 color:green ；所以，我们可以知道，当样式选择器规律 遇到 css存放位置的优先级规律 时，它会视而不见，继续走下去。所以，我们在衡量样式的优先级时，要先依照样式选择器规律，再去考虑css存放位置的优先级规律。</p>
+<p>最后献上ie6的奇葩反应：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"yx.css"</span> <span class="attr">type</span>=<span class="string">"text/css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span>/&gt;</span>（这里外联样式为：#test p.pra&#123;color:red!important;&#125;）</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#test</span> <span class="selector-tag">p</span><span class="selector-class">.pra</span>&#123;<span class="attribute">color</span>:green<span class="meta">!important</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"test"</span> &gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">style</span>=<span class="string">"color:yellow!important;color:#000"</span>&gt;</span>这是一段文字！<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>你猜在ie6和别的浏览器有什么区别？ ie6 为color:green  ，别的浏览器为color:yellow。不解释！</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

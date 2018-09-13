@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+body{font-size:12px;}
+#drag_box{float:left;width:100px;height:100px;text-align:center;line-height:100px;background:#ccc;}
+#target_box{width:200px;height:200px;background:#ccc;margin-left:150px;line-height:200px;text-align:center;background:#ccc;}
+</style>
+</head>
+
+<body>
+<h2>元素拖放，数据交换</h2>
+<div id="drag_box" draggable="true"></div>
+<div id="target_box"></div>
+</body>
+</html>
+
+<script type="text/javascript">
+(function(){
+    function $(id){
+        return document.getElementById(id);
+    }
+    var oDrag=$("drag_box"),oTarget=$("target_box");
+    oDrag.ondragstart=function(ev){
+        this.innerHTML="拖拽开始";
+   　　　ev.dataTransfer.setData("Text",ev.target.id);  //若不设置ev.dataTransfer.setData，则在firefox中无效 
+  　}
+  	oDrag.ondrag=function(){
+        this.innerHTML="拖拽中...";
+		
+    }
+    oDrag.ondragend=function(){
+        this.innerHTML="拖拽结束";
+    }    
+    oTarget.ondragenter=function(){
+        this.style.background="#F60";
+		this.innerHTML="进入了目标元素";
+    }
+    oTarget.ondragover=function(ev){
+        
+        ev.preventDefault(); //在这个过程一定，要加阻止默认事件，否则不能触发drop
+    }
+    oTarget.ondragleave=function(){
+        this.innerHTML="离开了目标元素";
+        this.style.background="#ccc"
+    }
+    oTarget.ondrop=function(ev){
+        this.innerHTML="在目标元素里释放了！";
+		ev.preventDefault(); // 阻止firefox打开新链接
+    }
+})(); 
+</script>

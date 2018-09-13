@@ -1,0 +1,257 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+*{margin:0;padding:0;}
+.demo{position: relative;padding:30px;}
+.demo-row{padding-bottom:30px;zoom:1;font-family:"microsoft yahei";}
+.demo-row:after,.demo-row-con:after{content:'';display:block;height:0;clear:both;}
+.demo-row-tit{margin-bottom:30px;font:16px/30px "microsoft yahei";}
+.demo-row-tit span{margin-right:5px;color:#F30;font-size:20px;}
+.demo-row-con{position:relative;}
+.demo-row-con .line{position:absolute;left:0;top:50%;z-index:10000;width:100%;height:1px;text-align:right;font-size:12px;color:#666;background:#ccc;}
+.demo-row-3d{-webkit-perspective:500px;perspective:500px;}
+.demo-row-3d .demo-row-con{-webkit-transform-style:preserve-3d;transform-style:preserve-3d;}
+.box{float:left;width:80px;height:80px;margin-right:100px;padding:10px;color:#fff;font-size:12px;line-height:18px;word-break:break-all;-wekit-transition:0.5s all;transition:0.5s all;background:green;}
+.box1{-webkit-transform:scale(1);transform:scale(1);}
+.box2{-webkit-transform:scale(1.2);transform:scale(1.2);}
+.box3{-webkit-transform:scale(0.8);transform:scale(0.8);}
+.box4{-webkit-transform:scale(1,1);transform:scale(1,1);}
+.box5{-webkit-transform:scaleX(1.2);transform:scaleX(1.2);}
+.box6{-webkit-transform:scaleY(1.2);transform:scaleY(1.2);}
+
+.box-move01-02-03{-webkit-animation:box-move01-02-03 5s 0s linear infinite;animation:box-move01-02-03 5s 0s linear infinite;}
+
+@-webkit-keyframes box-move01-02-03{
+    0%{
+      -webkit-transform:scale(1);
+    }
+    30%{
+      -webkit-transform:scale(1.2);
+    }
+    70%{
+      -webkit-transform:scale(0.8);
+    }
+    100%{
+      -webkit-transform:scale(0.8);
+    }
+  }
+
+@keyframes box-move01-02-03{
+    0%{
+      transform:scale(1);
+    }
+    30%{
+      transform:scale(1.2);
+    }
+    70%{
+      transform:scale(0.8);
+    }
+    100%{
+      transform:scale(0.8);
+    }
+  }
+
+.box-move04-05{-webkit-animation:box-move04-05 2s 0s linear infinite;animation:box-move04-05 2s 0s linear infinite;}
+
+@-webkit-keyframes box-move04-05{
+    0%{
+      -webkit-transform:scaleX(1);
+    }
+    50%{
+      -webkit-transform:scaleX(1.2);
+    }
+    100%{
+      -webkit-transform:scaleX(1.2);
+    }
+  }
+
+@keyframes box-move04-05{
+    0%{
+      transform:scaleX(1);
+    }
+    50%{
+      transform:scaleX(1.2);
+    }
+    100%{
+      transform:scaleX(1.2);
+    }
+  }
+
+.box-move04-06{-webkit-animation:box-move04-06 2s 0s linear infinite;animation:box-move04-06 2s 0s linear infinite;}
+
+@-webkit-keyframes box-move04-06{
+    0%{
+      -webkit-transform:scaleY(1);
+    }
+    50%{
+      -webkit-transform:scaleY(1.2);
+    }
+    100%{
+      -webkit-transform:scaleY(1.2);
+    }
+  }
+
+@keyframes box-move04-06{
+    0%{
+      transform:scaleY(1);
+    }
+    50%{
+      transform:scaleY(1.2);
+    }
+    100%{
+      transform:scaleY(1.2);
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="demo">
+  <div class="demo-row">
+        <h3 class="demo-row-tit"><span>1-1(2d).</span>scale(num)---以中心点缩放，x轴和y轴（即宽和长）同时放大（或缩小）num倍。在无3d透视的情况效果如下。</h3>
+        <div class="demo-row-con">
+            <div class="box box1">
+                scale(1)
+                正常
+            </div>
+
+            <div class="box box2">
+                scale(1.2)
+                放大20%
+            </div>
+
+            <div class="box box3">
+                scale(0.8)
+                缩小20%
+            </div>
+
+            <div class="box box-move01-02-03">
+                实例变化过程
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+    <div class="demo-row demo-row-3d">
+       <h3 class="demo-row-tit"><span>1-2(3d).</span>scale(num)---以中心点缩放，x轴和y轴（即宽和长）同时放大（或缩小）num倍。在有3d透视的情况如下，可见与无3d透视时表现一致。</h3>
+        <div class="demo-row-con">
+            <div class="box box1">
+                scale(1)
+                正常
+            </div>
+
+            <div class="box box2">
+                scale(1.2)
+                放大20%
+            </div>
+
+            <div class="box box3">
+                scale(0.8)
+                缩小20%
+            </div>
+
+            <div class="box box-move01-02-03">
+                实例变化过程
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+    <div class="demo-row">
+        <h3 class="demo-row-tit"><span>2-1(2d).</span>scaleX(numx)---以中心点缩放，x轴(宽)放大（缩小）。在无3d透视的情况效果如下。</h3>
+        <div class="demo-row-con">
+            <div class="box box4">
+                scale(1,1)
+                正常
+            </div>
+
+            <div class="box box5">
+                scaleX(1.2)
+                x轴放大20%
+                或者<br/>
+                scale3d(1.2,1,1)
+            </div>
+
+            <div class="box box-move04-05">
+                实例变化过程
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+    <div class="demo-row demo-row-3d">
+       <h3 class="demo-row-tit"><span>2-2(3d).</span>scaleX(numx)---以中心点缩放，x轴(宽)放大（缩小）numx倍。在有3d透视的情况如下，可见与无3d透视时表现一致。</h3>
+        <div class="demo-row-con">
+            <div class="box box4">
+                scale(1,1)
+                正常
+            </div>
+
+            <div class="box box5">
+                scaleX(1.2)
+                x轴放大20%
+                或者<br/>
+                scale3d(1.2,1,1)
+            </div>
+
+            <div class="box box-move04-05">
+                实例变化过程
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+
+    <div class="demo-row">
+        <h3 class="demo-row-tit"><span>3-1(2d).</span>scaleY(numy)---以中心点缩放，y轴（长）放大（或缩小）numy倍。在无3d透视的情况效果如下，</h3>
+        <div class="demo-row-con">
+            <div class="box box4">
+                scale(1,1)
+                正常
+            </div>
+
+            <div class="box box6">
+                scaleY(1.2)
+                y轴放大20%
+                或者<br/>
+                scale3d(1,1.2,1)
+            </div>
+
+            <div class="box box-move04-06">
+                实例变化过程
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+    <div class="demo-row demo-row-3d">
+       <h3 class="demo-row-tit"><span>3-2(3d).</span>scaleY(numy)---以中心点缩放，y轴（长）放大（或缩小）numy倍。在有3d透视的情况如下，可见与无3d透视时表现一致。</h3>
+        <div class="demo-row-con">
+            <div class="box box4">
+                scale(1,1)
+                正常
+            </div>
+
+            <div class="box box6">
+                scaleY(1.2)
+                y轴放大20%
+                或者<br/>
+                scale3d(1,1.2,1)
+            </div>
+
+            <div class="box box-move04-06">
+                实例变化过程
+            </div>
+            <b class="line">中心线</b>
+        </div>
+    </div>
+
+
+</div>
+
+</body>
+</html>

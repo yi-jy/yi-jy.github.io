@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+@font-face {font-family: "myfont";
+  src: url('myfont.eot'); /* IE9*/
+  src: url('myfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('myfont.woff') format('woff'), /* chrome、firefox */
+  url('myfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+  url('myfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+
+.myIconfont {
+  font-family:"myfont" !important;
+  font-size:60px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;/* 防止字体图标在safair或chrome浏览器下被加粗 */
+  -webkit-text-stroke-width: 0.2px; /* 防止字体图标在pc端的chrome浏览器下出现严重的锯齿； */
+  -moz-osx-font-smoothing: grayscale; /* 防止字体图标在pc端的firefox浏览器下出现严重的锯齿； */
+}
+
+.icon-box .myIconfont{float:left;width:100px;line-height:100px;text-align:center;}
+.myIconfont:hover{font-size:100px;-webkit-transition: font-size 0.25s ease-out 0s;transition: font-size 0.25s ease-out 0s;}
+.myIconfont01{color:#903;}
+.myIconfont02{color:#660;}
+.myIconfont03{color:#F60;}
+.myIconfont04{color:#390;}
+.myIconfont05{color:#F6F;}
+.myIconfont06:after{content:attr(data-after);}
+</style>
+</head>
+
+<body>
+
+<div class="icon-box">
+  <span class="myIconfont myIconfont01">&#xe001;</span>
+    <span class="myIconfont myIconfont02">&#xe002;</span>
+    <span class="myIconfont myIconfont03">&#xe003;</span>
+    <span class="myIconfont myIconfont04">&#xe004;</span>
+    <span class="myIconfont myIconfont05">&#xe005;</span>
+    <span class="myIconfont myIconfont06" data-after="&#xe005"></span>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>地图数据</title>
+<link rel="stylesheet" href="jquery-jvectormap-2.0.2.css">
+<style type="text/css">
+*{margin:0;padding:0;}
+.map{position:relative;width:960px;margin-left:auto;margin-right:auto;}
+.map-container{width:800px;height:600px;}
+.map-data-show{position: absolute;left:700px;top:300px;display:none;width:200px;padding:20px;border-radius:5px;color:#fff;background: #333;}
+.map-data-show .region-name{text-align: center;font:16px/30px "microsoft yahei";}
+.map-data-show p{padding-top:10px;}
+</style>
+</head>
+
+<body>
+
+<div class="map">
+  <div class="map-container"></div>
+  <div class="map-data-show">
+    <h3 class="region-name"></h3>
+    <p class="region-data"></p>
+  </div>
+</div>
+
+
+
+</body>
+</html>
+
+<script type="text/javascript" src="jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="jquery-jvectormap-2.0.2.min.js"></script>
+<script type="text/javascript" src="jquery-jvectormap-china.js"></script>
+<script type="text/javascript">
+$(function(){
+  var $mapDataShow = $(".map-data-show"),
+    $regionName = $(".map-data-show .region-name"),
+    $regionData = $(".map-data-show .region-data"),
+    showTimer = null;
+
+  var mapdata = [
+        { id: "CN-54", province: "西藏" , data : "Xizang"},
+        { id: "CN-52", province: "贵州" , data : "Guizhou"},
+        { id: "CN-35", province: "福建" , data : "Fujian"},
+        { id: "CN-50", province: "重庆" , data : "Chongqing"},
+        { id: "CN-51", province: "四川" , data : "Sichuan"},
+        { id: "CN-31", province: "上海" , data : "Shanghai"},
+        { id: "CN-32", province: "江苏" , data : "Jiangsu"},
+        { id: "CN-33", province: "浙江" , data : "Zhejiang"},
+        { id: "CN-14", province: "山西" , data : "Shanxi"},
+        { id: "CN-15", province: "内蒙古" , data : "Inner Mongol"},
+        { id: "CN-12", province: "天津" , data : "Tianjin"},
+        { id: "CN-13", province: "河北" , data : "Hebei"},
+        { id: "CN-11", province: "北京" , data : "Beijing"},
+        { id: "CN-34", province: "安徽" , data : "Anhui"},
+        { id: "CN-53", province: "云南" , data : "Yunnan"},
+        { id: "CN-36", province: "江西" , data : "Jiangxi"},
+        { id: "CN-37", province: "山东" , data : "Shandong"},
+        { id: "CN-41", province: "河南" , data : "Henan"},
+        { id: "CN-43", province: "湖南" , data : "Hunan"},
+        { id: "CN-42", province: "湖北" , data : "Hubei"},
+        { id: "CN-45", province: "广西" , data : "Guangxi"},
+        { id: "CN-44", province: "广东" , data : "Guangdong"},
+        { id: "CN-46", province: "海南" , data : "Hainan"},
+        { id: "CN-65", province: "新疆" , data : "Xinjiang"},
+        { id: "CN-64", province: "宁夏" , data : "Ningxia"},
+        { id: "CN-63", province: "青海" , data : "Qinghai"},
+        { id: "CN-62", province: "甘肃" , data : "Gansu"},
+        { id: "CN-61", province: "山西" , data : "Shaanxi"},
+        { id: "CN-23", province: "黑龙江" , data : "Heilongjiang"},
+        { id: "CN-22", province: "吉林" , data : "Jilin"},
+        { id: "CN-21", province: "辽宁" , data : "Liaoning"}
+    ];
+
+  $(".map-container").vectorMap({
+      map: "china",
+    backgroundColor: "#fff",
+      zoomOnScroll: false,
+      regionsSelectable : true,
+      regionsSelectableOne : true,
+      regionStyle: {
+            initial: {
+                fill: "#ccc"
+            },
+            hover: {
+                fill: "#333"
+            },
+            selected: {
+                fill: "#ff0000"
+            },
+            selectedHover:{
+
+            }
+        },
+      onRegionTipShow: function(e, el, code){
+        clearTimeout(showTimer);
+        showTimer = setTimeout(function(){
+          $mapDataShow.fadeIn("fast");
+        },400);
+        $.each(mapdata, function (i, items) {
+　　　　　　　　if (items.id === code) {
+　　　　　　　　　　$regionName.html(items.province);
+            $regionData.html(items.province + "的英文称呼：" + items.data);
+            el.html(items.province);
+　　　　　　　　}
+　　　　　　})
+      },
+      onRegionOver : function(e , code){
+        $mapDataShow.fadeOut("fast");
+      }
+  });
+})
+</script>

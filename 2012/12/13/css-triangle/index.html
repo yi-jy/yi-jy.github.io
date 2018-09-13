@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="关于三角形-css的几种写法 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="css三角形">
+  
+
+  
+
+  <title>关于三角形-css的几种写法 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">关于三角形-css的几种写法</h1>
+
+  <time class="post-time">2012-12-13</time>
+
+  <div class="post-content">
+    <p>网页中有很多符号图形，它们为页面增色不少。其中，最为常见要数三角形了。如果单纯的使用css来实现三角形，你会怎么做？下面的文章将介绍，如何使用css来制作三角形：</p>
+<a id="more"></a>
+<h3 id="方法一：◆-制作法"><a href="#方法一：◆-制作法" class="headerlink" title="方法一：◆  制作法"></a>方法一：◆  制作法</h3><p>重点：采用了两个标签内文字“◆”，并通过设置这个字符的颜色，字体，和行高，以及字符的字体大小，然后利用绝对定位的布局方法达到三角形的效果。</p>
+<p>注意点：“◆”必须使用同一字体，否则在各个浏览器的展现方式不一样。还有必须设置行高。但遗憾的是，尽管这种写法在很多浏览器都能达到我们想要的目的，可是ie6却不知为何会出现如效果图一三角形顶部多一像素的展现方式（这需有待研究…）。于是为达到浏览器的统一效果，我们只能对ie6进行hack处理。 最终我们看到是，效果图二：</p>
+<img src="/2012/12/13/css-triangle/arrow_c.jpg" title="css三角形-◆">
+<p>在上面的图中，上面的未对ie6做兼容处理，而下面的则对ie6做兼容处理了。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.arrow_01</span>&#123;<span class="attribute">width</span>:<span class="number">200px</span>;<span class="attribute">height</span>:<span class="number">100px</span>;<span class="attribute">background</span>:<span class="number">#ffffda</span>;<span class="attribute">border</span>:<span class="number">1px</span> solid <span class="number">#d1b07c</span>;<span class="attribute">margin</span>:<span class="number">20px</span> auto;<span class="attribute">position</span>:relative;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.arrow_01</span> <span class="selector-tag">span</span>,<span class="selector-class">.arrow_01</span> <span class="selector-tag">em</span>&#123;<span class="attribute">displaY</span>:block;<span class="attribute">width</span>:<span class="number">16px</span>;<span class="attribute">height</span>:<span class="number">16px</span>;<span class="attribute">position</span>:absolute;<span class="attribute">left</span>:<span class="number">30px</span>;<span class="attribute">font-family</span>:<span class="string">"SimSun"</span>;<span class="attribute">font-size</span>:<span class="number">16px</span>;<span class="attribute">line-height</span>:<span class="number">1</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.arrow_01</span> <span class="selector-tag">span</span>&#123;<span class="attribute">color</span>:<span class="number">#ffffda</span>;<span class="attribute">bottom</span>:-<span class="number">8px</span>;<span class="attribute">_bottom</span>:-<span class="number">9px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.arrow_01</span> <span class="selector-tag">em</span>&#123;<span class="attribute">color</span>:<span class="number">#d1b07c</span>;<span class="attribute">font-style</span>:normal;<span class="attribute">bottom</span>:-<span class="number">9px</span>;<span class="attribute">_bottom</span>:-<span class="number">10px</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"arrow_01"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">em</span>&gt;</span>◆<span class="tag">&lt;/<span class="name">em</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span>&gt;</span>◆<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="方法二：边框-制作法"><a href="#方法二：边框-制作法" class="headerlink" title="方法二：边框 制作法"></a>方法二：边框 制作法</h3><p>重点：利用某个标签的边框，并设置此元素的 width为0，height为0，line-height也为0 。然后只需要设置该标签三角的方向所在某一边框的颜色即可。见效果图：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.arrow_02</span>&#123;<span class="attribute">position</span>:relative;<span class="attribute">width</span>:<span class="number">100px</span>;<span class="attribute">margin</span>:<span class="number">0</span> auto;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.arrow_02</span> <span class="selector-tag">span</span>&#123;<span class="attribute">display</span>:block;<span class="attribute">width</span>:<span class="number">0</span>;<span class="attribute">height</span>:<span class="number">0</span>;<span class="attribute">line-height</span>:<span class="number">0px</span>;<span class="attribute">border</span>:<span class="number">5px</span> solid <span class="number">#fff</span>;<span class="attribute">border-right</span>:<span class="number">5px</span> solid green;<span class="attribute">position</span>:absolute;<span class="attribute">left</span>:-<span class="number">10px</span>;<span class="attribute">top</span>:<span class="number">10px</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"arrow_02"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<img src="/2012/12/13/css-triangle/arrow_g.jpg" title="css三角形-边框">
+<p>总结：由于三角形的此类效果比较美观，简洁。于是它已经被越来越多的网站所采用，ui的人员也总喜欢把它加入到他们所设计的页面中，我们平时切这种三角形，在大多数情况下，都是直接把三角形做成一个绝对定位标签的背景。而以上两种方法则为我们以后对于三角形制作的方向提供了相应的参考。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

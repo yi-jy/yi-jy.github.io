@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+.loading{position:relative;width:300px;height:20px;border-radius:10px;margin:100px auto;background:#C56B19;}
+.loading:before{position:absolute;top:3px;left:2%;content:"";width:0;height:14px;border-radius:5px;
+background:rgba(255,255,255,0.8);}
+
+.loading.move-loading:before{
+  width:96%;
+  -webkit-animation:bar02 6s 0s linear 1;
+  animation:bar02 6s 0s linear 1;
+}
+
+.tc{text-align:center;}
+
+@-webkit-keyframes bar02{
+  0% {
+       width:0;
+    }
+    100% {
+       width:96%;
+    }
+}
+@keyframes bar02{
+  0% {
+       width:0;
+    }
+    100% {
+       width:96%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="loading"></div>
+
+<p class="tc"><input type="button" value="点击载入" class="action" /></p>
+
+</body>
+</html>
+
+
+<script type="text/javascript">
+(function(){
+  var d=document,
+    oLoading=d.querySelector(".loading"),
+    action=d.querySelector(".action"),
+    i=0,
+    timer=null;
+
+  action.onclick=function(){
+    oLoading.className+=" move-loading";
+    this.value="载入中...";
+    timer=setInterval(function(){
+      i++;
+      if(i==6){
+        clearInterval(timer);
+        action.value="载入完成";
+        action.disabled=true;
+      }
+    },1000)
+  }
+})()
+</script>
+

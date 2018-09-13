@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="升级到 webpack4.x 所遇到的问题 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="webpack4.x">
+  
+
+  
+
+  <title>升级到 webpack4.x | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">升级到 webpack4.x</h1>
+
+  <time class="post-time">2018-04-22</time>
+
+  <div class="post-content">
+    <p>转眼间，时间来到了2018年的四月，webpack也在前不久发布了它的 4.0 版本，而在写这篇文章时，它的版本已然更新到 4.5 了。似乎永远也赶不上它们的脚步，果然，这世界上不变的，永远是变化。</p>
+<p>来看看 webpack4.x 有哪些变化。</p>
+<a id="more"></a>
+<h2 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h2><h3 id="webpack-amp-amp-webpack-cli"><a href="#webpack-amp-amp-webpack-cli" class="headerlink" title="webpack &amp;&amp; webpack-cli"></a>webpack &amp;&amp; webpack-cli</h3><p>貌似从 4.0 开始，webpack 拆分成 webpack 和 webpack-cli，如果只安装 webpack，会有报错提示：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">cnpm</span> <span class="selector-tag">i</span> <span class="selector-tag">-g</span> <span class="selector-tag">webpack</span>@<span class="keyword">4</span>.<span class="keyword">5</span>.<span class="keyword">0</span> webpack-cli</span><br></pre></td></tr></table></figure>
+<p>全局安装后，还要本地安装。否者，当你结合插件运行时，提示如下错误：</p>
+<figure class="highlight subunit"><table><tr><td class="code"><pre><span class="line">&gt; webpack-dev-server -o --mode development</span><br><span class="line"></span><br><span class="line">module.js:549</span><br><span class="line">    throw err;</span><br><span class="line">    ^</span><br><span class="line"></span><br><span class="line"><span class="keyword">Error: </span>Cannot find module 'webpack'</span><br></pre></td></tr></table></figure>
+<p>这说明需要本地安装 webpack。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">cnpm</span> <span class="selector-tag">i</span> <span class="selector-tag">-D</span> <span class="selector-tag">webpack</span>@<span class="keyword">4</span>.<span class="keyword">5</span>.<span class="keyword">0</span> webpack-cli</span><br></pre></td></tr></table></figure>
+<p>当使用 <code>npm i ...</code> 安装出现失败时，尝试着使用 <code>cnpm i ...</code></p>
+<h3 id="升级-node-和-npm-版本"><a href="#升级-node-和-npm-版本" class="headerlink" title="升级 node 和 npm 版本"></a>升级 node 和 npm 版本</h3><p>当尝试安装最新版本的webpack时，提示node版本过低，于是先升级，在写本篇文章时，node的LTS版本为 <code>8.11.1</code>：</p>
+<figure class="highlight crmsh"><table><tr><td class="code"><pre><span class="line">$ cnpm i webpack webpack-cli -D</span><br><span class="line"></span><br><span class="line">WARN <span class="keyword">node</span> <span class="title">unsupported</span> <span class="string">"node@v6.10.3"</span> is incompatible with webpack@*, expected <span class="keyword">node</span><span class="title">@&gt;=6</span>.<span class="number">11.5</span></span><br><span class="line"></span><br><span class="line">WARN <span class="keyword">node</span> <span class="title">unsupported</span> <span class="string">"node@v6.10.3"</span> is incompatible with webpack-cli@*, expected <span class="keyword">node</span><span class="title">@&gt;=6</span>.<span class="number">11.5</span></span><br><span class="line"></span><br><span class="line">WARN <span class="keyword">node</span> <span class="title">unsupported</span> <span class="string">"node@v6.10.3"</span> is incompatible with webpack@<span class="number">4.5</span>.<span class="number">0</span> › enhanced-resolve@^<span class="number">4.0</span>.<span class="number">0</span>, expected <span class="keyword">node</span><span class="title">@&gt;=6</span>.<span class="number">11.5</span></span><br></pre></td></tr></table></figure>
+<h3 id="无需配置入口和出口文件"><a href="#无需配置入口和出口文件" class="headerlink" title="无需配置入口和出口文件"></a>无需配置入口和出口文件</h3><p>由于在webpack4之前，需要手动指定入口文件和输出文件，这用起来还是比较麻烦。终于，在webpack4 中，当你未配置上述文件时，它会自动查找 <code>./src/index.js</code> 这个目录的文件，并且把它作为入口文件。同时，将 <code>./dist/main.js</code> 作为默认的输出文件。</p>
+<p>执行 <code>npm run server</code> 命令后，将会在 <code>dist</code> 目录下生成 <code>main.js</code> 文件，该文件是未压缩的，并且它的代码是通过 <code>eval</code> 函数将源文件中 <code>index.js</code> 内容进行动态运行。</p>
+<p>而运行 <code>npm run build</code>，则在 <code>dist</code> 目录生成的 <code>main.js</code> 是压缩的，并且它的代码是一个自执行的匿名函数。</p>
+<h3 id="配置-mode-选项"><a href="#配置-mode-选项" class="headerlink" title="配置 mode 选项"></a>配置 mode 选项</h3><p>当运行 <code>npm run dev</code> 时，会出现如下错误：</p>
+<figure class="highlight oxygene"><table><tr><td class="code"><pre><span class="line">The <span class="string">'mode'</span> option <span class="keyword">has</span> <span class="keyword">not</span> been <span class="keyword">set</span>, webpack will fallback <span class="keyword">to</span> <span class="string">'production'</span> <span class="keyword">for</span> th         <span class="keyword">is</span> value. <span class="keyword">Set</span> <span class="string">'mode'</span> option <span class="keyword">to</span> <span class="string">'development'</span> <span class="keyword">or</span> <span class="string">'production'</span> <span class="keyword">to</span> enable defaults          <span class="keyword">for</span> <span class="keyword">each</span> environment.</span><br></pre></td></tr></table></figure>
+<p>从4.0开始，webpack 新增了 <code>mode</code> 配置，它包含 <code>development | production</code> 这两个值，对于不同的模式，webpack会采用对应的优化打包策略。</p>
+<p>如果不指定对应的 <code>mode</code>，则会出现上面的警告信息，并且将 <code>mode</code> 的值默认指定为 <code>production</code>，这也意味着，<code>process.env.NODE_ENV</code> 的值不用再单独定义了。为了根据环境灵活打包，我们得根据文档来进行一下配置，更新 package.json 如下：</p>
+<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line"><span class="comment">// package.json</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">  <span class="string">"test"</span>: <span class="string">"echo \"</span><span class="keyword">Error</span>: <span class="keyword">no</span> <span class="keyword">test</span> specified\<span class="string">" &amp;&amp; exit 1"</span>,</span><br><span class="line">  <span class="string">"dev"</span>: <span class="string">"webpack --mode development"</span>,</span><br><span class="line">  <span class="string">"build"</span>: <span class="string">"webpack --mode production"</span></span><br><span class="line">&#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>或者在 <code>webpack.config.js</code> 文件中，单独设置：</p>
+<figure class="highlight clean"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">module</span>.exports = &#123;</span><br><span class="line"></span><br><span class="line">  mode: <span class="string">'development'</span> <span class="comment">// or 'production'</span></span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="optimization"><a href="#optimization" class="headerlink" title="optimization"></a>optimization</h3><p>如果你没在 <code>webpack.config.js</code> 中配置 <code>optimization</code> 属性，则默认情况下，webpack会根据 <code>mode</code> 配置，打包时采用对应的 <code>optimization</code> 策略。</p>
+<p>其中，<code>--mode development</code> 模式下有以下特点：</p>
+<ul>
+<li>浏览器调试，提供有效错误信息</li>
+<li>加速增量编译</li>
+</ul>
+<p>而 <code>--mode production</code>：</p>
+<ul>
+<li>压缩输出JS文件的体积（默认使用 uglifyjs-webpack-plugin）</li>
+<li>优化执行效率</li>
+</ul>
+<p>如果你在 <code>webpack.config.js</code> 配置了 <code>optimization</code> 属性，则打包时，可能会导致这些默认策略失效，因为一些 <code>optimization</code> 的一些默认属性被覆盖了。</p>
+<p>另外，倘若你需要配置多个压缩插件，可在里面使用 <code>minimizer</code>，但要注意到是，<code>minimizer</code> 会覆盖 <code>minimize</code> 的属性值。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">module</span>.<span class="keyword">exports</span> = &#123;</span><br><span class="line"></span><br><span class="line">  optimization: &#123;</span><br><span class="line">    minimize: <span class="keyword">true</span>, <span class="comment">// 无效</span></span><br><span class="line">    minimizer: [</span><br><span class="line">      <span class="keyword">new</span> OptimizeCSSAssetsPlugin(&#123;&#125;)</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="支持-JSON-文件的编译"><a href="#支持-JSON-文件的编译" class="headerlink" title="支持 JSON 文件的编译"></a>支持 JSON 文件的编译</h3><p>在之前，webpack只能解析 js 文件，其他文件都需要特定的 loader 才能进行解析。但从 <code>webpack 4.x</code> 开始，它执行 json文件 的解析。因此，你可以在代码中，直接引用 json 文件了。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line"><span class="comment">// index.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">data</span> from './<span class="keyword">data</span>';</span><br></pre></td></tr></table></figure>
+<h3 id="loader-被移除"><a href="#loader-被移除" class="headerlink" title="loader 被移除"></a>loader 被移除</h3><p>在 <code>webpack4.x</code> 之前，我们可以在 <code>loaders</code> 中配置不同的文件解析包。 但在这之后，官网废弃了 <code>loaders</code>，取而代之的是使用 <code>rules</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">module</span>: &#123;</span><br><span class="line">    <span class="comment">// loaders: [</span></span><br><span class="line">      <span class="comment">// &#123;</span></span><br><span class="line">        <span class="comment">// test: /\.css$/,</span></span><br><span class="line">        <span class="comment">// loader: 'style-loader!css-loader'</span></span><br><span class="line">      <span class="comment">// &#125;,</span></span><br><span class="line">    <span class="comment">// ]</span></span><br><span class="line"></span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        use: [</span><br><span class="line">          <span class="string">'style-loader'</span>,</span><br><span class="line">          <span class="string">'css-loader'</span></span><br><span class="line">        ]</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="CommonsChunkPlugin-被移除"><a href="#CommonsChunkPlugin-被移除" class="headerlink" title="CommonsChunkPlugin 被移除"></a>CommonsChunkPlugin 被移除</h3><p>在 <code>webpack4.x</code> 之前，如果需要在页面引入第三方库，并且防止模块重复引用第三方库，可以像下面这样使用 <code>CommonsChunkPlugin</code> 进行引入：</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line">module<span class="selector-class">.exports</span> = &#123;</span><br><span class="line">  entry: &#123;</span><br><span class="line">    zepto: [<span class="string">'n-zepto'</span>]</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  plugins: [</span><br><span class="line">    new webpack<span class="selector-class">.optimize</span><span class="selector-class">.CommonsChunkPlugin</span>(&#123;</span><br><span class="line">      name: [<span class="string">'zepto'</span>]</span><br><span class="line">    &#125;)  </span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果你基于 <code>webpack4.x</code> 再这样进行打包，则会报错：</p>
+<img src="/2018/04/22/webpack4-x/CommonsChunkPlugin-error.png" title="CommonsChunkPlugin报错信息">
+<p>因为从这个版本开始，移除了 <code>CommonsChunkPlugin</code>，现在官网推荐使用 <code>optimization.splitChunks</code> 和 <code>optimization.runtimeChunk</code>：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">optimization</span>: &#123;</span><br><span class="line">      <span class="attribute">splitChunks</span>: &#123;</span><br><span class="line">        chunks: <span class="string">'all'</span>,</span><br><span class="line">        name: <span class="string">'common'</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="selector-tag">runtimeChunk</span>: &#123;</span><br><span class="line">        <span class="attribute">name</span>: <span class="string">'runtime'</span>,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="将文本（样式）分割成独立一个文件"><a href="#将文本（样式）分割成独立一个文件" class="headerlink" title="将文本（样式）分割成独立一个文件"></a>将文本（样式）分割成独立一个文件</h3><p>之前将样式独立成文件时，都是使用 <a href="https://github.com/webpack-contrib/extract-text-webpack-plugin" target="_blank" rel="noopener">ExtractTextPlugin</a></p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">npm <span class="selector-tag">i</span> -D extract-text-webpack-plugin</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"><span class="keyword">const</span> ExtractTextPlugin = <span class="built_in">require</span>(<span class="string">'extract-text-webpack-plugin'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">module</span>: &#123;</span><br><span class="line">  rules: [</span><br><span class="line">    &#123;</span><br><span class="line">      test: <span class="regexp">/\.less$/i</span>,</span><br><span class="line">      use: ExtractTextPlugin.extract([ <span class="string">'css-loader'</span>, <span class="string">'less-loader'</span> ])</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">plugins: [</span><br><span class="line">  <span class="keyword">new</span> ExtractTextPlugin(<span class="string">'css/style.[chunkhash].css'</span>),</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
+<p>但到了 <code>webpack 4.x</code> 时，却报错了：</p>
+<figure class="highlight less"><table><tr><td class="code"><pre><span class="line"> <span class="selector-tag">throw</span> <span class="selector-tag">new</span> <span class="selector-tag">Error</span>(</span><br><span class="line">                ^</span><br><span class="line"></span><br><span class="line"><span class="attribute">Error</span>: Chunk.<span class="attribute">entrypoints</span>: Use Chunks.groupsIterable and filter by instanceof Entrypoint instead</span><br><span class="line">    at Chunk.get (<span class="attribute">G</span>:\wampSever\my-work\test\webpack4.x\node_modules\_webpack<span class="variable">@4</span>.<span class="number">6.0</span><span class="variable">@webpack</span>\lib\Chunk.<span class="attribute">js</span>:<span class="number">528</span>:<span class="number">9</span>)</span><br></pre></td></tr></table></figure>
+<p>官方的说法是暂时没有针对 <code>webpack &gt;= v4.0.0</code> 的版本做更新处理，建议使用其他方案或者等待更新。后面有人提出以下解决方案：</p>
+<figure class="highlight coffeescript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">npm</span> i -D extract-text-webpack-plugin@next</span><br></pre></td></tr></table></figure>
+<p>不过注意，到目前为止，它还是一个 beta 版本，可能存在不稳定。</p>
+<p>过了一段时间后，又有人指出，对于 <code>extract-text-webpack-plugin</code> 支持 <code>webpack &gt;= v4.0.0</code> 的工作已经迁移到 <a href="https://github.com/webpack-contrib/mini-css-extract-plugin" target="_blank" rel="noopener">mini-css-extract-plugin</a> 这个项目了。并且，对于生成环境，如果你希望将样式进行压缩，你需要再单独使用 <a href="https://github.com/NMFR/optimize-css-assets-webpack-plugin" target="_blank" rel="noopener">optimize-css-assets-webpack-plugin</a>：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">npm i -D mini-css-extract-plugin <span class="keyword">optimize</span>-css-assets-webpack-<span class="keyword">plugin</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> MiniCssExtractPlugin = <span class="built_in">require</span>(<span class="string">"mini-css-extract-plugin"</span>);</span><br><span class="line"><span class="keyword">const</span> OptimizeCSSAssetsPlugin = <span class="built_in">require</span>(<span class="string">"optimize-css-assets-webpack-plugin"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      ...</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.less$/</span>,</span><br><span class="line">        use: [</span><br><span class="line">          MiniCssExtractPlugin.loader,</span><br><span class="line">          <span class="string">'css-loader'</span>,</span><br><span class="line">          <span class="string">'less-loader'</span>,</span><br><span class="line">        ]</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="keyword">new</span> MiniCssExtractPlugin(&#123;</span><br><span class="line">      filename: <span class="string">"[name].[hash].css"</span></span><br><span class="line">    &#125;),</span><br><span class="line">    <span class="keyword">new</span> OptimizeCSSAssetsPlugin(&#123;&#125;)</span><br><span class="line">  ]</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="其他错误"><a href="#其他错误" class="headerlink" title="其他错误"></a>其他错误</h2><h3 id="getaddrinfo-ENOTFOUND-localhost"><a href="#getaddrinfo-ENOTFOUND-localhost" class="headerlink" title="getaddrinfo ENOTFOUND localhost"></a>getaddrinfo ENOTFOUND localhost</h3><figure class="highlight subunit"><table><tr><td class="code"><pre><span class="line">events.js:183</span><br><span class="line">      throw er; // Unhandled 'error' event</span><br><span class="line">      ^</span><br><span class="line"></span><br><span class="line"><span class="keyword">Error: </span>getaddrinfo ENOTFOUND localhost</span><br><span class="line">    at errnoException (dns.js:50:10)</span><br></pre></td></tr></table></figure>
+<p>在 MAC 上会出现此类错误，是因为没有指定 localhost。可通过切换host的工具进行以下指定：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">127<span class="selector-class">.0</span><span class="selector-class">.0</span><span class="selector-class">.1</span> <span class="selector-tag">localhost</span></span><br></pre></td></tr></table></figure>
+<h3 id="启动服务端口号被占用"><a href="#启动服务端口号被占用" class="headerlink" title="启动服务端口号被占用"></a>启动服务端口号被占用</h3><p>当使用 <code>webpack-dev-server --open --port 8100 --mode development</code> 启动服务时，出现如下错误，即我们指定的端口号被占用。后来发现，之前通过 <code>webpack-dev-server</code> 启动的服务，端口一直是自增的，而且在命令行中使用 <code>ctrl + c</code> 无法关闭之前的服务。所以，才会导致端口号被占用的情况。</p>
+<figure class="highlight subunit"><table><tr><td class="code"><pre><span class="line">events.js:183</span><br><span class="line">      throw er; // Unhandled 'error' event</span><br><span class="line">      ^</span><br><span class="line"></span><br><span class="line"><span class="keyword">Error: </span>listen EADDRINUSE 127.0.0.1:8100</span><br></pre></td></tr></table></figure>
+<p>有两种解决方案。</p>
+<p>方案一： 使用 <code>tskill node</code> 干掉所有的node进程，这种方法比较简单粗暴。<br>方案二： 根据服务端口号，找到对应的进程端口（PID），然后，将这个进程干掉。</p>
+<figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 通过服务端口号，找到 进程端口（假设服务端口为 8100）</span></span><br><span class="line">netstat -aon <span class="string">| findstr 8100</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="string">//</span> 杀掉进程（假设对应的进程端口为 32120）</span><br><span class="line">taskkill <span class="string">/f</span> -pid 32120</span><br></pre></td></tr></table></figure>
+<p>经过查找各方资料，种种尝试。当我使用系统自带的命令窗口去启动和关闭服务时，发现不会复现上述问题。这就表明在系统自带命令窗口中使用 <code>ctrl + c</code> 可以干掉进程。</p>
+<p>当我使用 <code>vscode</code> 集成的终端来启动和关闭服务，也不会复现上述问题。</p>
+<p>由于我之前都是基于 <code>git-bash</code> 进行命令编译的，这说明问题就出在 <code>git-bash</code>，查看当前使用的 git 版本为 <code>2.13.2</code>。</p>
+<p>晚上回去试了家里的 <code>git-bash</code>，也不会复现上述的问题，查看 git 版本为 <code>2.8.2</code>。再次证明，这是 git 版本的问题。</p>
+<p>相关资料：<a href="https://github.com/webpack/webpack-dev-server/issues/1041" target="_blank" rel="noopener">http server doesn’t shut down with Ctrl-C in Windows Git Bash</a> , <a href="https://github.com/git-for-windows/git/issues/1248" target="_blank" rel="noopener">Capturing Ctrl-C in MINGW-Bash shell</a></p>
+<h3 id="npm-找不到-node-gyp-模块"><a href="#npm-找不到-node-gyp-模块" class="headerlink" title="npm 找不到 node-gyp 模块"></a>npm 找不到 node-gyp 模块</h3><figure class="highlight crmsh"><table><tr><td class="code"><pre><span class="line">npm ERR! code MODULE_NOT_FOUND</span><br><span class="line">npm ERR! Cannot find module '<span class="keyword">node</span><span class="title">-gyp</span>/bin/<span class="keyword">node</span><span class="title">-gyp</span>'</span><br></pre></td></tr></table></figure>
+<p><code>node-gyp</code> 模块可能被损坏，重新安装 nodejs 即可。</p>
+<h3 id="ES6定义类的错误"><a href="#ES6定义类的错误" class="headerlink" title="ES6定义类的错误"></a>ES6定义类的错误</h3><p>定义一个这样的类：</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="comment">// widgetImg.js</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WidgetImg</span> </span>&#123;</span><br><span class="line">  id = <span class="literal">null</span>;</span><br><span class="line">  <span class="class"><span class="keyword">type</span> </span>= <span class="symbol">'vide</span>o'; <span class="comment">// img video audio flash</span></span><br><span class="line">  width = <span class="number">180</span>;</span><br><span class="line">  height = <span class="number">180</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export <span class="keyword">default</span> <span class="type">WidgetImg</span>;</span><br></pre></td></tr></table></figure>
+<p>在另外一个文件引入用它：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> WidgetImg <span class="keyword">from</span> <span class="string">'../widgetImg'</span>;</span><br></pre></td></tr></table></figure>
+<p>结果发现报错了，提示：</p>
+<img src="/2018/04/22/webpack4-x/es6-class-error.png" title="类定义报错信息">
+<p>经过各方搜寻资料，发现需要单独配置 babel 文件。首先，删除 <code>webpack.config.js</code> 里的一些内容：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="keyword">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        exclude: <span class="regexp">/(node_modules|bower_components)/</span>,</span><br><span class="line">        use: &#123;</span><br><span class="line">          loader: <span class="string">'babel-loader'</span>,</span><br><span class="line">          <span class="comment">// options: &#123;</span></span><br><span class="line">          <span class="comment">//   presets: ['env', 'react']</span></span><br><span class="line">          <span class="comment">// &#125;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在项目根目录新增一个 <code>.babelrc</code> 文件：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"presets"</span>: [</span><br><span class="line">    [</span><br><span class="line">      <span class="string">"env"</span>,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">"targets"</span>: &#123;</span><br><span class="line">          <span class="attr">"browsers"</span>: [</span><br><span class="line">            <span class="string">"last 2 versions"</span>,</span><br><span class="line">            <span class="string">"safari &gt;= 7"</span>,</span><br><span class="line">            <span class="string">"ie &gt;= 9"</span>,</span><br><span class="line">            <span class="string">"chrome &gt;= 31"</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"useBuiltIns"</span>: <span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"react"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"plugins"</span>: [</span><br><span class="line">    <span class="string">"transform-class-properties"</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重新运行启动服务即可。它的实际问题，就是没有配置 <a href="https://babeljs.io/docs/plugins/transform-class-properties/" target="_blank" rel="noopener">transform-class-properties</a> 这款插件。类似的，如果你项目中需要使用 rest运算 和 spread扩展符，你也可以再配置 <a href="http://babeljs.io/docs/plugins/transform-object-rest-spread/" target="_blank" rel="noopener">transform-object-rest-spread</a>。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

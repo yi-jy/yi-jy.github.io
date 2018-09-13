@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="理解canvas的rotate中心点 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="canvas rotate  变形中心点">
+  
+
+  
+
+  <title>理解canvas的rotate中心点 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">理解canvas的rotate中心点</h1>
+
+  <time class="post-time">2015-06-10</time>
+
+  <div class="post-content">
+    <p>如你所知，在canvas中也有像css3里变形处理的功能，比如移动translate、旋转rotate以及缩放scale等。虽然这些应用在两者看来差不多。但是有一点是必须明确的，即css3中所有的变形处理中心点都是针对DOM元素本身，而在canvas里没有元素之说，因为它是由各种线条和图形组成的一个整体，类似一个画板。</p>
+<a id="more"></a>
+<p>默认情况下，canvas中心点是左上角，即坐标(0,0)。我们可以通过transform-origin来改变css3的中心点，而canvas也可以改变默认中心点，只不过需要通过translate平移内部的2d绘图环境。必须明确的是，对于变形处理的中心点而言，css3是针对变形元素的本身，而canvas是针对整个canvas绘图环境。</p>
+<p>首先，我们来看下在不改变中心点情况下，canvas旋转前后的变化：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">"canvas"</span> <span class="attr">width</span>=<span class="string">"200"</span> <span class="attr">height</span>=<span class="string">"200"</span> &gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">var canvas = document.getElementById("canvas");</span><br><span class="line">    ctx = canvas.getContext("2d");</span><br><span class="line"> </span><br><span class="line">ctx.save();</span><br><span class="line"> </span><br><span class="line">ctx.fillStyle = "black"; //旋转前</span><br><span class="line">ctx.fillRect(20,20,100,100);</span><br><span class="line"> </span><br><span class="line">ctx.rotate( (Math.PI / 180) * 30); // 旋转30弧度 </span><br><span class="line"> </span><br><span class="line">ctx.fillStyle = "blue";</span><br><span class="line">ctx.fillRect(20,20,100,100); //旋转后</span><br><span class="line"> </span><br><span class="line">ctx.restore();</span><br></pre></td></tr></table></figure>
+<p>由上面的代码，我们可以看到在旋转画布前，我们在坐标(20,20)处绘制了一个100<em>100的黑色矩形，而在旋转之后，又在坐标(20,20)处绘制了一个100</em>100的蓝色矩形。</p>
+<p>扫完代码后，你可能会在心中建立一张大概的绘制图，即黑色矩形是旋转30弧度的，而蓝色矩形没有旋转。嗯，真的是这样吗？</p>
+<p>当然不是！！！如果你具体测试过，你就会发现，canvas旋转前绘制的元素没有旋转效果，而这种旋转效果只会出现在canvas旋转后绘制的元素。因此，如果我们要对canvas里的某些图形进行旋转处理，就必须在绘图环境旋转后再进行绘制。所以呈现的效果图为：</p>
+<img src="/2015/06/10/canvas-rotate-origin/canvas-rotate-compare.jpg" title="canvas旋转前后对比">
+<p>那么，我们再来看一个应用场景，即将canvas绘制的图形旋转180弧度，应该如何操作呢？</p>
+<p>假设绘制的图形与canvas大小相同。首先将绘图环境旋转180弧度，并将图片绘制到canvas中：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> img = <span class="keyword">new</span> Image();</span><br><span class="line"> </span><br><span class="line">ctx.save();</span><br><span class="line"> </span><br><span class="line">img.addEventListener( <span class="string">"load"</span> , <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    ctx.rotate(<span class="built_in">Math</span>.PI);</span><br><span class="line">    ctx.drawImage(img,<span class="number">0</span>,<span class="number">0</span>);  </span><br><span class="line">&#125; , <span class="literal">false</span>);</span><br><span class="line"> </span><br><span class="line">img.src = <span class="string">"sample.png"</span>;</span><br><span class="line"> </span><br><span class="line">ctx.restore();</span><br></pre></td></tr></table></figure>
+<p>运行完上述代码，你会发现什么也看不到。因为canvas的中心点是左上角(0,0)，当将canvas绘图环境旋转180弧度后，你会发现图形已经在canvas可视区域外，这显然是不可行的。我们先尝试按照css3以自己为中心点来做，即平移中心点，有以下代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ctx.translate(canvas.width/<span class="number">2</span>,canvas.height/<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+<p>因为此处的demo图片和canvas大小一致，所以translate移动的值为canvas宽高的一半。若你需要旋转的图形与canvas尺寸不同，可通过其具体坐标和宽高来计算。</p>
+<p>通过上述代码，我们就把中心点由(0,0) 变为了(canvas.width/2,canvas.height/2)，然后我们再执行旋转，绘制图片就ok了吧：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ctx.rotate(<span class="built_in">Math</span>.PI);</span><br><span class="line">ctx.drawImage(img,<span class="number">0</span>,<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p>但是，真的吗？当你运行完上诉代码，你会看到图片只在canvas左上角显示了一半（如下图效果对比）：</p>
+<img src="/2015/06/10/canvas-rotate-origin/result.jpg" title="canvas旋转结果">
+<p>为什么会是这样？我们来分析一下，此时canvas的中心点变了，当绘图环境平移和旋转完后，我们就会看到如下示意图：</p>
+<img src="/2015/06/10/canvas-rotate-origin/canvas-rotate.jpg" title="canvas旋转分析图">
+<p>上图蓝色实线区域为canvas（原本绘图环境），红色虚线区域是平移和旋转后的绘图环境。此时，当我们开始往绘图环境中绘制图形时，图形是由红色坐标点(0,0)从下往上，从右往左绘制，直到红色坐标(w,h)，才绘制完成。所以你才会在canvas左上角看到翻转后图片的一半。</p>
+<p>因此，如果我们要在canvas中正常看到绘制的图片，要么改变绘图环境的中心点坐标，要么改变绘制图片的坐标。所以分别有以下两种途径解决：</p>
+<p>第一种途径是改变绘图环境的中心点，将中心点平移到(-canvas.width/2,-canvas.height/2)，代码有：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ctx.translate(canvas.width/<span class="number">2</span>,canvas.height/<span class="number">2</span>);</span><br><span class="line">ctx.rotate(<span class="built_in">Math</span>.PI);</span><br><span class="line">ctx.translate(-canvas.width/<span class="number">2</span>,-canvas.height/<span class="number">2</span>);</span><br><span class="line">ctx.drawImage(img,<span class="number">0</span>,<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p>第二种途径是改变绘制图片的坐标，将图片绘制到(-canvas.width/2,-canvas.height/2)，代码有：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ctx.translate(canvas.width/<span class="number">2</span>,canvas.height/<span class="number">2</span>);</span><br><span class="line">ctx.rotate(<span class="built_in">Math</span>.PI);</span><br><span class="line">ctx.drawImage(img,-canvas.width/<span class="number">2</span>,-canvas.height/<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+<p>通过以上分析，可以知道 移动绘制环境 和 绘制图形 的坐标是相对于处理（这里为平移和翻转）后绘制环境。我们也可以认为canvas的处理过程是这样的：先在绘图环境里面绘制图形，然后在canvas里显示图形。</p>
+<p>如果你不想平移绘图环境的坐标，你也可以在绘图环境旋转后，直接设置绘制图片的坐标：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ctx.rotate(<span class="built_in">Math</span>.PI);</span><br><span class="line">ctx.drawImage(img,-canvas.width,-canvas.height);</span><br></pre></td></tr></table></figure>
+<p>虽然以上实现的代码不一样，但是原理和结果都是一样。在canvas开发中，很多情况下都需要结合translate、rotate以及scale进行变形处理，所以理解了其中的原理非常必要。</p>
+<p>最后，附上本篇文章的例子：<a href="/2015/06/10/canvas-rotate-origin/canvas-rotate.html" title="canvas翻转处理">canvas翻转处理</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

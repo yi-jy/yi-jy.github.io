@@ -1,0 +1,77 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>正常情况与使用web worker 生成30000个div所需时间</title>
+<style>
+body{font-size:12px;}
+.time,.page-switch{position: fixed;right:30px;top:50px;}
+.page-switch{top:20px;}
+.page-switch .link{margin-left:20px;}
+</style>
+</head>
+
+<body>
+  <div class="container"></div>
+  <div class="page-switch">
+    <a href="javascript:;" data-hash="single" class="link single-link">正常运行</a>
+    <a href="javascript:;" data-hash="webWorker" class="link worker-link">web Worker运行</a>
+  </div>
+  <div class="time"></div>
+</body>
+</html>
+
+<script type="text/javascript">
+(function(){
+  var webWorker = new Worker("web-worker.js"),
+    container = document.querySelector(".container"),
+    time = document.querySelector(".time"),
+    link = document.querySelectorAll(".link"),
+    url = window.location.href,
+    urlSearch = window.location.search,
+    runDes = "",
+    str = "",
+    timeStart = new Date().getTime();
+
+  console.time("运行时间");
+
+  function webWorkerRun(){
+    webWorker.postMessage(str); // 开启web worker或向web worker发送数据
+    webWorker.addEventListener("message",function(e){
+      container.innerHTML = e.data;
+      //webWorker.terminate(); // 关闭web worker
+    },false)
+  }
+
+  function singleRun(){
+    var str = "";
+    for(var i = 0 ; i < 10000 ; i++ ){
+      str += "<div>"+i+"</div>";
+    }
+    container.innerHTML = str;
+  }
+
+  if(urlSearch == "?q=webWorker"){
+    webWorkerRun();
+    runDes = "web worker";
+  }
+  else{
+    singleRun();
+    runDes = "正常";
+  }
+
+  console.timeEnd("运行时间");
+  var timeEnd = new Date().getTime();
+  time.innerHTML = runDes + "运行生成10000个div所需时间：" + (timeEnd - timeStart) + "ms";
+
+  for(var i = 0,len = link.length; i<len ; i++ ){
+    link[i].addEventListener("click",function(){
+      window.location.search = "?q=" + this.getAttribute("data-hash");
+    },false)
+  }
+
+})()
+
+</script>
+

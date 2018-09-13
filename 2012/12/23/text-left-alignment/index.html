@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="短标题（二，三，四文字长度）两端对齐的方式 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="文字两端对齐">
+  
+
+  
+
+  <title>短标题（二，三，四文字长度）两端对齐的方式 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">短标题（二，三，四文字长度）两端对齐的方式</h1>
+
+  <time class="post-time">2012-12-23</time>
+
+  <div class="post-content">
+    <p>首先说明，这是“世界末日”过后的第一遍文章。“世界末日”它如我们所想象的一样没有来，生活仍在继续，该承受的还是要承受，该追求的还是要努力去追求。</p>
+<p>这篇文章的讲的主要是关于一行横向排列内容，而又包含前面标题并且要求它的文字两端对齐的一种方法。如下图，网上有很多方法，但是经过我测试，基本没有一种方法能通过所有浏览器测试。而以下这种方法则兼容了大多数主流浏览器（ie6、7、8、9，ff，chrome，safari）。</p>
+<a id="more"></a>
+<img src="/2012/12/23/text-left-alignment/t_w1.jpg" title="文字左边对齐">
+<p>重点：必须定义标题的字体，这里我们设置字体为simsun；。在三个字的标题，这里使用两个 &nbsp;当作一个汉字的宽度。而对于两个字的标题，我们利用把输入法切换到全角的情况下，输入空格，这里的一个空格代表一个汉字的宽度。于是最后达到文字两端对齐的方式。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-class">.t_w</span>&#123;<span class="attribute">font-family</span>:simsun;<span class="attribute">font-size</span>:<span class="number">12px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.t_w</span> <span class="selector-tag">dl</span>&#123;<span class="attribute">clear</span>:both;<span class="attribute">height</span>:<span class="number">30px</span>;<span class="attribute">border-bottom</span>:<span class="number">1px</span> dashed <span class="number">#333</span>;<span class="attribute">line-height</span>:<span class="number">30px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.t_w</span> <span class="selector-tag">dl</span> <span class="selector-tag">dt</span>,<span class="selector-class">.t_w</span> <span class="selector-tag">dl</span> <span class="selector-tag">dd</span>&#123;<span class="attribute">float</span>:left;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.t_w</span> <span class="selector-tag">dl</span> <span class="selector-tag">dt</span>&#123;<span class="attribute">width</span>:<span class="number">75px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.t_w</span> <span class="selector-tag">dl</span> <span class="selector-tag">dd</span>&#123;<span class="attribute">width</span>:<span class="number">300px</span>;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"t_w"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dl</span>&gt;</span><span class="tag">&lt;<span class="name">dt</span>&gt;</span>你好你好：<span class="tag">&lt;/<span class="name">dt</span>&gt;</span><span class="tag">&lt;<span class="name">dd</span>&gt;</span>647948<span class="tag">&lt;/<span class="name">dd</span>&gt;</span><span class="tag">&lt;/<span class="name">dl</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dl</span>&gt;</span><span class="tag">&lt;<span class="name">dt</span>&gt;</span>你&amp;nbsp;好&amp;nbsp;你：<span class="tag">&lt;/<span class="name">dt</span>&gt;</span><span class="tag">&lt;<span class="name">dd</span>&gt;</span>￥3454<span class="tag">&lt;/<span class="name">dd</span>&gt;</span><span class="tag">&lt;/<span class="name">dl</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dl</span>&gt;</span><span class="tag">&lt;<span class="name">dt</span>&gt;</span>你　　好：<span class="tag">&lt;/<span class="name">dt</span>&gt;</span><span class="tag">&lt;<span class="name">dd</span>&gt;</span>128件<span class="tag">&lt;/<span class="name">dd</span>&gt;</span><span class="tag">&lt;/<span class="name">dl</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这就是此片文章的全部内容。下篇将会说道当右边内容多行，而又需要标题都在左边，多行内容都在右边，并且他们之间有一定的间距的排列方式。好了，洗洗睡吧，晚安！2012年12月23日。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

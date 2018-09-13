@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="做一个调色板 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="调色板">
+  
+
+  
+
+  <title>做一个调色板 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">做一个调色板</h1>
+
+  <time class="post-time">2014-12-22</time>
+
+  <div class="post-content">
+    <p>或者你和我一样，一开始对于如何去做一个调色板毫无思路。尤其在看到网上以及工具中各种形形色色的调色板后，更加不知所措。其实说到调色板，在html5中已经新增了获取颜色类型的文本框，即只需要一个 <code>&lt;input type=”color”/&gt;</code>，然后再获取input的值即可，你可以 <a href="http://www.yi-jy.com/documents/html5/new_input_type/color.html" target="_blank" rel="noopener">点此</a> 来更多的了解这个新增元素，由于是html5元素，因此只有chrome和firefox能支持。自然，这个颜色文本框不是本篇所讨论的内容。</p>
+<a id="more"></a>
+<h2 id="生成调色板"><a href="#生成调色板" class="headerlink" title="生成调色板"></a>生成调色板</h2><p>调色板主要的内容分为颜色格式和颜色种类。在web中常用的几种颜色格式主要有六位的十六进制、RGB以及HSL，在这里我们采用最普遍的十六进制。那么颜色种类呢，在调色板中显示多少种颜色才合适呢？还有这些颜色之间有什么内在的关系？这些都是接下来需要解决的问题。</p>
+<p>我们不妨打开一个有选取颜色功能的代码编辑器。我们就暂且拿Dreamweave说事吧！这也是我最初做前端时用的编辑器。当我们选取颜色时，会看到一个这样的界面：</p>
+<img src="/2014/12/22/color-take/colorTake01.jpg" title="界面">
+<p>经过几次鼠标经过以及颜色的读取，我们发现一个这样的规律：</p>
+<img src="/2014/12/22/color-take/colorTake02.jpg" title="规律">
+<p>也就是说，从第四列开始，可以把剩下的列分成6个含有6*6种颜色的色块，这六个色块自左向右，自上而下排列，每个色块的基础色调分别是以 0，3，6，9，c，f 。我们知道，三个数值就能组成一种颜色，假设 colorBaseArr = [“0”,”3”,”6”,”9”,”c”,”f”]，那么每个色块中的颜色值是由 基础色调+ colorBaseArr的双重循环。</p>
+<p>主要的html代码如下：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"color-panle"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"color-read"</span>&gt;</span></span><br><span class="line">    	<span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"color-val"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"color-show"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"color-list"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>.color-val 的span用于显示颜色值，而.color-show的span则用于预览颜色。接下来，我们在.color-list中填充颜色列表，假定每个色块为一个ul，那么每个ul中就有6*6个li：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> colorBaseArr = [<span class="string">"0"</span>,<span class="string">"3"</span>,<span class="string">"6"</span>,<span class="string">"9"</span>,<span class="string">"c"</span>,<span class="string">"f"</span>];</span><br><span class="line"><span class="keyword">var</span> createColor = <span class="function"><span class="keyword">function</span>(<span class="params">baseColor</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> colorLiStr = ‘’;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">var</span> j=<span class="number">0</span> ; j&lt;<span class="number">6</span> ; j++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">var</span> k=<span class="number">0</span> ; k&lt;<span class="number">6</span> ; k++)&#123;</span><br><span class="line">			<span class="keyword">var</span> tempColor = baseColor + t.colorBaseArr[k] + t.colorBaseArr[j] ;</span><br><span class="line">			colorLiStr += <span class="string">"&lt;li data-bg='"</span>+tempColor+<span class="string">"' style='background:#"</span> + tempColor + <span class="string">";'&gt;&lt;/li&gt;"</span>;		</span><br><span class="line">		&#125;	</span><br><span class="line">	&#125;</span><br><span class="line">	t.htmlStr +=<span class="string">"&lt;ul data-base='"</span>+baseColor+<span class="string">"'&gt;"</span> + colorLiStr + <span class="string">"&lt;/ul&gt;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span> , len=t.colorBaseArr.length; i&lt;len ; i++)&#123;</span><br><span class="line">	createColor(t.colorBaseArr[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样，调色板就生成完成。</p>
+<h2 id="读取调色板"><a href="#读取调色板" class="headerlink" title="读取调色板"></a>读取调色板</h2><p>上文的内容描述了调色板的生成，接下来我们需要预览颜色，当点击其中一种颜色时，还应该获取选中的颜色值，对生成的颜色列表加入交互事件，由于列表数量较多，此处我们采用事件代理：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> colorPanle = ele.byClass(<span class="string">".color-panle"</span>,colorPanle)[<span class="number">0</span>],</span><br><span class="line">	colorList = ele.byClass(<span class="string">".color-list"</span>,colorPanle)[<span class="number">0</span>],</span><br><span class="line">	colorVal = ele.byClass(<span class="string">".color-val"</span>,colorPanle)[<span class="number">0</span>],</span><br><span class="line">	colorShow = ele.byClass(<span class="string">".color-show"</span>,colorPanle)[<span class="number">0</span>];</span><br><span class="line"> </span><br><span class="line"><span class="keyword">var</span> colorRead = <span class="function"><span class="keyword">function</span>(<span class="params">eventType,e</span>)</span>&#123;</span><br><span class="line">	<span class="comment">// showColorPanleEle 触发调色板显示的元素</span></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">e</span>)</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> e=<span class="built_in">window</span>.event || e,</span><br><span class="line">			target= e.target || e.srcElement;</span><br><span class="line">		<span class="keyword">if</span>(target.nodeName.toLowerCase()===<span class="string">"li"</span>)&#123;</span><br><span class="line">			<span class="keyword">switch</span> (eventType)&#123;</span><br><span class="line">				<span class="keyword">case</span>  <span class="string">"mouseover"</span> :</span><br><span class="line">				colorShow.style.background = colorVal.innerHTML = <span class="string">"#"</span> + target.getAttribute(<span class="string">"data-bg"</span>);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">				<span class="keyword">case</span> <span class="string">"click"</span> :</span><br><span class="line">				showColorPanleEle.value = <span class="string">"#"</span> + target.getAttribute(<span class="string">"data-bg"</span>);</span><br><span class="line">				colorPanle.style.display = <span class="string">"none"</span>;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">				<span class="keyword">default</span>:</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">eventUnit.addEvent(colorList,<span class="string">"mouseover"</span>,colorRead(<span class="string">"mouseover"</span>));	</span><br><span class="line">eventUnit.addEvent(colorList,<span class="string">"click"</span>,colorRead(<span class="string">"click"</span>));</span><br></pre></td></tr></table></figure>
+<h2 id="应用调色板"><a href="#应用调色板" class="headerlink" title="应用调色板"></a>应用调色板</h2><p>如你所知，在页面载入后，调色板是默认不可见的。就像编辑器里一样，在需要选取颜色的时候调色板才插入到页面或者显示出来，因此，我们需要把它改为用户手动触发，封装以上代码，最后您可通过以下描述使用调色板：</p>
+<p>1.引入colorTake.js文件<br>2.页面加入触发的html，并实例化colorTake</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;input type=<span class="string">"text"</span> value=<span class="string">""</span> id=<span class="string">"color-get"</span>  /&gt;</span><br><span class="line"><span class="keyword">var</span> colorGet = <span class="built_in">document</span>.getElementById(<span class="string">"color-get"</span>);</span><br><span class="line"><span class="keyword">new</span> colorTake(colorGet );</span><br></pre></td></tr></table></figure>
+<p>点击预览 <a href="/2014/12/22/color-take/color-take.html" title="调色板demo">调色板demo</a> 。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

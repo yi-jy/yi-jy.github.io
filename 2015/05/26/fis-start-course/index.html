@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="FIS前端构建工具之初体验 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="FIS 前端构建工具">
+  
+
+  
+
+  <title>FIS前端构建工具之初体验 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">FIS前端构建工具之初体验</h1>
+
+  <time class="post-time">2015-05-26</time>
+
+  <div class="post-content">
+    
+<p>在今年一月份的时候我在博文中介绍了自动化构建工具Grunt，工作开发期间也一直结合Grunt来开发。直到最近因为换了新工作，结果被告知项目中是通过FIS进行前端构建，为了尽快融入工作中，学吧！</p>
+<p>FIS是专为解决前端开发中自动化工具、性能优化、模块化框架、开发规范、代码部署开发流程等问题的前端工程化构建工具，FIS是由百度FEX团队开发一款开源项目，github地址为<a href="https://github.com/fex-team/fis" target="_blank" rel="noopener">https://github.com/fex-team/fis</a> 。</p>
+<p>本篇文章是FIS的初体验，即介绍FIS的安装与常用功能，这些功能包含使用它来进行资源压缩、添加文件版本，资源合并等。如果你掌握了它，那么开发效率会极大提升，事实上，有时真觉得它比Grunt好用。好吧！不扯了，我们开始进入主题：</p>
+<a id="more"></a>
+<h2 id="一、安装与启动"><a href="#一、安装与启动" class="headerlink" title="一、安装与启动"></a>一、安装与启动</h2><h3 id="1-1-安装"><a href="#1-1-安装" class="headerlink" title="1.1 安装"></a>1.1 安装</h3><p>因为FIS和Grunt一样都是基于node开发的，所以必须先安装node。倘若你的电脑没有安装node，你可以参考下我之前写grunt时node的安装。node安装完后，接着安装FIS，在这里我们通过命令行的方式进行安装以及安装完成后的版本检测：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install -g fis <span class="comment">// 安装fis</span></span><br><span class="line">fis -v <span class="comment">// 版本检测</span></span><br></pre></td></tr></table></figure>
+<p>有时因为”墙”的原因，可能不能正常安装，你可以尝试安装它国内的镜像：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install fis -g --registry=http:<span class="comment">//registry.npm.taobao.org/ --disturl=https://npm.taobao.org/dist</span></span><br></pre></td></tr></table></figure>
+<p>由于之前几篇文章都放置npm包安装的图，这里就不再截图。版本探测结果如下：</p>
+<img src="/2015/05/26/fis-start-course/fis-v.png" title="fis版本">
+<p>当看到版本号时，表明FIS安装成功。</p>
+<h3 id="1-2-启动"><a href="#1-2-启动" class="headerlink" title="1.2 启动"></a>1.2 启动</h3><p>运行以下命令启动FIS的内置服务环境：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis server start</span><br></pre></td></tr></table></figure>
+<p>如果你是第一次安装，那么FIS会自动下载服务环境的文件及相关配置到默认目录。假设你不修改这个默认目录，那么这个目录也是FIS处理完文件的输出目录，我们可以通过以下命令来打开默认路径：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis server open</span><br></pre></td></tr></table></figure>
+<p>而关闭FIS的内置服务环境，则可：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis server stop</span><br></pre></td></tr></table></figure>
+<p>当本地服务环境启动成功后，就会在浏览器自动打开<a href="http://127.0.0.1:8080，此时你看到的页面只有一些目录列表：" target="_blank" rel="noopener">http://127.0.0.1:8080，此时你看到的页面只有一些目录列表：</a></p>
+<img src="/2015/05/26/fis-start-course/fis-server-start.jpg" title="fis启动">
+<p>为了简明操作，我们假设要处理的项目为testFIS，在E盘的server文件夹下，其目录如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">testFIS</span><br><span class="line">  --css</span><br><span class="line">     --a.css</span><br><span class="line">     --b.css</span><br><span class="line">  --images</span><br><span class="line">     --*.jpg</span><br><span class="line">     --*.png</span><br><span class="line">     --*.gif</span><br><span class="line">  --js</span><br><span class="line">      --a.js</span><br><span class="line">      --b.js</span><br><span class="line">      --jquery<span class="number">-1.7</span><span class="number">.2</span>.min.js</span><br><span class="line">  --fis-conf.js</span><br><span class="line">  --index.html</span><br></pre></td></tr></table></figure>
+<p>我们需要将fis-conf.js文件中放入项目根目录中，如果你没有这个文件，可通过FIS的一个快速上手的列子里下载，地址为<a href="https://github.com/hefangshi/fis-quickstart-demo。" target="_blank" rel="noopener">https://github.com/hefangshi/fis-quickstart-demo。</a></p>
+<p>接下来，我们以后依次来说明它的压缩、添加文件版本和资源合并功能。</p>
+<p>在压缩文件前，我们需要先发布预览项目，首先命令行进入到项目地址，然后通过 fis release 来发布。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">e:  </span><br><span class="line">cd server/testFIS</span><br><span class="line">fis release <span class="comment">// 发布项目</span></span><br></pre></td></tr></table></figure>
+<h2 id="二、使用"><a href="#二、使用" class="headerlink" title="二、使用"></a>二、使用</h2><h3 id="2-1-压缩"><a href="#2-1-压缩" class="headerlink" title="2.1 压缩"></a>2.1 压缩</h3><p>首先来说下压缩文件，压缩文件的命令如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis release --optimize <span class="comment">// 简写：fis release -o</span></span><br></pre></td></tr></table></figure>
+<p>fis不会改变原有的资源文件。什么意思呢？即一般来说压缩后都是将处理过的文件独立输出到默认目录（此目录fis server open打开），当然，如果你不想要将处理后的文件输出到默认目录，你也可以进行相应的设置，以下列出常用情况（-d是–dest的缩写）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis release -o            <span class="comment">//输出目录为：默认路径</span></span><br><span class="line"> </span><br><span class="line">fis release -o -d ./test  <span class="comment">//输出目录为：当前目录新建文件夹test文件夹</span></span><br><span class="line"> </span><br><span class="line">fis release -o -d ../test  <span class="comment">//输出目录为：上级目录新建文件夹test文件夹</span></span><br></pre></td></tr></table></figure>
+<p>如果你仔细查源代码，就会发现页面静态文件引用的路径发生了如下改变，比如a.css：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;link rel=<span class="string">"stylesheet"</span> type=<span class="string">"text/css"</span> href=<span class="string">"css/a.css"</span>/&gt; <span class="comment">// 处理前</span></span><br><span class="line"> </span><br><span class="line">&lt;link rel=<span class="string">"stylesheet"</span> type=<span class="string">"text/css"</span> href=<span class="string">"/css/a.css"</span>/&gt; <span class="comment">// 处理后</span></span><br></pre></td></tr></table></figure>
+<p>至于为什么要改变引用路径，fex-team给出了如下解释，详见 ：<a href="https://github.com/fex-team/fis/issues/86" target="_blank" rel="noopener">https://github.com/fex-team/fis/issues/86</a></p>
+<p>虽然路径的改变并不会影响我们正常预览页面，但是，如果我们将处理完的文件上传到外网服务器，则会发现不能正常预览页面。因为处理完的文件引用地址都是相对于服务器根目录的，所以很多引用文件会找不到。此时，我们必须给处理完的文件指定一个绝对路径，而指定路径就必须配置 fis-conf.js。</p>
+<h4 id="2-1-1-配置-fis-conf-js"><a href="#2-1-1-配置-fis-conf-js" class="headerlink" title="2.1.1 配置 fis-conf.js"></a>2.1.1 配置 fis-conf.js</h4><p>假设处理完的项目需要上传到<a href="http://yi-jy.com/demo/201505/testFIS这个目录，则需要进行如下设置：">http://yi-jy.com/demo/201505/testFIS这个目录，则需要进行如下设置：</a></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis.config.merge(&#123;</span><br><span class="line">    roadmap : &#123;</span><br><span class="line">        <span class="comment">//所有静态资源文件都使用 http://s1.example.com 或者 http://s2.example.com 作为域名</span></span><br><span class="line">        domain : <span class="string">'http://yi-jy.com/demo/201505/testFIS’</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;);</span></span><br></pre></td></tr></table></figure>
+<h4 id="2-1-2-发布压缩文件"><a href="#2-1-2-发布压缩文件" class="headerlink" title="2.1.2 发布压缩文件"></a>2.1.2 发布压缩文件</h4><p>当配置完fis-conf.js后，再通过以下命令发布：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis release -o --domains <span class="comment">// 简写：fis release -o -D</span></span><br></pre></td></tr></table></figure>
+<p>当你再看页面源码时，页面静态文件引用就变成绝对路径了。</p>
+<h3 id="2-2-添加文件版本"><a href="#2-2-添加文件版本" class="headerlink" title="2.2 添加文件版本"></a>2.2 添加文件版本</h3><p>为了避免缓存问题的存在，在这之前，我们都是通过给文件加时间戳后缀来实现不同版本。而FIS的做法是给文件加md5版本号，运行命令如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis release --md5 <span class="comment">// 简写：fis release -m</span></span><br></pre></td></tr></table></figure>
+<p>所以压缩并添加md版本的命令就应该这样的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis release -om</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-资源合并"><a href="#2-3-资源合并" class="headerlink" title="2.3 资源合并"></a>2.3 资源合并</h3><p>相对于前面的压缩和添加版本号，资源合并可能复杂些。因为它需要通过安装插件，设置打包（fis-conf.js），最后再使用相关命令应用打包。</p>
+<h4 id="2-3-1-插件安装"><a href="#2-3-1-插件安装" class="headerlink" title="2.3.1 插件安装"></a>2.3.1 插件安装</h4><p>首先安装打包插件 fis-postpackager-simple，命令如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install -g fis-postpackager-simple</span><br></pre></td></tr></table></figure>
+<h4 id="2-3-2-设置打包"><a href="#2-3-2-设置打包" class="headerlink" title="2.3.2 设置打包"></a>2.3.2 设置打包</h4><p>要让插件生效，还要设置打包，主要是配置项目中 fis-conf.js 文件，首先去掉以下代码的注视来开启simple插件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis.config.set(<span class="string">'modules.postpackager'</span>, <span class="string">'simple'</span>);</span><br></pre></td></tr></table></figure>
+<p>接着，你再取消打包规则代码的注视，将需要压缩的文件以及输出文件进行相应设置，比如以下代码，是将js文件下的a.js和b.js压缩成同目录下combine.js(注意设置路径)：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis.config.set(<span class="string">'pack'</span>, &#123;</span><br><span class="line">    <span class="string">'js/combine.js'</span>: [</span><br><span class="line">        <span class="string">'js/a.js'</span>,</span><br><span class="line">        <span class="string">'js/b.js'</span>,</span><br><span class="line">    ]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="2-3-3-应用打包"><a href="#2-3-3-应用打包" class="headerlink" title="2.3.3 应用打包"></a>2.3.3 应用打包</h4><p>配置完后，我们就可以对文件进行打包处理了，运行命令如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis release --pack <span class="comment">// 简写：fis release -p</span></span><br></pre></td></tr></table></figure>
+<p>这样我们在输出文件夹的js目录中就能看到合并的js文件，但请注意这个只是会对文件压缩，而不会替换html页面对静态页面的引用。即不能将a.js和b.js的引用直接替换成对combine.js的引用。如果你想要替换，可以在fis-conf.js中加入如下代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//优化脚本与样式资源引用位置</span></span><br><span class="line">fis.config.set(<span class="string">'settings.postpackager.simple.autoReflow'</span>, <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+<h4 id="2-3-4-自动打包"><a href="#2-3-4-自动打包" class="headerlink" title="2.3.4 自动打包"></a>2.3.4 自动打包</h4><p>除了已经打包好的文件，FIS还可以将剩余的零散资源进行自动合并：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis.config.set(<span class="string">'settings.postpackager.simple.autoCombine'</span>, <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+<h4 id="2-3-5-合并图片"><a href="#2-3-5-合并图片" class="headerlink" title="2.3.5 合并图片"></a>2.3.5 合并图片</h4><p>为了减少请求数，我们通常会使用css sprite。FIS的做法是通过命令来合并图片并根据算法修改css文件。在合并图片前，你也必须像2.3.2那样设置涉及合并背景的css文件，这里选择了全部（*）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis.config.set(<span class="string">'pack'</span>, &#123;</span><br><span class="line">    <span class="string">'js/combine.js'</span>: [</span><br><span class="line">        <span class="string">'js/a.js'</span>,</span><br><span class="line">        <span class="string">'js/b.js'</span>,</span><br><span class="line">    ],</span><br><span class="line">    <span class="string">'css/combine.css'</span> : <span class="string">'**.css'</span> </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>然后，你要在css文件中对图片进行 ?__sprite 标识，表示需要将哪些图片进行合并，比如：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.certs</span> <span class="selector-class">.certs-item01</span>&#123;<span class="attribute">background</span>:<span class="built_in">url</span>(../images/certs-pic01.jpg?__sprite) no-repeat;&#125;</span><br><span class="line"><span class="selector-class">.certs</span> <span class="selector-class">.certs-item02</span>&#123;<span class="attribute">background</span>:<span class="built_in">url</span>(../images/certs-pic02.jpg?__sprite) no-repeat;&#125;</span><br></pre></td></tr></table></figure>
+<p>默认情况下，合并后的图片是和css文件在同一目录的。你也可以通过roadmap.path指定它的输出路径：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 设置合并后图片的输出路径</span></span><br><span class="line">fis.config.set(<span class="string">'roadmap.path'</span>, [</span><br><span class="line">    &#123;</span><br><span class="line">        reg: <span class="regexp">/^\/css\/(.*\.png)$/i</span>,</span><br><span class="line">        release: <span class="string">'/images/$1'</span></span><br><span class="line">    &#125;</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+<p>最后，附上FIS帮助命令、以及测试项目地址：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fis -h  <span class="comment">// 基本</span></span><br><span class="line">fis release -h  <span class="comment">// 发布相关</span></span><br></pre></td></tr></table></figure>
+<a href="/2015/05/26/fis-start-course/before.html" title="处理前">处理前</a>  -&gt;  <a href="/2015/05/26/fis-start-course/after.html" title="处理后">处理后</a>
+<p>以上就是FIS之初体验。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

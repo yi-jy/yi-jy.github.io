@@ -1,0 +1,49 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>桌面提示</title>
+</head>
+
+<body>
+
+
+
+
+
+
+<input type="button" value="请求桌面提示" id="requestButton"/>
+</body>
+</html>
+
+<script type="text/javascript">
+ if(window.webkitNotifications){
+    // 支持桌面提醒
+    var requestButton = document.getElementById("requestButton");
+    requestButton.addEventListener( "click" , function(){
+        window.webkitNotifications.requestPermission(function(){
+          if(window.webkitNotifications.checkPermission()==0){
+          //该方法返回0, 1, 2三个值 ，0表示允许，1和2表示不允许
+           var iconURL = "http://yi-jy.com/images/my-photo.jpg",
+           title = "桌面提示标题",
+           body = "这是一个桌面提示的demo，它仅仅是用于演示而已，如果你对此感兴趣，可以查看页面源代码！本消息框5s后自动关闭！";
+             desktopTips = window.webkitNotifications.createNotification(iconURL, title, body);
+         desktopTips.show();
+         // 5s后消失
+         timer = setTimeout(function(){
+           desktopTips.cancel();
+         },5000);
+         // 消失提示
+         desktopTips.addEventListener( "close" , function(){ alert("消息框关闭了！") } , false );
+        }
+      });
+    } , false);
+ }
+ else{
+    // 不支持桌面提醒
+    alert("不支持桌面提示")
+ }
+
+</script>
+

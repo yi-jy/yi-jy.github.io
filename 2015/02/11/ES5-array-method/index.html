@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="ES5新增数组方法 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="forEach map filter every some indexOf reduce">
+  
+
+  
+
+  <title>ES5新增数组方法 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">ES5新增数组方法</h1>
+
+  <time class="post-time">2015-02-11</time>
+
+  <div class="post-content">
+    <p>在之前，我们要处理数组中的每一项，或者筛选出符合条件的项，通常操作都是使用 for 循环，然后逐个按照对应条件进行判断。</p>
+<p>但现在你无需这么麻烦了，因为ES5里增加了一些相应的方法，它们可以满足与数组相关的日常需求。来看看都有哪些方法：</p>
+<a id="more"></a>
+<h3 id="迭代-forEach"><a href="#迭代-forEach" class="headerlink" title="迭代 - forEach"></a>迭代 - forEach</h3><p><code>forEach</code> 对数组的每一项执行一个方法，它的基本语法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">array.forEach(callback(item, index, array)&#123;</span><br><span class="line">  <span class="comment">//do something</span></span><br><span class="line">&#125;, <span class="keyword">this</span>)</span><br></pre></td></tr></table></figure>
+<p>参数解释：</p>
+<ul>
+<li>callback：数组每项需执行的函数<ol>
+<li>item：当前项</li>
+<li>index：索引值</li>
+<li>array：迭代的数组</li>
+</ol>
+</li>
+<li>this：可选，callback里面绑定的this</li>
+</ul>
+<p>它的返回值是 <code>undefined</code>，即你不能用该方法来生成一个新数组。</p>
+<p>首先，我们用它来打印一个数组：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>];</span><br><span class="line"></span><br><span class="line">arr.forEach(<span class="built_in">console</span>.log);</span><br><span class="line"><span class="comment">// 1 0 [1, 3, 5]</span></span><br><span class="line"><span class="comment">// 3 1 [1, 3, 5]</span></span><br><span class="line"><span class="comment">// 5 2 [1, 3, 5]</span></span><br></pre></td></tr></table></figure>
+<p>再来对数组进行操作，比如数组每项加倍：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 简单数组</span></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> result = arr.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">item, index, array</span>) </span>&#123;</span><br><span class="line">  array[index] = <span class="number">2</span>*item;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(arr);</span><br><span class="line"><span class="comment">// [2, 6, 10]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 复合数组</span></span><br><span class="line"><span class="keyword">var</span> arr1 = [&#123;<span class="attr">num</span>: <span class="number">1</span>&#125;, &#123;<span class="attr">num</span>: <span class="number">3</span>&#125;];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> result = arr1.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">item, index, array</span>) </span>&#123;</span><br><span class="line">  item.num *= <span class="number">2</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(arr1);</span><br><span class="line"><span class="comment">// [&#123;num: 2&#125;, &#123;num: 6&#125;]</span></span><br></pre></td></tr></table></figure>
+<p>对于简单数组，因为数组的每项是基本数据类型，所以只能用 <code>array[index]</code> 来进行赋值。</p>
+<p>需要注意的是，<code>forEach</code> 方法不能跳出循环，除非在函数内部抛出一个异常。</p>
+<p>前面说到，<code>forEach</code> 方法的返回值是 <code>undefined</code>，所以你不能使用它来生成一个新数组。倘若你非要使用它来生成一个新数组的话，那么可以利用它的第二个参数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> result = [];</span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>];</span><br><span class="line"></span><br><span class="line">arr.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">item, index, array</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.push(item * <span class="number">2</span>);</span><br><span class="line">&#125;, result);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(arr, result);</span><br><span class="line"><span class="comment">// [1, 3, 5] [2, 6, 10]</span></span><br></pre></td></tr></table></figure>
+<p>其实，这只是一种折中的方法，要生成新数组，或许使用 <code>map</code> 更适合。</p>
+<h3 id="迭代-map"><a href="#迭代-map" class="headerlink" title="迭代 - map"></a>迭代 - map</h3><p>该方法会创建一个新数组，这个数组的每项是经过 <code>callback</code> 处理过的。语法如下:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> new_array = arr.map(<span class="function"><span class="keyword">function</span> <span class="title">callback</span>(<span class="params">item, index, array</span>) </span>&#123; </span><br><span class="line">    <span class="comment">// Return element for new_array </span></span><br><span class="line">&#125;[, <span class="keyword">this</span>])</span><br></pre></td></tr></table></figure>
+<p>参数解释：</p>
+<ul>
+<li>callback：数组每项需执行的函数<ol>
+<li>item：当前项</li>
+<li>index：索引值</li>
+<li>array：迭代的数组</li>
+</ol>
+</li>
+<li>this：可选，callback里面绑定的this</li>
+</ul>
+<p>它的返回值是一个经过<code>callback</code>处理过的新数组。用法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> result = arr.map(<span class="function"><span class="keyword">function</span>(<span class="params">item, index, array</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> item * <span class="number">2</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(arr, result);</span><br><span class="line"><span class="comment">// [1, 3, 5] [2, 6, 10]</span></span><br></pre></td></tr></table></figure>
+<p>上面的代码中，result 就是我们新生成的数组。arr 还是那个 arr，<code>map</code> 并不会改变原有数组。</p>
+<p>再来一个求绝对值的例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> numbers = [<span class="number">-1</span>, <span class="number">3</span>, <span class="number">-5</span>];</span><br><span class="line"><span class="keyword">var</span> result = numbers.map(<span class="built_in">Math</span>.abs);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(numbers, result);</span><br><span class="line"><span class="comment">// [-1, 3, -5] [1, 3, 5]</span></span><br></pre></td></tr></table></figure>
+<h3 id="迭代-filter"><a href="#迭代-filter" class="headerlink" title="迭代 - filter"></a>迭代 - filter</h3><p>顾名思义，<code>filter</code> 用于从数组里筛选出符合条件的项，它的语法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> new_array = arr.filter(callback[, thisArg])</span><br></pre></td></tr></table></figure>
+<p>参数如下：</p>
+<ul>
+<li>callback：用来测试数组每项的函数。调用时使用参数 (element, index, array)。<br>返回true表示保留该元素（通过测试），false则不保留。</li>
+<li>thisArg： 可选。执行 callback 时的用于 this 的值</li>
+</ul>
+<p>它的返回值是 数组里通过callback测试所有项的集合，该集合是一个数组。</p>
+<p>比如，筛选60分以上的学生：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> pointList = [&#123;<span class="attr">name</span>: <span class="string">'user1'</span>, <span class="attr">point</span>: <span class="number">80</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'user2'</span>, <span class="attr">point</span>: <span class="number">57</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'user3'</span>, <span class="attr">point</span>: <span class="number">72</span>&#125;];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> passList = pointList.filter(<span class="function"><span class="keyword">function</span>(<span class="params">item, index, array</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> item.point &gt;= <span class="number">60</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(pointList, passList);</span><br><span class="line"><span class="comment">// [&#123;name: 'user1', point: 80&#125;, &#123;name: 'user2', point: 57&#125;, &#123;name: 'user3', point: 72&#125;]</span></span><br><span class="line"><span class="comment">// [&#123;name: 'user1', point: 80&#125;, &#123;name: 'user3', point: 72&#125;]</span></span><br></pre></td></tr></table></figure>
+<p>它也不会改变原有数组。</p>
+<h3 id="迭代-every"><a href="#迭代-every" class="headerlink" title="迭代 - every"></a>迭代 - every</h3><p><code>every</code> 方法检测数组里的<strong>所有项是否都</strong>满足指定函数定义的条件，它的语法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr.every(callback[, thisArg])</span><br></pre></td></tr></table></figure>
+<p>参数如下：</p>
+<ul>
+<li>callback：用来测试数组每项的函数</li>
+<li>thisArg：执行 callback 时使用的 this 值</li>
+</ul>
+<p>它的返回值是 一个布尔值，取决于数组里是否所有项都满足指定函数定义的条件，如果是，则返回 <code>true</code>，否者返回 <code>false</code>。用法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> pointList = [&#123;<span class="attr">name</span>: <span class="string">'user1'</span>, <span class="attr">point</span>: <span class="number">80</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'user2'</span>, <span class="attr">point</span>: <span class="number">57</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'user3'</span>, <span class="attr">point</span>: <span class="number">72</span>&#125;];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> isAllPass = pointList.every(<span class="function"><span class="keyword">function</span>(<span class="params">item, index, array</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> item.point &gt;= <span class="number">60</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(isAllPass);</span><br><span class="line"><span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<p>上面的代码，判断是否所有的学生都及格了。由于 “user2” 为 57分，所有 isAllPass 的值为 <code>false</code>。</p>
+<p>需要注意的是，该方法若遇到返回 <code>false</code>（不满足条件）的数组项，则立马退出循环。</p>
+<h3 id="迭代-some"><a href="#迭代-some" class="headerlink" title="迭代 - some"></a>迭代 - some</h3><p>相对于 <code>every</code>，<code>some</code> 方法的“条件”则比较宽松。该方法检测数组里的<strong>是否存在某项</strong>满足指定函数定义的条件，它的语法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr.some(callback[, thisArg])</span><br></pre></td></tr></table></figure>
+<p>参数如下：</p>
+<ul>
+<li>callback：用来测试数组每项的函数</li>
+<li>thisArg：执行 callback 时使用的 this 值</li>
+</ul>
+<p>它的返回值是 一个布尔值，取决于数组里是否存在某项满足指定函数定义的条件，如果没有一项满足，则返回 <code>false</code>，否者返回 <code>true</code>。</p>
+<p>以下代码检测是否存在不及格学生：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> pointList = [&#123;<span class="attr">name</span>: <span class="string">'user1'</span>, <span class="attr">point</span>: <span class="number">80</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'user2'</span>, <span class="attr">point</span>: <span class="number">57</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'user3'</span>, <span class="attr">point</span>: <span class="number">72</span>&#125;];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> isHasFail = pointList.some(<span class="function"><span class="keyword">function</span>(<span class="params">item, index, array</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> item.point &lt; <span class="number">60</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(isHasFail);</span><br><span class="line"><span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>需要注意的是，该方法若遇到返回 <code>true</code>（满足条件）的数组项，则立马退出循环。</p>
+<h3 id="查找-indexOf、lastIndexOf"><a href="#查找-indexOf、lastIndexOf" class="headerlink" title="查找 indexOf、lastIndexOf"></a>查找 indexOf、lastIndexOf</h3><p>倘若你希望在数组里查找是否存在某项，你可以使用 <code>indexOf</code> 方法，它返回指定内容在数组里索引，如果没有找到，则返回 -1。语法如下:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr.indexOf(searchElement[, fromIndex = <span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<p>参数如下：</p>
+<ul>
+<li>searchElement：要查找的项</li>
+<li>fromIndex： 可选，表示开始查找的位置。如果该索引值大于或等于数组长度，意味着不会在数组里查找，返回-1。如果该参数为负数，则查出位置为 数组长度 + 该负数。如果相关结果仍然为负数，则整个数组都将会被查询，从0开始。</li>
+</ul>
+<p>用法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">[<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>].indexOf(<span class="number">8</span>); <span class="comment">// -1</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>].indexOf(<span class="number">3</span>); <span class="comment">// 1</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>].indexOf(<span class="number">5</span>); <span class="comment">// 2</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">5</span>, <span class="number">9</span>].indexOf(<span class="number">5</span>, <span class="number">3</span>); <span class="comment">// 4</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">5</span>, <span class="number">9</span>].indexOf(<span class="number">5</span>, <span class="number">-3</span>); <span class="comment">// 4</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">5</span>, <span class="number">9</span>].indexOf(<span class="number">5</span>, <span class="number">-20</span>); <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+<p><code>lastIndexOf</code> 方法返回指定内容在数组里最后的索引，如果不存在，则返回 -1。语法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr.lastIndexOf(searchElement[, fromIndex = arr.length - <span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<ul>
+<li>searchElement：查找项</li>
+<li>fromIndex：可选，从此位置开始逆向查找，默认为 arr.length - 1</li>
+</ul>
+<p>用法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">[<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>].lastIndexOf(<span class="number">8</span>); <span class="comment">// -1</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">5</span>, <span class="number">9</span>].lastIndexOf(<span class="number">5</span>); <span class="comment">// 4</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">5</span>, <span class="number">9</span>].lastIndexOf(<span class="number">5</span>, <span class="number">3</span>); <span class="comment">// 2</span></span><br><span class="line">[<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">5</span>, <span class="number">9</span>].lastIndexOf(<span class="number">5</span>, <span class="number">-5</span>); <span class="comment">// -1</span></span><br></pre></td></tr></table></figure>
+<h3 id="累计-reduce、reduceRight"><a href="#累计-reduce、reduceRight" class="headerlink" title="累计 reduce、reduceRight"></a>累计 reduce、reduceRight</h3><p><code>reduce</code> 方法用于累计数组里的某个值。它的语法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">arr.reduce(callback[, initialValue])</span><br></pre></td></tr></table></figure>
+<p>参数如下：</p>
+<ul>
+<li>callback：处理数组每项的函数<ol>
+<li>accumulator：累加器累加回调的返回值，它是上一次调用回调时返回的累积值</li>
+<li>currentValue：当前处理的数组项</li>
+<li>currentIndex： 当前处理的数组项的索引</li>
+<li>array：被处理的数组</li>
+</ol>
+</li>
+<li>initialValue：可选，用作第一个调用 callback的第一个参数的值。</li>
+</ul>
+<p>它的返回值是累计处理的结果。</p>
+<p>求数组总和：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> pointList = [<span class="number">80</span>, <span class="number">57</span>, <span class="number">72</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> total = pointList.reduce(<span class="function"><span class="keyword">function</span>(<span class="params">accumulator, item, index, array</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(accumulator, item);</span><br><span class="line">  <span class="keyword">return</span> accumulator + item;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(total); <span class="comment">// 209</span></span><br><span class="line"><span class="comment">// 80 57</span></span><br><span class="line"><span class="comment">// 137 72</span></span><br></pre></td></tr></table></figure>
+<p>合并多个数组：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [[<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>], [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>], [<span class="string">'I'</span>, <span class="string">'Ⅱ'</span>, <span class="string">'Ⅲ'</span>]];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> result = arr.reduce(<span class="function"><span class="keyword">function</span>(<span class="params">accumulator, item, index, array</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(accumulator, item);</span><br><span class="line">  <span class="keyword">return</span> accumulator.concat(item);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(result); <span class="comment">// [1, 3, 5, "a", "b", "c", "I", "Ⅱ", "Ⅲ"]</span></span><br><span class="line"><span class="comment">// [1, 3, 5] ["a", "b", "c"]</span></span><br><span class="line"><span class="comment">// [1, 3, 5, "a", "b", "c"] ["I", "Ⅱ", "Ⅲ"]</span></span><br></pre></td></tr></table></figure>
+<p>和 <code>reduce</code> 一样，<code>reduceRight</code> 方法也是做累计处理的，只不过从数组的最末项开始处理。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="string">'u'</span>, <span class="string">'o'</span>, <span class="string">'y'</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> result = arr.reduceRight(<span class="function"><span class="keyword">function</span>(<span class="params">accumulator, item, index, array</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(accumulator, item);</span><br><span class="line">  <span class="keyword">return</span> accumulator + item;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(result); <span class="comment">// you</span></span><br><span class="line"><span class="comment">// y o</span></span><br><span class="line"><span class="comment">// yo u</span></span><br></pre></td></tr></table></figure>
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

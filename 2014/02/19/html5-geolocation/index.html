@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="HTML5获取地理位置之Geolocation | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="clearWatch  Geolocation  getCurrentPosition  position.coords  watchPosition">
+  
+
+  
+
+  <title>HTML5获取地理位置之Geolocation | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">HTML5获取地理位置之Geolocation</h1>
+
+  <time class="post-time">2014-02-19</time>
+
+  <div class="post-content">
+    <p>地图在我们日常出行中必不可少，由于纸质地图的更新慢、非动态，查询费时，所以那个年代早已一去不复返。现代网络地图已经强大到足够满足我们日程需求，特别是你在地图上查找位置时，它会智能的给你提供路线方案和路程时间。你也用它来更新你当前位置的信息，虽然耗流量，但的确是一款非常不错的应用。</p>
+<a id="more"></a>
+<p>在HTML5中定义了geolocation，它可以获取当前地址位置的经度、维度、准确度、海拔、海拔准确度、行进方向、地面速度、时间戳诸类特性。如果使用geolocation结合百度地图API还能获取你周围的地图信息。</p>
+<p>那么HTML5中geolocation是如何获取地理信息的呢？主要是通过以下几种方式：</p>
+<ul>
+<li>IP地址</li>
+<li>基站</li>
+<li>GPS全球定位系统</li>
+<li>wifi无线网络</li>
+</ul>
+<p>这里需要注意，使用geolocation前，浏览器会提醒你，是否共享你的位置信息。只有共享后才能使用geolocation的相关功能。如果要在手机上使用geolocation获取很准确的位置，则您的手机必须有GPS。</p>
+<h2 id="geolocation-函数"><a href="#geolocation-函数" class="headerlink" title="geolocation 函数"></a>geolocation 函数</h2><p>geolocation 定义了三个函数，分别是getCurrentPosition()、watchPosition()和clearWatch()，接下来逐个介绍：</p>
+<h3 id="getCurrentPosition"><a href="#getCurrentPosition" class="headerlink" title="getCurrentPosition()"></a>getCurrentPosition()</h3><p>getCurrentPosition函数可接受三个参数，分别是地理位置获取成功的处理，地理位置获取失败的处理，以及地理位置获取的相关设置，返回的是一组数据。当然这里接受的参数名你也可自定义：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">getCurrentPosition(locationSuccess,locationFail,positionOptions);</span><br></pre></td></tr></table></figure>
+<p>然后我们分别来介绍着三个参数：</p>
+<p><strong>locationSuccess</strong>—-获取地理位置成功后，我们可以进一步获取地理位置的相关属性 ：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>coords.longitude</td>
+<td>经度</td>
+</tr>
+<tr>
+<td>coords.latitude</td>
+<td>维度</td>
+</tr>
+<tr>
+<td>coords.accuracy</td>
+<td>位置的准确度</td>
+</tr>
+<tr>
+<td>coords.altitude</td>
+<td>海拔</td>
+</tr>
+<tr>
+<td>coords.altitudeAcuracy</td>
+<td>海拔准确度</td>
+</tr>
+<tr>
+<td>coords.heading</td>
+<td>移动方向</td>
+</tr>
+<tr>
+<td>coords.speed</td>
+<td>移动速度</td>
+</tr>
+<tr>
+<td>new Date(Position.timestamp)</td>
+<td>相应时间</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">locationSuccess</span>(<span class="params">position</span>) </span>&#123;</span><br><span class="line">　　<span class="keyword">var</span> positionInfo=<span class="string">""</span>, posCoords=position.coords;</span><br><span class="line"></span><br><span class="line">　　positionInfo += <span class="string">"经度:"</span>+posCoords.longitude+<span class="string">"&lt;br/&gt;"</span>;</span><br><span class="line">　　positionInfo += <span class="string">"纬度:"</span>+posCoords.latitude+<span class="string">"&lt;br/&gt;"</span>;</span><br><span class="line">　　positionInfo += <span class="string">"准确度:"</span>+posCoords.accuracy+<span class="string">"&lt;br/&gt;"</span>;</span><br><span class="line">　　positionInfo += <span class="string">"海拔:"</span>+posCoords.altitude+<span class="string">"&lt;br/&gt;"</span>; <span class="comment">// 需支持gps</span></span><br><span class="line">　　positionInfo += <span class="string">"海拔准确度:"</span>+posCoords.altitudeAcuracy+<span class="string">"&lt;br/&gt;"</span>;</span><br><span class="line">　　positionInfo += <span class="string">"行进方向:"</span>+posCoords.heading+<span class="string">"&lt;br/&gt;"</span>;</span><br><span class="line">　　positionInfo += <span class="string">"地面速度:"</span>+posCoords.speed+<span class="string">"&lt;br/&gt;"</span>;</span><br><span class="line"></span><br><span class="line">　　<span class="keyword">return</span> positionInfo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>locationFail</strong>—-倘若获取地理位置失败，则函数会返回一个错误编码，这个编码包括四种情况：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UNKNOW_ERROR–0</td>
+<td>未知错误</td>
+</tr>
+<tr>
+<td>PERMISSION_DENIED–1</td>
+<td>用户拒绝对地理位置的要求</td>
+</tr>
+<tr>
+<td>POSITION_UNAVALIABLE–2</td>
+<td>位置信息不可用</td>
+</tr>
+<tr>
+<td>TIMEOUT–3</td>
+<td>获取用户位置超时</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">locationFail</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">switch</span>(error.code)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">case</span> error.PERMISSION_DENIED:</span><br><span class="line">        alert(<span class="string">"用户拒绝对地理位置的要求"</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> error.POSITION_UNAVAILABLE:</span><br><span class="line">        alert(<span class="string">"位置信息不可用"</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> error.TIMEOUT:</span><br><span class="line">        alert(<span class="string">"获取用户位置超时"</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> error.UNKNOWN_ERROR:</span><br><span class="line">        alert(<span class="string">"未知错误"</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>locationOptions</strong>—地理位置获取的相关设置，locationOptions是以json数据格式存在的，其中包含三个可选属性：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>enableHighAcuracy</td>
+<td>是否获取高精度的位置，默认为false</td>
+</tr>
+<tr>
+<td>timeout</td>
+<td>指定获取地理位置的超时时间，默认不限时，单位为毫秒</td>
+</tr>
+<tr>
+<td>maximumAge</td>
+<td>重复获取地理位置的时间间隔，适用移动设备。</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> positionOptions = &#123;</span><br><span class="line">  enableHighAcuracy : <span class="literal">true</span>, </span><br><span class="line">  timeout : <span class="number">5000</span>,</span><br><span class="line">  maximumAge : <span class="number">5000</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="watchPosition"><a href="#watchPosition" class="headerlink" title="watchPosition()"></a>watchPosition()</h3><p>之前说到的getCurrentPosition只能单次获取地理位置，而对于移动的目标来说，要隔一段时间就需获取位置，如果我们设置定时器每隔一段时间去获取位置的话，则它会每次都提醒否要共享位置，而我们希望的是它能够自动更新当前地理位置。</p>
+<p>因此， geolocation定义了watchPosition方法，这个函数的用法与getCurrentPosition一样。不同的是，它是根据locationOptions设置的maximumAge来间隔性发送获取地理位置信息的请求，且不会每次提醒你是否共享位置信息，而是自动更新地理位置。所以这种方法更适用于移动的目标。</p>
+<h3 id="clearWatch"><a href="#clearWatch" class="headerlink" title="clearWatch()"></a>clearWatch()</h3><p>除了获取地理位置外，geolocation 还定义了clearWath()方法来关闭地理位置更新请求。此函数接受一个参数，即指定发送多次请求地理位置的那个对象。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> getPos = navigator.geolocation.watchPosition(locationSuccess, locationFail, locationOptions);</span><br><span class="line"></span><br><span class="line">navigator.geolocation.clearWatch(getPos);</span><br></pre></td></tr></table></figure>
+<p>最后要说的是，通过geolocation获取地理位置并非每次都成功，毕竟它也规定了一些错误编码，此时我们要做的，就是刷新网页，手动发送请求。</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>若只是用geolocation单纯的来获取经纬度其实并不大实用，它的强大功能主要通过与百度地图API结合获取当前地图信息。有关百度API信息详见：</p>
+<p>百度Api介绍：<a href="http://developer.baidu.com/map/jshome.htm" target="_blank" rel="noopener">http://developer.baidu.com/map/jshome.htm</a><br>功能模块代码：<a href="http://developer.baidu.com/map/jsdemo.htm" target="_blank" rel="noopener">http://developer.baidu.com/map/jsdemo.htm</a></p>
+<p>最后做了个小demo: <a href="/2014/02/19/html5-geolocation/html5-geolocation.html" title="Geolocation获取地理位置">Geolocation获取地理位置</a></p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="css预处理器–Sass语法 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="sass语法">
+  
+
+  
+
+  <title>css预处理器–Sass语法 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">css预处理器–Sass语法</h1>
+
+  <time class="post-time">2013-09-14</time>
+
+  <div class="post-content">
+    <p>由于css没有变量、函数、运算符等特性，因此在编写它的时候会显得比较冗余和麻烦。所以就有css预处理器，它引入了变量、嵌套、运算、函数、继承等概念。让css的编写起来得心应手，并且后期维护性也高。</p>
+<p>提到css预处理器，最常见的有Sass、Less CSS、Stylus。但听说Sass相对其他优势不少，因此，此篇就说Sass的语法。</p>
+<a id="more"></a>
+<h3 id="一-变量"><a href="#一-变量" class="headerlink" title="一. 变量"></a>一. 变量</h3><p>如上所说的，Sass可以定义变量，并且这些变量都是以$开始，这样我们就可以直接在元素里引用变量，当需要更改元素css属性值时，只需改变变量即可全部替换。</p>
+<p>简单的定义变量：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">$width:1000px;</span><br><span class="line"><span class="selector-class">.box</span>&#123;<span class="attribute">width</span>:$width;&#125;</span><br></pre></td></tr></table></figure>
+<p>定义属性和变量</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">$width:100px;</span><br><span class="line">$ml:left;</span><br><span class="line">.box &#123;margin-#&#123;$ml&#125;:$width;&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="二-嵌套"><a href="#二-嵌套" class="headerlink" title="二. 嵌套"></a>二. 嵌套</h3><p>传统的css中，当我们需要给box元素加width属性，并且给它的子元素content加height属性，还要给content里的a标签加颜色属性时，我们会这样写：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.box</span>&#123;<span class="attribute">width</span>:;&#125;</span><br><span class="line"><span class="selector-class">.box</span> <span class="selector-class">.content</span>&#123;<span class="attribute">height</span>:;&#125;</span><br><span class="line"><span class="selector-class">.box</span> <span class="selector-class">.content</span> <span class="selector-tag">a</span>&#123;<span class="attribute">color</span>:;&#125;</span><br></pre></td></tr></table></figure>
+<p>但是在Sass中，它是这样做的，通过层层嵌套：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">$width:1000px;</span><br><span class="line">$height:100px;</span><br><span class="line"><span class="selector-tag">color</span>:<span class="selector-id">#000</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.box</span>&#123;</span><br><span class="line">    <span class="attribute">width</span>:$width;</span><br><span class="line">    .content&#123;</span><br><span class="line">        height:$height;</span><br><span class="line">        <span class="selector-tag">a</span>&#123;</span><br><span class="line">            <span class="attribute">color</span>:<span class="number">#000</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="三-继承"><a href="#三-继承" class="headerlink" title="三. 继承"></a>三. 继承</h3><p>所谓继承，也就是把定义的一个类，直接添加到作用类的css中。其实它完全可以通过组合class选择器来实现的，只不过这里存在着变量的概念。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.ptb10</span>&#123;<span class="attribute">padding</span>:<span class="number">10px</span> <span class="number">0</span>;&#125;</span><br><span class="line"><span class="selector-class">.box</span>&#123;</span><br><span class="line">    <span class="attribute">margin</span>:<span class="number">10px</span> <span class="number">0</span>;</span><br><span class="line">    @extend .ptb10;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="四-混入（-Mixin）"><a href="#四-混入（-Mixin）" class="headerlink" title="四.混入（ Mixin）"></a>四.混入（ Mixin）</h3><p>在Sass中引入了Mixin这个一个功能，它就像javascript里面的函数，定义之后可以重复调用，并且还带有类似参数功能。如果引用时没带参数，则是使用默认参数。反之则使用实参。Mixin是通过@include来调用的：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">@<span class="keyword">mixin</span> ml($value:<span class="number">10px</span>) &#123;</span><br><span class="line">　　　　margin-left:$value;</span><br><span class="line">　　&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.box</span>&#123;</span><br><span class="line">    @include ml(20px);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="五-运算符"><a href="#五-运算符" class="headerlink" title="五. 运算符"></a>五. 运算符</h3><p>曾经也在css使用过运算符，比如ie6下的expression表达式。但常规的css代码并不支持“+”、“-”、“*”、“/”这些运算符，而在Sass中，则引入运算符的处理：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.box</span>&#123;</span><br><span class="line">    <span class="attribute">width</span>:<span class="number">200px</span>+<span class="number">300px</span>;</span><br><span class="line">    <span class="attribute">height</span>:<span class="number">300px</span>-<span class="number">200px</span>;</span><br><span class="line">    <span class="attribute">left</span>:<span class="number">3</span>*<span class="number">10px</span>;</span><br><span class="line">    <span class="attribute">top</span>:(<span class="number">60px</span>/<span class="number">2</span>);     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="六-颜色函数"><a href="#六-颜色函数" class="headerlink" title="六. 颜色函数"></a>六. 颜色函数</h3><p>Sass定义了一些改变原有颜色的函数，以下列出主要几种，它们分别是：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">$color1:#F90;</span><br><span class="line"></span><br><span class="line">lighten($color1,10%)  /*将颜色调成$color1变亮的10%*/</span><br><span class="line"> </span><br><span class="line">darken($color1,10%)  /*将颜色调成$color1变暗的10%*/</span><br><span class="line"></span><br><span class="line">grayscale($color1)    /*将颜色调成$color1的灰度色*/</span><br><span class="line"></span><br><span class="line">mix($color1,$color2,50%)  /*将颜色调成分别以两种颜色的50%色值的混合*/</span><br></pre></td></tr></table></figure>
+<h3 id="七-css3浏览器前缀"><a href="#七-css3浏览器前缀" class="headerlink" title="七. css3浏览器前缀"></a>七. css3浏览器前缀</h3><p>因为css3的某些属性在不同浏览器需要加对应的前缀，这让我们在编写时显得繁琐。而Sass利用混合（mixin）即可做到让元素属性生成浏览器前缀，因此Sass这个功能是非常实用的。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">@<span class="keyword">mixin</span> transform($value:<span class="number">10deg</span>) &#123;</span><br><span class="line">    -webkit-transform:rotate($value);</span><br><span class="line">       -moz-transform:rotate($value);</span><br><span class="line">        -ms-transform:rotate($value);</span><br><span class="line">         -o-transform:rotate($value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.box</span>&#123;</span><br><span class="line">    @include transform(20deg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>sass还支持 if 的判断以及 for,while 的循环，但个人暂未对这些语法进行运用，故此处未列出。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+</head>
+
+<body>
+<iframe src="b_iframe.html" id="Iframe" frameborder="1" scrolling="" style="width:100%;border:1px solid;"></iframe>
+<input type="button" value="我是主页面按钮，点击我可以改变iframe页面的元素属性" id="btn01"/>
+</body>
+</html>
+
+<script type="text/javascript">
+	var oIframe=document.getElementById("Iframe"),
+		oBtn01=document.getElementById("btn01");
+	
+	oBtn01.onclick=function(){
+		//oIframe.contentWindow.document.getElementById("box").style.background="#fec";
+		// 所有浏览器支持
+		oIframe.contentDocument.getElementById("btn02").style.width="100%";
+		// IE6和IE7不支持
+		
+	}
+	
+	//防止被引用
+	if(window!=window.top){
+		window.top.location.href=window.location.href;
+	}
+	
+	
+</script>

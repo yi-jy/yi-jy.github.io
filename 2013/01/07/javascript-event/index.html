@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="javascript事件绑定与解除 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="attachEvent addEventListener">
+  
+
+  
+
+  <title>javascript事件绑定与解除 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">javascript事件绑定与解除</h1>
+
+  <time class="post-time">2013-01-07</time>
+
+  <div class="post-content">
+    <p>今天要说的是javascript里面的事件绑定。何为事件绑定，为什么要用事件绑定，如何解除事件绑定，事件绑定有哪些使用条件以及兼容性，下面我们就以上几方面做分部的介绍：</p>
+<a id="more"></a>
+<h3 id="何为事件绑定"><a href="#何为事件绑定" class="headerlink" title="何为事件绑定"></a>何为事件绑定</h3><p>所谓的事件绑定就是给对象用事件绑定多个函数，以达到对一对象绑定某个事件运行多个函数的目的。</p>
+<ul>
+<li>IE方式: 对象.attachEvent(事件名 ,  函数)； // 两个参数，当中事件名包括onclick ,onmouseover等</li>
+<li>DOM方式: 对象.addEventListener(事件名, 函数 ,  是否捕获 )  // 三个参数，当中事件名包括click ,mouseover等，注意这里没有on  。 而且“是否捕获” 大多数为false</li>
+</ul>
+<h3 id="为什么要用事件绑定"><a href="#为什么要用事件绑定" class="headerlink" title="为什么要用事件绑定"></a>为什么要用事件绑定</h3><p>上面介绍了事件绑定的概念以及它的函数运用。那现在就要说说为什么要用事件绑定，正如它的概念所说的，它是绑定一个事件，运行多个函数。怎么理解呢？打一个最简单的比方，点击一个按钮，要运行函数a， 之后接着又要运行函数b。有如下代码：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">a</span><span class="params">()</span></span>&#123;alert(<span class="string">"a"</span>)&#125;;</span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">b</span><span class="params">()</span></span>&#123;alert(<span class="string">"b"</span>)&#125;;   </span></span><br><span class="line"><span class="javascript"><span class="built_in">window</span>.onload=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> oBtn=<span class="built_in">document</span>.getElementById(<span class="string">"btn1"</span>);</span></span><br><span class="line"><span class="undefined">    oBtn.onclick=a;</span></span><br><span class="line"><span class="undefined">    oBtn.onclick=b;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"点击"</span> <span class="attr">id</span>=<span class="string">"btn"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>运行结果：因为函数覆盖的原因，所以只会弹出 b， 显然没有达到我们想要的结果。</p>
+<p>下面我们使用事件绑定，将JS代码修改如下：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">a</span><span class="params">()</span></span>&#123;alert(<span class="string">"a"</span>)&#125;;</span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">b</span><span class="params">()</span></span>&#123;alert(<span class="string">"b"</span>)&#125;;</span></span><br><span class="line"><span class="javascript"><span class="keyword">var</span> oBtn=<span class="built_in">document</span>.getElementById(<span class="string">"btn1"</span>);</span></span><br><span class="line"><span class="javascript"><span class="built_in">window</span>.onload=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">if</span>(oBtn.attachEvent)&#123;</span></span><br><span class="line"><span class="actionscript">        oBtn.attachEvent(<span class="string">"onclick"</span>,  a);</span></span><br><span class="line"><span class="actionscript">        oBtn.attachEvent(<span class="string">"onclick"</span>, b);</span></span><br><span class="line"><span class="actionscript">    &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="actionscript">        oBtn.addEventListener(<span class="string">"click"</span>, a, <span class="literal">false</span>);</span></span><br><span class="line"><span class="actionscript">        oBtn.addEventListener(<span class="string">"click"</span>, b,<span class="literal">false</span>);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"点击"</span> <span class="attr">id</span>=<span class="string">"btn"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>结果：在ie 中先弹出b，再弹出a 。而在ff中先弹出a ，再弹出b；虽然在两个浏览器弹出的顺序不一样，但是基本上达到了所要的效果。</p>
+<p>事件绑定对于多个人操作同一代码没有局限性，而且互不影响，所以比较适合一个团队开发同一项目。</p>
+<h3 id="事件绑定的解除"><a href="#事件绑定的解除" class="headerlink" title="事件绑定的解除"></a>事件绑定的解除</h3><p>既然有绑定事件，所以也就有解除绑定，下面列出解除事件绑定的函数：</p>
+<ul>
+<li>IE方式: 对象.detachEvent(事件名 ,  函数);   // 两个参数，当中事件名包括onclick ,onmouseover等</li>
+<li>DOM方式: 对象.removeEventListener(事件名, 函数 ,  是否捕获 ) ;   // 三个参数，当中事件名包括click ,mouseover等，注意这里没有on。 而且“是否捕获” 大多数为false</li>
+</ul>
+<h3 id="事件绑定的使用条件以及兼容性"><a href="#事件绑定的使用条件以及兼容性" class="headerlink" title="事件绑定的使用条件以及兼容性"></a>事件绑定的使用条件以及兼容性</h3><p>由于绑定事件对于各个浏览器的兼容性并不是很友好，而我们又需要经常用到它，因此把它封装好兼容函数是十分有必要的，下面是封装好的绑定事件函数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addEvent</span>(<span class="params">obj, sEvent, fn</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(obj.attachEvent)&#123;</span><br><span class="line">        obj.attachEvent(‘on’+sEvent, fn);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        obj.addEventListener(sEvent, fn, <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样封装好的解除绑定函数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">removeEvent</span>(<span class="params">obj, sEvent, fn</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(obj.detachEvent)&#123;</span><br><span class="line">        obj.detachEvent(‘on’+sEvent, fn);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        obj.removeEventListener(sEvent, fn, <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虽然绑定事件函数用起来很方便，但是也有一些局限性，在这里主要提出两点：</p>
+<p>第一：this 。即在绑定函数里，使用的this并不是代表对象本身。</p>
+<p>第二：匿名函数。即绑定事件里面的函数没有命名（如下代码），而解除绑定事件的函数也没有命名，虽然这两个匿名函数的功能是一样的（这里都是弹出a），但却无法对obj解除这个匿名函数。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">addEvent(obj, sEvent, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;alert(<span class="string">"a"</span>)&#125;)；</span><br><span class="line"></span><br><span class="line">removeEvent(obj, sEvent, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;alert(<span class="string">"a"</span>)&#125;);</span><br></pre></td></tr></table></figure>
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

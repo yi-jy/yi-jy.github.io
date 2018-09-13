@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="ES6-destructuring | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="es6 解构">
+  
+
+  
+
+  <title>ES6中的解构 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">ES6中的解构</h1>
+
+  <time class="post-time">2016-06-12</time>
+
+  <div class="post-content">
+    <p>要储存和设置数据，我们一般采用最多的是单个变量，而对于多个数据、复杂类型的处理，我们则会使用数组或者对象。它们组成了目前最为流行的数据格式 - JSON。而为了更加方便的定义和处理数据，ES6 中引入了 解构(destructuring) 的概念。</p>
+<p>解构的操作主要体现在赋值方面，它可以从数组或者对象中提取数据赋值给不同的变量。解构赋值有对象解构赋值、数组解构赋值。接下来，看看它都有哪些内容。<a id="more"></a></p>
+<h2 id="一、对象解构赋值"><a href="#一、对象解构赋值" class="headerlink" title="一、对象解构赋值"></a>一、对象解构赋值</h2><h3 id="1-1-同名解构赋值"><a href="#1-1-同名解构赋值" class="headerlink" title="1.1 同名解构赋值"></a>1.1 同名解构赋值</h3><p>我们在获取一个对象后，需要提取对象里的属性进行操作，但为了使源对象保持不变，通常我们会用一些变量保存对象里的属性，然后再进行相关操作：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> person = &#123;</span><br><span class="line">    job: <span class="string">'web'</span>,</span><br><span class="line">    age: <span class="number">28</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> job = person.job,</span><br><span class="line">    age = person.age;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(job, age); <span class="comment">// 'web' 28</span></span><br></pre></td></tr></table></figure>
+<p>试想下，如果需要提取对象里的多个变量，那就需要逐个一一声明、赋值，这显然很繁琐，并且增加很多重复的代码。</p>
+<p>针对上面的问题，ES6 引入了 对象解构赋值。可以同时声明多个变量，并且赋值，这极大的方便了数据的操作：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> person = &#123;</span><br><span class="line">    job: <span class="string">'web'</span>,</span><br><span class="line">    age: <span class="number">28</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> &#123;job, age, email&#125; = person;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(job, age, email); <span class="comment">// 'web' 28 undefined</span></span><br></pre></td></tr></table></figure>
+<p>其实上面的代码 <code>{name, age} = person</code> 相当于 <code>{name, age} = {name: &#39;yix&#39;, age: 28}</code>。 <code>{name, age} = person</code> 这个赋值表达式的左边是定义的变量，变量名与对象属性名必须相同，且一一对应。如果对象中找不到对应变量名的属性，则该变量会返回 <code>undefined</code> 。</p>
+<p>如果你要同时改变多个已经声明赋值过的变量的值，你也可以通过以下方式：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> person = &#123;</span><br><span class="line">        job: <span class="string">'web'</span>,</span><br><span class="line">        age: <span class="number">28</span></span><br><span class="line">    &#125;,</span><br><span class="line">    job = <span class="string">'math'</span>,</span><br><span class="line">    age = <span class="number">30</span>;</span><br><span class="line"></span><br><span class="line">(&#123;job, age&#125; = person);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(job, age); <span class="comment">// 'web' 28</span></span><br></pre></td></tr></table></figure>
+<p>或许你已经注意到上面的解构代码被一个小括号括了起来，这是因为如果不用小括号的话，<code>{name, age}</code> 会被当成代码块处理，而这样会引发错误。</p>
+<h3 id="1-2-默认参数"><a href="#1-2-默认参数" class="headerlink" title="1.2 默认参数"></a>1.2 默认参数</h3><p>在写插件时，为了避免用户不设定参数的情况，通常会指定若干个默认参数。而通过上面的例子我们也知道，如果声明的变量未在对象中找到，则会返回 <code>undefined</code>。这当然不是我们希望的，幸好，ES6 允许我们给变量指定默认值，方式如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> person = &#123;</span><br><span class="line">    job: <span class="string">'web'</span>,</span><br><span class="line">    age: <span class="number">28</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> &#123;job, age, email = <span class="string">'abc@126.com'</span>&#125; = person;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(job, age, email); <span class="comment">// 'web' 28 'abc@126.com'</span></span><br></pre></td></tr></table></figure>
+<h3 id="1-3-异名解构赋值"><a href="#1-3-异名解构赋值" class="headerlink" title="1.3 异名解构赋值"></a>1.3 异名解构赋值</h3><p>这里的 <code>异名解构赋值</code> 是相对于上面的 <code>同名解构赋值</code> 而言，前面说了，解构赋值中左边的变量名必须和右边的对象属性名相同，否则无法正常获取对应的属性值。但倘若你就是不想使用同名变量，ES6 也可以满足你，只需要像下面这样：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> person = &#123;</span><br><span class="line">    job: <span class="string">'web'</span>,</span><br><span class="line">    age: <span class="number">28</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> &#123;<span class="attr">job</span>: myJob, <span class="attr">age</span>: myAge&#125; = person;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(myJob, myAge); <span class="comment">// 'web' 28</span></span><br><span class="line"><span class="built_in">console</span>.log(job); <span class="comment">// job is not defined</span></span><br></pre></td></tr></table></figure>
+<p>上面解构代码声明了 <code>myName</code> 和 <code>myAge</code> 这两个变量，而其中的 <code>name</code> 和 <code>age</code> 会读取 <code>person</code> 对象的属性，并把属性值赋值给声明的这两个变量。注意，这里是左边为 “属性值”，右边为 “属性名”，赋值是从左边到右边，而普通对象却是相反，左边属性名，右边则是属性值。</p>
+<p>当然，你也可以在 <code>异名解构赋值</code> 中设置默认值：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> person = &#123;</span><br><span class="line">    job: <span class="string">'web'</span>,</span><br><span class="line">    age: <span class="number">28</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> &#123;<span class="attr">job</span>: myJob, <span class="attr">age</span>: myAge, <span class="attr">email</span>: myEmail = <span class="string">'abc@126.com'</span>&#125; = person;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(myJob, myAge, myEmail); <span class="comment">// 'web' 28 'abc@126.com'</span></span><br></pre></td></tr></table></figure>
+<h3 id="1-4-嵌套解构"><a href="#1-4-嵌套解构" class="headerlink" title="1.4 嵌套解构"></a>1.4 嵌套解构</h3><p>对于一些复杂的对象，我们要获取嵌套在内部很深的属性，通常需要类似 <code>obj.property.propertySon1.propertySon1Son</code> 这样的形式。而使用解构，则能快速获取想要的值，如：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> person = &#123;</span><br><span class="line">    job: <span class="string">'web'</span>,</span><br><span class="line">    age: <span class="number">28</span>,</span><br><span class="line">    course: &#123;</span><br><span class="line">        math: &#123;</span><br><span class="line">            point: <span class="number">80</span>,</span><br><span class="line">            grade: <span class="string">'B'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> &#123;<span class="attr">course</span>: &#123;math&#125;&#125; = person;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(math); <span class="comment">// &#123;point: 80, grade: 'B'&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(course); <span class="comment">// course is not defined</span></span><br></pre></td></tr></table></figure>
+<p>同样地，你也可以在 <code>嵌套解构</code> 中设置 <code>异名解构赋值</code>，只是，看起来会有些混乱：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> person = &#123;</span><br><span class="line">    job: <span class="string">'web'</span>,</span><br><span class="line">    age: <span class="number">28</span>,</span><br><span class="line">    course: &#123;</span><br><span class="line">        math: &#123;</span><br><span class="line">            point: <span class="number">80</span>,</span><br><span class="line">            grade: <span class="string">'B'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> &#123;<span class="attr">course</span>: &#123;<span class="attr">math</span>: point&#125;&#125; = person;</span><br><span class="line"><span class="keyword">var</span> &#123;<span class="attr">course</span>: &#123;<span class="attr">math</span>: myMath&#125;&#125; = person;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(point); <span class="comment">// &#123;point: 80, grade: 'B'&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(myMath); <span class="comment">// &#123;point: 80, grade: "B"&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(math); <span class="comment">// math is not defined</span></span><br><span class="line"><span class="built_in">console</span>.log(course); <span class="comment">// course is not defined</span></span><br></pre></td></tr></table></figure>
+<h2 id="二、数组解构赋值"><a href="#二、数组解构赋值" class="headerlink" title="二、数组解构赋值"></a>二、数组解构赋值</h2><h3 id="2-1-解构赋值"><a href="#2-1-解构赋值" class="headerlink" title="2.1 解构赋值"></a>2.1 解构赋值</h3><p>相比与对象是根据属性来解构，数组则是根据数组项（项位置）来解构。通常而言，我们需要分别写多行来定义一个变量，比如：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> name = <span class="string">'yix'</span>,</span><br><span class="line">    age = <span class="number">28</span>,</span><br><span class="line">    email = [<span class="string">'xx@126.com'</span>, <span class="string">'xx@163.com'</span>];</span><br></pre></td></tr></table></figure>
+<p>但是，如果你通过数组解构的方式来声明赋值，则可以同时声明多个变量：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> info = [<span class="string">'yix'</span>, <span class="number">28</span>, [<span class="string">'xx@126.com'</span>, <span class="string">'xx@163.com'</span>]];</span><br><span class="line"><span class="keyword">var</span> [name, age, email] = info;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(name, age); <span class="comment">// 'yix' 28</span></span><br><span class="line"><span class="built_in">console</span>.log(email); <span class="comment">// ['xx@126.com', 'xx@163.com']</span></span><br></pre></td></tr></table></figure>
+<p>从上面的代码可以知道，左边变量定义的顺序和右边数组 <code>info</code> 中的数组项一一对应，并且变量的值也是对应数组项的值。我们可以尝试着调换变量顺序：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> info = [<span class="string">'yix'</span>, <span class="number">28</span>];</span><br><span class="line"><span class="keyword">var</span> [age, name, job] = info;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(age, name, job); <span class="comment">// 'yix' 28 undefined</span></span><br></pre></td></tr></table></figure>
+<p>由上面的例子，变量顺序调换，数组（值）不变，则第一个变量仍然是对应数组第一项，这也说明了数组的解构是取决于数组项的顺序。而对于没有对应数组项的变量，它的值就是 <code>undefined</code>，这与 ES5 是相同的，即 只声明、不赋值。</p>
+<p>基于是按照顺序来解构这一规则，我们就能请轻松的交换两个变量的值：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="number">1</span>,</span><br><span class="line">    b = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(a, b); <span class="comment">// 1 2</span></span><br><span class="line"></span><br><span class="line">[a, b] = [b, a];</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(a, b); <span class="comment">// 2 1</span></span><br></pre></td></tr></table></figure>
+<p>如果是在 ES5 时期，我们必须借助第三个变量才能完成这项工作。</p>
+<p>或许，你会觉得这个数组解构没有对象解构方便，因为它要一一对应，这和函数中传入多个参数一样，你要判断参数的位置，采取容错措施，而如果你传入的参数是一个对象，你只需要判断对象的属性即可。</p>
+<p>其实这点你大可不必在意，因为数组解构的变量定义中，你可以省略一些变量名称，直接取你需要数组项的值，比如，在下面的代码中，我只需要获取 <code>email</code> 信息，那么我可以通过省略其中的项，只定义我需要的数组项的变量：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> info = [<span class="string">'yix'</span>, <span class="number">28</span>, [<span class="string">'xx@126.com'</span>, <span class="string">'xx@163.com'</span>]];</span><br><span class="line"><span class="keyword">var</span> [, , email] = info;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(email); <span class="comment">// ['xx@126.com', 'xx@163.com'];</span></span><br></pre></td></tr></table></figure>
+<p>如果你要同时改变多个已经声明赋值过的变量的值，你可以通过以下方式：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> info = [<span class="string">'yix'</span>, <span class="number">28</span>];</span><br><span class="line"><span class="keyword">var</span> name = <span class="string">'abc'</span>,</span><br><span class="line">    age = <span class="number">29</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(name, age); <span class="comment">// 'abc' 29</span></span><br><span class="line"></span><br><span class="line">[name, age] = info;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(name, age); <span class="comment">// 'yix' 28</span></span><br></pre></td></tr></table></figure>
+<p>需要注意的是，如果解构的右边不是数组，则会出现语法报错。</p>
+<h3 id="2-2-默认参数"><a href="#2-2-默认参数" class="headerlink" title="2.2 默认参数"></a>2.2 默认参数</h3><p>和对象类似，数组解构中也有默认参数，对于没有对应项数组值的变量来说，而已是再合适不过：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> info = [<span class="string">'yix'</span>];</span><br><span class="line"><span class="keyword">var</span> [name, age = <span class="number">30</span>] = info;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(name, age); <span class="comment">// 'yix' 30</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-3-嵌套解构-和-Rest-参数"><a href="#2-3-嵌套解构-和-Rest-参数" class="headerlink" title="2.3 嵌套解构 和 Rest 参数"></a>2.3 嵌套解构 和 Rest 参数</h3><p>目前为止，我们只看到简单的对应关系。但实际编码过程，可能会存在一些复杂的嵌套解构，但基本原则是不变的：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> info = [<span class="string">'yix'</span>, [<span class="string">'xx@126.com'</span>, <span class="string">'xx@163.com'</span>], <span class="number">28</span>];</span><br><span class="line"><span class="keyword">var</span> [name, [firstEmail], age] = info;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(name, firstEmail, age); <span class="comment">// 'yix' 'xx@126.com' 28</span></span><br></pre></td></tr></table></figure>
+<p>假设定义的变量中存在 Rest 参数，如果 Rest 参数变量有对应的项，则 Rest 参数的值为 剩余数组项所组成的数组。如果没有，则 Rest 参数的值为一个 空数组，来看代码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 有对应项</span></span><br><span class="line"><span class="keyword">var</span> info = [<span class="string">'yix'</span>, <span class="number">28</span>, [<span class="string">'xx@126.com'</span>, <span class="string">'xx@163.com'</span>], <span class="string">'web'</span>];</span><br><span class="line"><span class="keyword">var</span> [name, age, ...restInfo] = info;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(name, age, restInfo); <span class="comment">// 'yix' 28 [['xx@126.com', 'xx@163.com'], 'web']</span></span><br><span class="line"><span class="built_in">console</span>.log(restInfo[<span class="number">0</span>]); <span class="comment">// ['xx@126.com', 'xx@163.com']</span></span><br><span class="line"><span class="built_in">console</span>.log(restInfo[<span class="number">1</span>]); <span class="comment">// 'web'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 无对应项</span></span><br><span class="line"><span class="keyword">var</span> number = [<span class="number">2</span>, <span class="number">1</span>];</span><br><span class="line"><span class="keyword">var</span> [a, b, ...restNumber] = number;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(a, b, restNumber); <span class="comment">// 2 1 []</span></span><br></pre></td></tr></table></figure>
+<h2 id="三、解构特殊值"><a href="#三、解构特殊值" class="headerlink" title="三、解构特殊值"></a>三、解构特殊值</h2><p>在前面，我们对对象、数组进行解构。但需要注意的是，并不是什么值都能解构，我们尝试着把解构的值的数据类型依次设置为 数字、NaN、字符串、null、undefined，看看会得到怎样的结果：</p>
+<p>当解构的值为 数字 时，会抛出一个错误：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> info = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">var</span> &#123;name&#125; = info;</span><br><span class="line"><span class="keyword">var</span> [age] = info;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(name); <span class="comment">// 报错 undefined is not a function</span></span><br><span class="line"><span class="built_in">console</span>.log(age); <span class="comment">// 报错 undefined is not a function</span></span><br></pre></td></tr></table></figure>
+<p>当解构的值为 NaN 时，会抛出一个错误：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> info = <span class="literal">NaN</span>;</span><br><span class="line"><span class="keyword">var</span> &#123;name&#125; = info;</span><br><span class="line"><span class="keyword">var</span> [age] = info;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(name); <span class="comment">// 报错 undefined is not a function</span></span><br><span class="line"><span class="built_in">console</span>.log(age); <span class="comment">// 报错 undefined is not a function</span></span><br></pre></td></tr></table></figure>
+<p>当解构的值为 字符串时，会将字符串先分解(split)成数组：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> info = <span class="string">'ab'</span>;</span><br><span class="line"><span class="keyword">var</span> &#123;name, age, job&#125; = info;</span><br><span class="line"><span class="keyword">var</span> [name1, age1, job1] = info;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(name, age, job); <span class="comment">// undefined undefined undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(name1, age1, job1); <span class="comment">// 'a' 'b' undefined</span></span><br></pre></td></tr></table></figure>
+<p>当解构的值为 null时，也会抛出一个错误：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> info = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">var</span> &#123;name&#125; = info;</span><br><span class="line"><span class="keyword">var</span> [age] = info;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(name); <span class="comment">// 报错 Cannot match against 'undefined' or 'null'</span></span><br><span class="line"><span class="built_in">console</span>.log(age); <span class="comment">// 报错 Cannot match against 'undefined' or 'null'</span></span><br></pre></td></tr></table></figure>
+<p>当解构的值为 undefined 时，同样抛出一个错误：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> info = <span class="literal">undefined</span>;</span><br><span class="line"><span class="keyword">var</span> &#123;name&#125; = info;</span><br><span class="line"><span class="keyword">var</span> [age] = info;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(name); <span class="comment">// 报错 Cannot match against 'undefined' or 'null'</span></span><br><span class="line"><span class="built_in">console</span>.log(age); <span class="comment">// 报错 Cannot match against 'undefined' or 'null'</span></span><br></pre></td></tr></table></figure>
+<h2 id="四、应用"><a href="#四、应用" class="headerlink" title="四、应用"></a>四、应用</h2><h3 id="4-1-复杂的数据提取"><a href="#4-1-复杂的数据提取" class="headerlink" title="4.1 复杂的数据提取"></a>4.1 复杂的数据提取</h3><p>前面也说过，对于一些复杂的对象，我们要获取嵌套在内部很深的属性，无论提取的值是数组还是对象，通常需要类似 obj.property.propertySon1.propertySon1Son 这类操作。</p>
+<p>但如果你用解构，则能轻松的提取想要的信息：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> info = &#123;</span><br><span class="line">    name: <span class="string">'yix'</span>,</span><br><span class="line">    contact: &#123;</span><br><span class="line">        tel: <span class="string">'12345678'</span>,</span><br><span class="line">        email: [<span class="string">'xx@126.com'</span>, <span class="string">'xx@163.com'</span>]</span><br><span class="line">    &#125;,</span><br><span class="line">    activityTime: &#123;</span><br><span class="line">        morning: &#123;</span><br><span class="line">            total: <span class="number">40</span>,</span><br><span class="line">            run: <span class="number">10</span>,</span><br><span class="line">            basketball: <span class="number">30</span></span><br><span class="line">        &#125;,</span><br><span class="line">        night: &#123;</span><br><span class="line">            total: <span class="number">45</span>,</span><br><span class="line">            run: <span class="number">10</span>,</span><br><span class="line">            badminton: <span class="number">35</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> &#123;<span class="attr">contact</span>: &#123;<span class="attr">email</span>: [firstEmail]&#125;, <span class="attr">activityTime</span>: &#123;night&#125;&#125; = info;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(firstEmail, night.total); <span class="comment">// 'xx@126.com' 45</span></span><br></pre></td></tr></table></figure>
+<p>上面的代码的目的是提取 info 对象中联系方式的 第一个邮箱，以及 晚上活动的时间 。</p>
+<h3 id="4-2-函数参数设置"><a href="#4-2-函数参数设置" class="headerlink" title="4.2 函数参数设置"></a>4.2 函数参数设置</h3><p>我们经常会对函数做一些预留参数，如果用户不设置这个参数值，则在程序运行时，该参数会使用我们设定的默认值，而通常的做法，就是使用 <code>或</code> 的方式，如下面的一个简单的 ajax方法 ：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ajax</span>(<span class="params">url, opt</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> method = opt.method || <span class="string">'GET'</span>;</span><br><span class="line">        data = opt.data || &#123;<span class="attr">time</span>: <span class="keyword">new</span> <span class="built_in">Date</span>()/<span class="number">1</span>&#125;;</span><br><span class="line">        dataType = opt.dataType || <span class="string">'json'</span>;</span><br><span class="line">        cache = opt.cache || <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们会对参数对象中的一个或者多个属性设置一个默认值，每个都要设置一遍，这样显得特别繁琐。还记得前面讲到的对象中的默认参数吗？我们可以用它来改下上面的形式，这样一来，代码就变得十分简洁了：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ajax</span>(<span class="params">url, &#123;</span></span></span><br><span class="line"><span class="function"><span class="params">    method = <span class="string">'GET'</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    data = &#123;time: new Date(</span>)/1&#125;,</span></span><br><span class="line"><span class="function">    <span class="title">dataType</span> = '<span class="title">json</span>',</span></span><br><span class="line"><span class="function">    <span class="title">cache</span> = <span class="title">false</span></span></span><br><span class="line"><span class="function">&#125; = </span>&#123;&#125;) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

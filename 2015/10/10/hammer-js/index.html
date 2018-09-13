@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="hammer-js | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="hammer.js 多点触控">
+  
+
+  
+
+  <title>移动端多点触控开发库–hammer.js | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">移动端多点触控开发库–hammer.js</h1>
+
+  <time class="post-time">2015-10-10</time>
+
+  <div class="post-content">
+    <p>在之前的移动端开发中，基础库采用的都是zetpo.js，一些基本的手势交互也是用原生的touch事件完成。但最近一个项目里涉及了拖拽和缩放等一些多点触控的复杂操作，考虑项目时间紧、自己封装多点触控库的复杂，于是就决定使用hammer.js作为多点触控开发库。一个项目用下来，对hammer.js也有大概的认知了。接下来的内容描述了hammer.js的所有触摸行为和一些方法，其中有些方法和属性默认是禁止的，需要手动开启：</p>
+<a id="more"></a>
+<h2 id="一、pan"><a href="#一、pan" class="headerlink" title="一、pan"></a>一、pan</h2><p>定义 ： 平移；手指（或鼠标）按下，拖动页面触发。</p>
+<p>事件：</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pan</td>
+<td>pan所有事件的集合</td>
+</tr>
+<tr>
+<td>panstart</td>
+<td>平移开始</td>
+</tr>
+<tr>
+<td>panmove</td>
+<td>平移过程</td>
+</tr>
+<tr>
+<td>panend</td>
+<td>平移结束</td>
+</tr>
+<tr>
+<td>pancancel</td>
+<td>-</td>
+</tr>
+<tr>
+<td>panleft</td>
+<td>向左平移</td>
+</tr>
+<tr>
+<td>panright</td>
+<td>向右平移</td>
+</tr>
+<tr>
+<td>panup</td>
+<td>向上平移</td>
+</tr>
+<tr>
+<td>pandown</td>
+<td>向下平移</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意点 ：</strong></p>
+<ol>
+<li>触发pan识别器的最小滑动距离为10。</li>
+<li>默认情况下，纵向移动是禁用的，可通过如何代码（DIRECTION_VERTICAL 或 DIRECTION_ALL）开启：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> panBox = $(<span class="string">".pan-box"</span>),</span><br><span class="line">    mPanBox = <span class="keyword">new</span> Hammer(panBox .get(<span class="number">0</span>));<span class="comment">// zepto对象转换成原生DOM</span></span><br><span class="line"> </span><br><span class="line">mBox .get(<span class="string">"pan"</span>).set(&#123;</span><br><span class="line">    <span class="comment">// direction: Hammer.DIRECTION_VERTICAL</span></span><br><span class="line">    direction: Hammer.DIRECTION_ALL</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>相关值：</strong> e.deltaX 和 e.deltaY；表示平移的量，参考单位为px。左平移时deltaX为负递增，右平移时deltaX正递增。上平移时e.deltaY为负递增，下平移时e.deltaY为正递增。当每次panstart时，e.deltaX 和 e.deltaY会重新从10开始递增或递减。<br><a href="/2015/10/10/hammer-js/pan.html" title="pan的相关演示页面》">pan的相关演示页面》</a></p>
+<h2 id="二、pinch"><a href="#二、pinch" class="headerlink" title="二、pinch"></a>二、pinch</h2><p>定义 ： 缩放；多个手指（或鼠标，可通过模拟）相向或反相移动时触发。<br>事件 ：</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pinch</td>
+<td>pinch所有事件的集合</td>
+</tr>
+<tr>
+<td>pinchstart</td>
+<td>缩放开始</td>
+</tr>
+<tr>
+<td>pinchmove</td>
+<td>缩放过程</td>
+</tr>
+<tr>
+<td>pinchend</td>
+<td>缩放结束</td>
+</tr>
+<tr>
+<td>pinchcancel</td>
+<td></td>
+</tr>
+<tr>
+<td>pinchin</td>
+<td>靠近缩放</td>
+</tr>
+<tr>
+<td>pinchout</td>
+<td>远离缩放</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意点 ：</strong></p>
+<ol>
+<li>触发pinch识别器的最小滑动距离为0。</li>
+<li>默认情况下，pinch是禁用的，可通过如下代码开启：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> pinchBox = $(<span class="string">".pinch-box"</span>),</span><br><span class="line">    mPinchBox = <span class="keyword">new</span> Hammer(pinchBox.get(<span class="number">0</span>));</span><br><span class="line">mPinchBox.get(<span class="string">"pinch"</span>).set(&#123; <span class="attr">enable</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>相关值：</strong> e.scale；表示缩放的比例，为具体数值。pinchin时e.scale的值越来越小。反之pinchout时e.scale的值越来越大。当每次pinchstart时，e.scale都从1开始。<br><a href="/2015/10/10/hammer-js/pinch.html" title="pinch的相关演示页面》">pinch的相关演示页面》</a></p>
+<h2 id="三、-press"><a href="#三、-press" class="headerlink" title="三、 press"></a>三、 press</h2><p>定义 ： 长按；手指（或鼠标）按下没有任何移动，并且按压时间超过500ms后触发。<br>事件 ：</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>press</td>
+<td>按压开始</td>
+</tr>
+<tr>
+<td>pressup</td>
+<td>按压抬起</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意点：</strong> 触发press识别器的最小按压时间为500ms。</p>
+<a href="/2015/10/10/hammer-js/press.html" title="press的相关演示页面》">press的相关演示页面》</a>
+<h2 id="四、rotate"><a href="#四、rotate" class="headerlink" title="四、rotate"></a>四、rotate</h2><p>定义 ： 旋转；两（多）个手指（或鼠标，可通过模拟）旋转时触发（两个大拇指效果较佳）。</p>
+<p>事件 ：</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rotate</td>
+<td>rotate所有事件的集合</td>
+</tr>
+<tr>
+<td>rotatestart</td>
+<td>旋转开始</td>
+</tr>
+<tr>
+<td>rotatemove</td>
+<td>旋转过程</td>
+</tr>
+<tr>
+<td>rotateend</td>
+<td>旋转结束</td>
+</tr>
+<tr>
+<td>rotatecancel</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>注意点 ：默认情况下，rotate是禁用的，可通过如下代码开启:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> rotateBox = $(<span class="string">".rotate-box"</span>),</span><br><span class="line">	mRotateBox = <span class="keyword">new</span> Hammer(rotateBox.get(<span class="number">0</span>));</span><br><span class="line">mRotateBox.get(<span class="string">"rotate"</span>).set(&#123; <span class="attr">enable</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>相关值：</strong> rotation；表示旋转的值，参考单位为deg。顺时针旋转时e.rotation正递增，逆时针旋转时e.rotation负递增。当每次rotatestart时，e.rotation都从0开始。</p>
+<a href="/2015/10/10/hammer-js/rotate.html" title="rotate的相关演示页面》">rotate的相关演示页面》</a>
+<h2 id="五、swipe"><a href="#五、swipe" class="headerlink" title="五、swipe"></a>五、swipe</h2><p>定义 ： 快速滑动；手指（或鼠标）在上下左右方向快速移动时触发。</p>
+<p>事件 ：</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>swipe</td>
+<td>swipe所有事件的集合</td>
+</tr>
+<tr>
+<td>swipeleft</td>
+<td>向左快速滑动</td>
+</tr>
+<tr>
+<td>swiperight</td>
+<td>向右快速滑动</td>
+</tr>
+<tr>
+<td>swipeup</td>
+<td>向上快速滑动</td>
+</tr>
+<tr>
+<td>swipedown</td>
+<td>向下快速滑动</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意点 ：</strong></p>
+<ol>
+<li>最小滑动距离为10，最小速度为0.65px/ms</li>
+<li>默认情况，纵向滑动是禁用的，可通过如下代码开启：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> swipeBox = $(<span class="string">".swipe-box"</span>),</span><br><span class="line">    mSwipeBox = <span class="keyword">new</span> Hammer(swipeBox.get(<span class="number">0</span>));</span><br><span class="line">mSwipeBox.get(<span class="string">"swipe"</span>).set(&#123;</span><br><span class="line">    <span class="comment">// direction: Hammer.DIRECTION_VERTICAL</span></span><br><span class="line">    direction: Hammer.DIRECTION_ALL</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>相关值：</strong> velocityX 和 velocityY；表示滑动的速度，参考单位为px/ms。向右或向下滑动时速度为负数，反之，向左或向上滑动时速度为正数。并且滑动越快，这个速度越大。</p>
+<a href="/2015/10/10/hammer-js/swipe.html" title="swipe的相关演示页面》">swipe的相关演示页面》</a>
+<h2 id="六、tap"><a href="#六、tap" class="headerlink" title="六、tap"></a>六、tap</h2><p>定义 ： 单击；单击屏幕，并且手指（或鼠标）在屏幕停留的时间不超过250ms时触发。</p>
+<p>事件 ：</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tap</td>
+<td>单击</td>
+</tr>
+<tr>
+<td>doubletap</td>
+<td>双击</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意点：</strong> 单击时，按压时间不能超过250ms，移动距离不能超过2px。当双击时，两次单击的时间间隔不能超过300ms，移动距离不能超过10px。</p>
+<a href="/2015/10/10/hammer-js/tap.html" title="tap的相关演示页面》">tap的相关演示页面》</a>
+<h2 id="七、recognizeWith-amp-requireFailure"><a href="#七、recognizeWith-amp-requireFailure" class="headerlink" title="七、recognizeWith &amp; requireFailure"></a>七、recognizeWith &amp; requireFailure</h2><p>定义 ： recognizeWith ， 同时触发多个识别器。</p>
+<p>定义 ： requireFailure ， 若一个识别器触发失败，则触发另外一个识别器 。比如 a.requireFailure(b); 触发了b，那么就不可能触发a。反之若a触发，则b就不能触发。一般而言，触发识别器b要在触发a的基础上。也就是说，requireFailure只能同时触发一个识别器。</p>
+<a href="/2015/10/10/hammer-js/recognizeWith-requireFailure.html" title="recognizeWith & requireFailure的相关演示页面》">recognizeWith & requireFailure的相关演示页面》</a>
+<h2 id="八、enable"><a href="#八、enable" class="headerlink" title="八、enable"></a>八、enable</h2><p>定义 ： 通过设置属性，来禁用识别器的运行。enable: false 为禁用，enable: true 为启用</p>
+<a href="/2015/10/10/hammer-js/toggle-recognizers.html" title="enable的相关演示页面》">enable的相关演示页面》</a>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

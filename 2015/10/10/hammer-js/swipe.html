@@ -1,0 +1,88 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<link rel="stylesheet" href="css/page.css">
+<title>swipe</title>
+</head>
+
+<body>
+
+<div class="container" onselectstart="return false;">
+
+  <div class="hammer-test">
+    <p class="test-des">swipe-快速滑动</p>
+    <div class="swipe-box"></div>
+  </div>
+
+  <div class="hammer-test">
+    <p class="test-des">识别器类型</p>
+    <div class="recognizers-type-box recognizers-type-box-swipe"></div>
+    <textarea name="" id="" cols="30" rows="10" class="recognizers-type"></textarea>
+  </div>
+
+
+</div>
+
+<img src="images/swipe.png" alt="" class="qr-code-img">
+
+<script type="text/javascript" src="js/zepto.min.js"></script>
+<script type="text/javascript" src="js/hammer.min.js"></script>
+<script type="text/javascript">
+
+
+
+var swipeBox = $(".swipe-box");
+var mSwipeBox = new Hammer.Manager(swipeBox.get(0));
+
+mSwipeBox.add(new Hammer.Swipe());
+mSwipeBox.add(new Hammer.Rotate()).recognizeWith(mSwipeBox.get('swipe'));
+// mSwipeBox.add(new Hammer.Pinch()).recognizeWith(mSwipeBox.get('swipe'));通过用 Rotate 或 Pinch 关联Swipe，阻止了在手机chrome浏览器中纵向滑动时页面的滚动
+
+mSwipeBox.on("swipeleft swiperight swipeup swipedown", function(e) {
+
+  var tempDir = "",
+    tempVelocityDir = "";
+  switch(e.type){
+    case "swipeleft":
+    tempVelocityDir = e.velocityX;
+    tempDir = "左";
+    break;
+    case "swiperight":
+    tempVelocityDir = e.velocityX;
+    tempDir = "右";
+    break;
+    case "swipeup":
+    tempVelocityDir = e.velocityY;
+    tempDir = "上";
+    break;
+    case "swipedown":
+    tempVelocityDir = e.velocityY;
+    tempDir = "下";
+    break;
+  }
+  swipeBox.html("向" + tempDir + "速度："+ tempVelocityDir.toFixed(5) + "px/ms");
+
+});
+
+
+// 探测识别器类型
+var recognizersTypeBox = $(".recognizers-type-box"),
+  mRecognizersTypeBox = new Hammer(recognizersTypeBox.get(0));
+
+mRecognizersTypeBox.on("swipeleft swiperight swipeup swipedown", function(e) {
+
+  $(".recognizers-type").html($(".recognizers-type").html() + e.type + " ");
+});
+
+</script>
+
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,77 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>无标题文档</title>
+<style>
+body{font:14px/20px "";}
+.battery-status{color:red;}
+</style>
+</head>
+
+<body>
+
+<div class="battery-show">
+  尝试着拔掉或者接通电源，您会被告知：
+  <span class="battery-status"></span>
+</div>
+
+<p><input type="button" value="当前电量值：" class="level"/></p>
+<p><input type="button" value="电池是否在充电：" class="charging"/></p>
+<p><input type="button" value="离电池充满时间：" class="chargingTime"/></p>
+<p><input type="button" value="电池可使用时间：" class="dischargingTime"/></p>
+
+
+</body>
+</html>
+
+
+<script type="text/javascript">
+(function(){
+  var d = document,
+    batteryStatus = d.querySelector(".battery-status"),
+    aInput = d.querySelectorAll("input"),
+    battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery || navigator.msBattery;
+
+  if (battery) {
+    // 支持H5 battery
+    for(var i=0,len=aInput.length; i<len; i++ ){
+      aInput[i].addEventListener("click",function(){
+        changeVal(this);
+      },false)
+    }
+  }
+  else{
+     alert("您的浏览器不支持H5 battery !")
+  }
+
+  function changeVal(obj){
+    var tempVal = obj.value,
+      tempClass = obj.getAttribute("class"),
+      status = '',
+      timeH = timeM = 0;
+    status = battery[tempClass];
+    switch(tempClass){
+      case "level":
+        status = battery[tempClass]*100+"%";
+        break;
+      case "charging":
+        status = battery[tempClass]?"是":"否";
+        break;
+      case "dischargingTime":
+        timeH = parseInt((parseInt(battery[tempClass])/3600));
+        timeM = parseInt(((parseInt(battery[tempClass])%3600)/60));
+        status = battery[tempClass] == "Infinity"? "Infinity" : (timeH + "小时" + timeM + "分钟");
+    }
+    obj.value = tempVal + status;
+    obj.setAttribute("disabled","disabled");
+  }
+
+  battery.addEventListener("chargingchange", function(e) {
+    batteryStatus.innerHTML = battery.charging ? "电源已接通":"电源已断开";
+  }, false);
+
+})()
+</script>

@@ -1,0 +1,311 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>欢乐大转盘</title>
+<style type="text/css">
+body,p,h2{margin:0;padding:0;}
+body{font-size:12px;}
+.abs{position:absolute;}
+.rel{position:relative;}
+.tc{text-align:center;}
+.turntable{width:500px;height:500px;border:3px solid #666;border-radius:50%;margin:30px auto;-moz-user-select:none;}
+.turntable .action{top:50%;left:50%;z-index:100;width:80px;height:80px;border-radius:50%;margin:-43px 0 0 -43px;line-height:120px;cursor:pointer;background:#bbb;overflow:hidden;}
+.turntable .action-disable{color:#aaa;background:#ddd;cursor:default;}
+.prize-area{width:500px;height:500px;top:0;left:0;}
+.turntable .prize{position:absolute;width:20px;font-size:14px;color:red;-webkit-transform-origin:0 0;transform-origin:0 0;}
+.turntable .prize01{left:50%;top:68px;margin-left:-10px;}
+.turntable .prize02{right:76px;top:150px;-webkit-transform:rotate(60deg);transform:rotate(60deg);}
+.turntable .prize03{right:72px;top:330px;-webkit-transform:rotate(120deg);transform:rotate(120deg);}
+.turntable .prize04{left:50%;top:435px;margin-left:9px;-webkit-transform:rotate(180deg);transform:rotate(180deg);}
+.turntable .prize05{left:95px;top:350px;-webkit-transform:rotate(-120deg);transform:rotate(-120deg);}
+.turntable .noPrize{left:72px;top:160px;-webkit-transform:rotate(-60deg);transform:rotate(-60deg);}
+.turntable .line{position:absolute;width:2px;height:500px;left:50%;top:0;margin-left:-1px;background:#ccc;}
+.turntable .line01{-webkit-transform:rotate(90deg);transform:rotate(90deg);}
+.turntable .line02{-webkit-transform:rotate(150deg);transform:rotate(150deg);}
+.turntable .line03{-webkit-transform:rotate(210deg);transform:rotate(210deg);}
+.turntable .pointer{position:absolute;left:50%;top:130px;z-index:1000;width:16px;height:120px;margin-left:-11px;
+-webkit-transform-origin:50% bottom;transform-origin:50% bottom;
+-webkit-transform:rotate(0deg);transform:rotate(0deg);}
+.pointer .pointer-ele{position:absolute;background:#5a5959;}
+.pointer .pointer-line{left:7px;top:0px;width:2px;height:120px;}
+.pointer .pointer-circle{left:3px;top:115px;width:10px;height:10px;border-radius:50%;}
+.pointer .pointer-arrow{left:9px;top:-10px;width:0;height:0;border:8px solid #fff;border-bottom:8px solid #5a5959;margin-left:-9px;font-size:0;line-height:0;overflow:hidden;}
+.turntable .rotate-pointer-prize01{-webkit-animation:rorate01 10s 0s ease-out 1 forwards normal;
+	animation:rorate01 10s 0s ease-out 1 forwards normal;
+}
+.turntable .rotate-pointer-prize02{-webkit-animation:rorate02 10s 0s ease-out 1 forwards normal;
+	animation:rorate02 10s 0s ease-out 1 forwards normal;
+}
+.turntable .rotate-pointer-prize03{-webkit-animation:rorate03 10s 0s ease-out 1 forwards normal;
+	animation:rorate03 10s 0s ease-out 1 forwards normal;
+}	
+.turntable .rotate-pointer-prize04{-webkit-animation:rorate04 10s 0s ease-out 1 forwards normal;
+	animation:rorate04 10s 0s ease-out 1 forwards normal;
+}	
+.turntable .rotate-pointer-prize05{-webkit-animation:rorate05 10s 0s ease-out 1 forwards normal;
+	animation:rorate05 10s 0s ease-out 1 forwards normal;
+}	
+.turntable .rotate-pointer-prize06{-webkit-animation:rorate06 10s 0s ease-out 1 forwards normal;
+	animation:rorate06 10s 0s ease-out 1 forwards normal;
+}		
+.turntable .rotate-pointer-stop{-webkit-animation-play-state:paused;animation-play-state:paused;}
+@-webkit-keyframes rorate01{ 
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(3600deg);
+  }
+}
+@keyframes rorate01{
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(3600deg);
+  }
+}
+@-webkit-keyframes rorate02{ 
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(3300deg);
+  }
+}
+@keyframes rorate02{
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(3300deg);
+  }
+}
+@-webkit-keyframes rorate03{ 
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(3360deg);
+  }
+}
+@keyframes rorate03{
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(3360deg);
+  }
+}
+@-webkit-keyframes rorate04{ 
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(3420deg);
+  }
+}
+@keyframes rorate04{
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(3420deg);
+  }
+}
+@-webkit-keyframes rorate05{ 
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(3480deg);
+  }
+}
+@keyframes rorate05{
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(3480deg);
+  }
+}
+@-webkit-keyframes rorate06{ 
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(3540deg);
+  }
+}
+@keyframes rorate06{
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(3540deg);
+  }
+}
+body{height:100%;background-image:url(about:blank);background-attachment:fixed;}
+.fixed{position:fixed;_position:absolute;}
+.fixed-box,.mask{top:0;left:0;width:100%;height:100%;z-index:1000;}
+.fixed-box .mask{_top:expression(documentElement.scrollTop+documentElement.clientHeight-this.offsetHeight);z-index:1000;opacity:0.5;filter:alpha(opacity=50);background:#000;}
+.fixed-box .fixed-main{left:50%;top:150px;_top:expression(documentElement.scrollTop+documentElement.clientHeight-this.offsetHeight-100);z-index:10000;width:400px;margin-left:-200px;background:#fff;}
+.fixed-main .fixed-hd{height:28px;background:#FF6600;}
+.fixed-main .fixed-tit{padding-left:8px;color:#fff;font:14px/28px "Microsoft Yahei";}
+.fixed-main .fixed-bd{padding:20px;}
+.fixed-main .action-p{padding-top:20px;}
+.fixed-main .confirm-btn{width:50px;height:20px;border:0 none;overflow:hidden;}
+</style>
+</head>
+
+<body>
+<div class="rel turntable" id="turntable" onselectstart="return false;">
+	<div class="abs tc action"><strong>开始抽奖</strong></div>
+    <div class="pointer">
+    	<b class="pointer-ele pointer-line"></b>
+        <b class="pointer-ele pointer-circle"></b>
+        <b class="pointer-ele pointer-arrow"></b>
+    </div>
+    
+    <div class="prize-area">
+        <span class="prize prize01">一等奖　</span>
+        <span class="prize prize02">二等奖　</span>
+        <span class="prize prize03">三等奖　</span>
+        <span class="prize prize04">四等奖　</span>
+        <span class="prize prize05">五等奖　</span>
+        <span class="prize noPrize">谢谢参与</span>
+        <b class="line line01"></b>
+        <b class="line line02"></b>
+        <b class="line line03"></b>
+    </div>
+</div>
+
+<!--提示层-->
+<div class="fixed fixed-box" style="display:none;">
+    <div class="fixed mask"></div>
+    <div class="fixed fixed-main">
+        <div class="fixed-hb">
+            <div class="fixed-hd">
+                <h2 class="fixed-tit">弹出层标题</h2>
+            </div>
+            <div class="fixed-bd">
+                <p>你获得了<span class="prizeVal"></span>!</p>
+                <p class="tc action-p"><input type="button" value="确定" class="confirm-btn"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+var turntable={
+	init:function(){
+		var t=this,
+		 	d=document;
+		t.oAction=d.querySelector(".action");
+		t.oStrong=t.oAction.getElementsByTagName("strong")[0];
+		t.pointer=d.querySelector(".pointer");
+		t.prizeVal=d.querySelector(".prizeVal");
+		t.fixBox=d.querySelector(".fixed-box");
+		t.confirmBtn=d.querySelector(".confirm-btn");
+		t.timer01=null;
+		t.timer01=null;
+		t.bAgain=true;
+		t.nowClass='';
+		t.confirmBtn.onclick=function(){
+			t.hide(t.fixBox);
+		}
+		t.addEvent(t.oAction,"click",t.bind(turntable.toRotate,turntable));
+		t.addEvent(document,"keydown",t.bind(turntable.noRefresh,turntable));
+		t.addEvent(document,"contextmenu",t.bind(turntable.noRightKey,turntable));
+	},
+	toRotate:function(){
+		var t=this;
+		if(t.bAgain){
+			t.pointer.className="pointer";
+			t.oAction.className+=" action-disable";
+			t.oStrong.innerHTML="开奖中.";
+			t.iNum=parseInt(Math.random()*60)+1;  
+			
+			if(t.iNum<=20){  // 6  20/60
+				t.toPrize(6,"谢谢参与");
+			}
+			else if(t.iNum>=21&&t.iNum<=35){ //5  15/60
+				t.toPrize(5,"五等奖");
+			}
+			else if(t.iNum>=36&&t.iNum<=45){ //4  10/60
+				t.toPrize(4,"四等奖");
+			}
+			else if(t.iNum>=46&&t.iNum<=52){  //3 7/60
+				t.toPrize(3,"三等奖");
+			}
+			else if(t.iNum>=53&&t.iNum<=57){  //2 5/60
+				t.toPrize(2,"二等奖");
+			}
+			else if(t.iNum>=58){  //1   3/60
+				t.toPrize(1,"一等奖");
+			}
+		}
+		else{
+			return ;
+		}	
+	},
+	toPrize:function(iVal,PrizeNum){
+		var t=this;
+		t.pointer.className+=" rotate-pointer-prize0"+iVal;
+		t.nowClass=t.pointer.className;
+		t.prizeVal.innerHTML=PrizeNum;
+		t.bAgain=false;
+		t.timer01=setTimeout(function(){
+			t.oStrong.innerHTML="开始抽奖";
+			t.oAction.className="abs tc action";
+			t.bAgain=true;
+			clearInterval(t.timer02);
+			t.show(t.fixBox);
+		},10000)
+		t.timer02=setInterval(function(){
+			t.pointer.className=t.nowClass;
+		},10)
+	},
+	
+	noRefresh:function(e){
+   		var e=window.event||e;
+		if (e.keyCode == 116) {
+			this.noRightKey(e);
+		}
+	}
+	,
+	noRightKey:function(e){
+		e.preventDefault?e.preventDefault():e.returnValue=false;
+	}
+	,
+	addEvent:function(obj,sEvent,fn){
+		if(obj.attachEvent){
+			obj.attachEvent("on"+sEvent,fn);
+		}
+		else{
+			obj.addEventListener(sEvent,fn,false);
+		}   	
+	}
+	,
+	bind:function(fn, context) {
+		return function () {
+			return fn.apply(context, arguments);
+		};
+	}
+	,
+	hide:function(obj){
+		obj.style.display="none";
+	}
+	,
+	show:function(obj){
+		obj.style.display="block";
+	}
+}
+
+turntable.init();
+
+</script>

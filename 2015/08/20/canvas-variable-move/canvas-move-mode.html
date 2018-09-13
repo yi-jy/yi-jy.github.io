@@ -1,0 +1,174 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>变速（线性）运动</title>
+<style>
+  #canvas {
+         background: skyblue;
+         border: thin solid lightgray;
+         box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+      }
+</style>
+</head>
+
+<body>
+
+<canvas id='canvas' width='580' height='60'>
+ Canvas not supported
+</canvas>
+<p><input type='radio' name='motion' id='linearRadio' checked/>Linear
+<input type='radio' name='motion' id='easeInRadio'/>Ease In
+<input type='radio' name='motion' id='easeOutRadio'/>Ease Out
+<input type='radio' name='motion' id='easeInOutRadio'/>Ease In/Out
+<input type='radio' name='motion' id='elasticRadio'/>elastic
+<input type='radio' name='motion' id='bounceRadio'/>bounce
+</p>
+<p><input id='animate-btn' type='button' value='animate'/> speed：<span id="speed"></span></p>
+
+<script>
+
+  var d = document,
+    canvas = d.getElementById('canvas'),
+      context = canvas.getContext('2d'),
+      duration = 3000,
+      ball = {
+        initX : 30,
+        x : 30,
+        y : canvas.height/2,
+        r : 15,
+        paint : function(){
+          context.beginPath();
+        context.arc( this.x , this.y , this.r , Math.PI*2 , false);
+        context.fill();
+        context.closePath();
+        }
+      },
+      startTime = endTime = 0 ,
+      moveDis = canvas.width - ball.x*2,
+      linearRadio = d.getElementById("linearRadio"),
+      easeInRadio = d.getElementById("easeInRadio"),
+      easeOutRadio = d.getElementById("easeOutRadio"),
+      easeInOutRadio = d.getElementById("easeInOutRadio"),
+      elasticRadio = d.getElementById("elasticRadio"),
+      bounceRadio = d.getElementById("bounceRadio")
+      animateBtn = d.getElementById("animate-btn"),
+      speed = d.getElementById("speed"),
+      speedFlagNum = 0;
+
+  var moveMode = {
+    linear : function(percentComplete){
+      return percentComplete;
+    },
+    easeIn : function(percentComplete , strength){
+      return Math.pow(percentComplete , strength*2 || 2);
+    },
+    easeOut : function(percentComplete , strength){
+      return 1 - Math.pow( 1 - percentComplete , strength*2 || 2);
+    },
+    easeInOut : function(percentComplete){
+      return percentComplete - Math.sin(percentComplete*2*Math.PI)/(2*Math.PI);
+    },
+    elastic : function(percentComplete , passes){
+      var passes = passes || 3;
+      return ((1-Math.cos(percentComplete * Math.PI * passes)) *
+               (1 - percentComplete)) + percentComplete;
+    },
+    bounce : function(percentComplete , bounces){
+      percentComplete = this.elastic(percentComplete , bounces);
+      return percentComplete <= 1 ? percentComplete : 2-percentComplete;
+    }
+  }
+
+  var moveModeFn = function(percentComplete){
+        return  moveMode.linear(percentComplete);
+      };
+
+  function radioSelect(isSelected){
+    var moveModeRadio = document.querySelectorAll("input[name='motion']");
+    for(var i = 0 ; i < moveModeRadio.length ; i++){
+      if(isSelected){
+        moveModeRadio[i].setAttribute("disabled" , "disabled");
+      }
+      else{
+        moveModeRadio[i].removeAttribute("disabled");
+      }
+    }
+  }
+
+  function ballMove(){
+    var offsetTime = endTime - startTime,
+      percentComplete = offsetTime/duration,
+      percentRun = moveModeFn (percentComplete);
+    context.clearRect(0 , 0 , canvas.width , canvas.height );
+    if(endTime > 0){
+      ball.x = parseInt(percentRun*moveDis) + ball.initX;
+    }
+    ball.paint();
+    t = requestAnimationFrame(arguments.callee);
+    if (offsetTime > duration ){
+      cancelAnimationFrame(t);
+      radioSelect(false);
+    }
+        endTime = +new Date();
+
+        // show the speed
+        speedFlagNum++;
+        if(!(speedFlagNum%10)){
+          speed.innerHTML =((parseInt(percentRun*moveDis)/offsetTime*1000).toFixed(2) || 0 ) + " px/s";
+        }
+  }
+
+  linearRadio.addEventListener("click" , function(){
+    moveModeFn = function(percentComplete){
+        return  moveMode.linear(percentComplete);
+      };
+  } , false);
+
+  easeInRadio.addEventListener("click" , function(){
+    moveModeFn = function(percentComplete , strength){
+        return moveMode.easeIn(percentComplete , 1);
+      };
+  } , false);
+
+  easeOutRadio.addEventListener("click" , function(){
+    moveModeFn = function(percentComplete , strength){
+        return moveMode.easeOut(percentComplete , 1);
+      };
+  } , false);
+
+  easeInOutRadio.addEventListener("click" , function(){
+    moveModeFn = function(percentComplete){
+        return moveMode.easeInOut(percentComplete);
+      };
+  } , false);
+
+  elasticRadio.addEventListener("click" , function(){
+    moveModeFn = function(percentComplete){
+        return moveMode.elastic(percentComplete);
+      };
+  } , false);
+
+  bounceRadio.addEventListener("click" , function(){
+    moveModeFn = function(percentComplete){
+        return moveMode.bounce(percentComplete,5);
+      };
+  } , false);
+
+  animateBtn.addEventListener( "click" , function(){
+    startTime = +new Date();
+      endTime = 0;
+    ballMove();
+    radioSelect(true);
+  } , false);
+
+  ball.paint();
+
+</script>
+
+</body>
+</html>
+
+

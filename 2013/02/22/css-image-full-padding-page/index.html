@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="css处理图片随网页缩放而自适应百分百显示 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="background-size">
+  
+
+  
+
+  <title>css处理图片随网页缩放而自适应百分百显示 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">css处理图片随网页缩放而自适应百分百显示</h1>
+
+  <time class="post-time">2013-02-22</time>
+
+  <div class="post-content">
+    <p>如今大背景图片布局越来越流行于各个网站，看效果，请参见网站： <a href="http://500px.com" target="_blank" rel="noopener">http://500px.com</a> ，并请你缩放网页查看大背景图的变化，你会发现背景图片不会随网页的缩放而变小，最后像普通网页的大背景图一样在网页的空余地方露出白色区域，它而是出现一种类似自适应视窗大小背景图拉伸的效果。那么，这种css效果是如何做的呢？有几种方法呢？哪些方法有哪些兼容性问题呢？</p>
+<p>哈，就目前我个人所知道的，有两种方法：css3和图片百分百宽高。</p>
+<a id="more"></a>
+<h2 id="第一：css3，不支持ie6-7-8"><a href="#第一：css3，不支持ie6-7-8" class="headerlink" title="第一：css3，不支持ie6,7,8"></a>第一：css3，不支持ie6,7,8</h2><p>说道CSS3，虽然它给网页带来了很多强大的网页效果，但是都是以牺牲浏览器为代价的。这种牺牲在中国以IE6为主导的尤为明显。但话说回来，毕竟凡事无绝对嘛。css3给我们提供了一个background-size这样一个属性：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">background-size: length | percentage | auto ]&#123;1,2&#125; | cover | contain</span><br></pre></td></tr></table></figure>
+<p>background-size需要1个或2个值，这些值既可以是像素px，也可以是百分比%或auto，还可以是特定值cover, contain。我这里主要说background-size的cover和contain这两个特殊的定值。</p>
+<p>cover: 保持图像本身的宽高比例，将图片缩放到正好完全覆盖定义背景的区域；即背景图宽高都百分百铺满视窗或者div块。</p>
+<p>contain: 保持图像本身的宽高比例，将图片缩放到宽度或高度正好适应定义背景的区域；即背景图宽或者高只有一个属性百分百铺满视窗或者div块。</p>
+<p><strong>实例：</strong></p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">html</span>, <span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">&#125; </span><br><span class="line"><span class="selector-id">#demo</span> &#123; </span><br><span class="line">    <span class="attribute">width</span>:<span class="number">100%</span>; </span><br><span class="line">    <span class="attribute">height</span>: <span class="number">100%</span>; </span><br><span class="line">    <span class="attribute">background</span>: <span class="built_in">url</span>(../images/bg.jpg) no-repeat; </span><br><span class="line">    <span class="attribute">background-size</span>: <span class="built_in">cover</span>(contain);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="第二：图片百分百宽高-，兼容所有浏览器"><a href="#第二：图片百分百宽高-，兼容所有浏览器" class="headerlink" title="第二：图片百分百宽高 ，兼容所有浏览器"></a>第二：图片百分百宽高 ，兼容所有浏览器</h2><p>严格来说，这并不是css处理图片百分百显示的方法。而是使用html标签img的宽高百分百属性，然后页面的所有内容块都定位在这个图片上。而且是一种不错的方法，简单明了，兼容性也极好。</p>
+<p><strong>实例：</strong></p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-id">#demo</span>&#123;<span class="attribute">width</span>:<span class="number">100%</span>;<span class="attribute">height</span>:<span class="number">100%</span>;&#125;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">stye</span>&gt;</span></span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"../images/bg.jpg"</span> <span class="attr">id</span>=<span class="string">"demo"</span>/&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="产品优化之AB测试 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="AB测试 辛普森悖论">
+  
+
+  
+
+  <title>产品优化之AB测试 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">产品优化之AB测试</h1>
+
+  <time class="post-time">2017-12-20</time>
+
+  <div class="post-content">
+    <p>一款好的互联网产品的诞生，绝不是开发完、发布到上线就结束了。你必须得加入埋点跟踪，进行后续数据统计，不断维护，细心打磨，小心的版本迭代等。</p>
+<p>为了给用户带来更好的体验，你希望在页面上新增一个功能，而该功能可以通过A、B两种（也可能多种）展示方案来呈现，但你们不确定哪种方案更能符合预期。此时，产品和设计便产生了分歧。</p>
+<a id="more"></a>
+<p>通常这种情况下，要么以老资格的产品或设计来决定使用哪种方案，或者当产品和设计（研发）争执不下时，干脆由上一级领导来决策。</p>
+<p>但你知道，凡事无绝对。</p>
+<p>鉴于复杂的环境和产品的差异，上面的决策或许并不能让产品发展更好，甚至可能带来相反的预期。因为互联网产品能否成功，并非是某个设计师或者领导说的算，关键的决策者还是在用户。如果选择的方案正好是用户所需的，那皆大欢喜。但倘若选择上线的方案并不受欢迎，那可能会导致用户的流失，对用户量大的站点，更是可能造成不小的损失！因此，选择A方案还是B方案，真的很难权衡。</p>
+<p>那么，如何既保持平稳升级、提高用户体验，又可以规避上面的风险呢？也就是说，有没有一种方式，可以像类似灰度发布，即让50%的用户看到A方案的新功能，而另外50%看到的是B方案的新功能。然后，再看哪种方案更能让用户接受，再决定100%覆盖此方案呢？</p>
+<p>当然有，而这种方式，就是所谓的 A/B测试。</p>
+<h2 id="一、A-B测试"><a href="#一、A-B测试" class="headerlink" title="一、A/B测试"></a>一、A/B测试</h2><p>A/B测试是通过对比两个（或多个）版本页面的优劣，从而提高网页转化率的一种统计方法。它是一种“先验”的统计假设体系，即我们首先会评估用户心理状态，模拟用户的操作流程，然后设定不同的版本页面，最终让用户决定哪个版本为最佳版本。</p>
+<p>其中，我们把当前版本称为可控版本（control），改动的版本则是实验版本（variation）。</p>
+<p>我们可以在很多场景使用 A/B测试，小到文案修改、按钮颜色、布局变化，大到版本迭代。</p>
+<p>例如，下面呈现了布局方面的 A/B测试：</p>
+<img src="/2017/12/20/AB-testing/abtesting.jpg" title="测试结构图">
+<p>通过上面的图片，可以看到，左侧A方案的注册表单在中间，而右侧B方案在底部。最后的结果是，A方案的注册人数为50人，B方案则有75人，明显方案B比方案A更好。</p>
+<p>还有一个更明显的例子，听说谷歌每个月都会通过 A/B测试 从几百个方案中筛选出最优的哪几个，从而达到月营收提升2%左右，规模增加十多亿美元。</p>
+<p>也因为用户基数巨大的原因，当它站点的页面广告位左移一个像素或许会带来X%的增收，而右移一个像素却可能带来Y%的亏损。</p>
+<p>既然A/B测试功能这么强大，那么我们应该怎么做呢？</p>
+<h2 id="二、举个例子"><a href="#二、举个例子" class="headerlink" title="二、举个例子"></a>二、举个例子</h2><p>一般做A/B测试，都需要经历以下几个流程：</p>
+<ul>
+<li>业务背景</li>
+<li>试验假设</li>
+<li>优化指标</li>
+<li>测试结果</li>
+<li>结论分析</li>
+</ul>
+<p>根据这些流程，以信贷页面为例来说明：</p>
+<p><strong>业务背景</strong>：调整提交按钮的文案，旨在帮助更多用户进行借贷服务。</p>
+<p><strong>试验假设</strong>： 把提交按钮的文案，由 “预览借款信息” 改为 “立即取现”，可以极大满足用户的迫切需求，提升用户借贷的服务质量，带来更高的绑卡取现交易。基于这个假设，设定了以下两个版本：</p>
+<img src="/2017/12/20/AB-testing/loan-version.jpg" title="借贷版本对比">
+<p><strong>优化指标</strong>： 提交按钮的点击率，最终对应版本的绑卡率和取现交易笔数</p>
+<p><strong>测试结果</strong>： “立即取现”版本的绑卡率和取现交易笔数降低了 10.67%</p>
+<img src="/2017/12/20/AB-testing/loan-sta.jpg" title="借贷版本统计">
+<p><strong>结论分析</strong>： 不符合假设预期。“立即取现”虽然直观上满足了用户当前需求，但同时也给用户造成了压迫感。而“预览借款信息”虽然目的性没那么强烈，但它减缓客户的焦虑感，让客户有信心进入下一个页面，进一步完成借贷服务的后续流程。说明针对产品不同的场景，要把握用户的心里需求。</p>
+<p>另外，通过 A/B测试，我们可以告别主观和经验主义。我曾经在营销活动的页面做了一项 A/B测试，旨在判断两个版本的优劣，从而提高app的下载率，如图：</p>
+<img src="/2017/12/20/AB-testing/download-version.jpg" title="app下载版本对比">
+<p><strong>在原始版本中</strong>，当用户完成了上一页的操作进入到该页面时，会在页面顶部下拉出一个 notification弹框，5秒后弹框上滑隐藏。倘若用户点击弹框，会下载app。另外，点击区域 2 和 3，也会下载app。</p>
+<p><strong>在实验版本中</strong>，当用户完成了上一页的操作进入到该页面时，顶部没有 notification弹框，其他与原始版本都相同。</p>
+<p>实验时，以每个版本下载的复合总量（可点区域的下载总和）作为核心优化指标。</p>
+<p>在实验开始前，我们会直观的认为三个区域的点击下载数肯定要比两个区域的多，这个应该没什么问题吧？</p>
+<p>但经过一段时间的实验，查看数据后台，截图如下：</p>
+<img src="/2017/12/20/AB-testing/download-sta.jpg" title="app下载版本统计">
+<p>我们发现，这样结果出乎我们的意料，即三个点击区域的下载量却低于两个点击区域，出现了 <strong>辛普森悖论</strong> 统计现象。</p>
+<p>测试版本虽然只有两个下载区域，但在下载率上，却比原始版本的三个区域高出了 2.58% 的下载率。最终，产品组决定使用测试版本作为迭代方案。</p>
+<p>当确定版本后，你便可以结束A/B测试实验，因为你已经知道哪种方案更适用于用户了。</p>
+<p>除了网页，你还可以把A/B测试应用在iOS或Android等原生界面，甚至，有的A/B测试服务提供商还支持后端测试。</p>
+<h2 id="三、A-B测试工具"><a href="#三、A-B测试工具" class="headerlink" title="三、A/B测试工具"></a>三、A/B测试工具</h2><p>前面所描述的，包含了A/B测试的定义、流程和优势。或许你会疑惑，我们怎么操作，才能像上面的案例一样，在管理后台看到不同版本的数据呢？这就要说到A/B测试工具，你也可以称之为服务。</p>
+<p>目前看来，国内做A/B测试的服务商还是比较少的。而国外在这方面似乎成熟多了，有不少A/B测试服务商。</p>
+<p>免费的有谷歌的Website Optimizer，收费的则有Optimizely以及UsabilityHub。不过我都没使用过，也不能展开细说。</p>
+<p>而上面案例所使用的A/B测试，是我司在国内一家云服务提供商购买的，该厂商支持免费使用一部分功能，如果需要，也可以购买一些扩展服务。</p>
+<p>而你要做的，只是在需要测试的页面，引入该服务商提供的SDK，该SDK会自动根据网络、地域或人群等环境差异，结合设置的版本流量，给用户提供相应比例的页面版本，示例代码如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script src=<span class="string">"https://sdk.xx.com/abtest.js"</span>&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>设置默认版本并初始化，再根据不同版本，编写对应的逻辑代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">abtest(<span class="string">'init'</span>, &#123;</span><br><span class="line">  appKey: <span class="string">'your app key'</span>,</span><br><span class="line">  defaultFlags: &#123;<span class="attr">isNewText</span>: <span class="literal">false</span>&#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (abtest.get(<span class="string">'isNewText'</span>)) &#123;</span><br><span class="line">  <span class="comment">// 新文案版本的操作</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// 老文案版本的操作</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同时，服务商SDK可能还提供了埋点，这样，你便知道在某个版本下，用户点击按钮数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;button onclick=<span class="string">"abtest('track', 'clickBtnTimes', 1)"</span>&gt;统计点击次数&lt;<span class="regexp">/button&gt;</span></span><br></pre></td></tr></table></figure>
+<p>完成上述操作，你只需要等待一段试验期，然后，在后台系统查看数据即可。</p>
+<p>这里说到的是利用编程模式来进行A/B测试，当然，还有其他形式，此处不一一举例。</p>
+<h2 id="四、局限性"><a href="#四、局限性" class="headerlink" title="四、局限性"></a>四、局限性</h2><h3 id="多变量场景"><a href="#多变量场景" class="headerlink" title="多变量场景"></a>多变量场景</h3><p>通过上面的说明，我们知道，A/B测试的最佳使用场景是单变量。</p>
+<p>但当某个版本有多个变量（功能）需要上线时，使用A/B测试可能并不能得到准确的结果，因为变量之间会相互干扰，无法进行正确的对比。</p>
+<p>其实对于变量相对少的版本更新，也是有替代方案的。</p>
+<p>比如，此次上线需求的内容为同时更改文案和颜色（红色 -&gt; 蓝色，“立即购买” -&gt; “带它回家”）。我们当然不能一个使用原始版，一个使用既变文案又变背景色的版本，因为文案和背景色可能相互影响。</p>
+<p>那么，你可以将原始版本拆分为四个小版本：</p>
+<ul>
+<li>原始版本：红色背景，“立即购买”</li>
+<li>实验版本1：红色背景，“带它回家”</li>
+<li>实验版本2：蓝色背景，“立即购买”</li>
+<li>实验版本3：蓝色背景，“带它回家”</li>
+</ul>
+<p>然后，将这四个版本各设置25%的流量。再通过一段时间的实验，最终决定使用哪个文案，哪种颜色。</p>
+<p>另外，如果你新增的功能是冒险性的，你可以在后台手动调整流量，让小部分用户无感知的使用新功能，对比用户的行为数据，找出用户的关注点。</p>
+<h3 id="用户少场景"><a href="#用户少场景" class="headerlink" title="用户少场景"></a>用户少场景</h3><p>当站点的用户技术很小时，A/B测试出来的结果往往是不准确，没有什么参考性的。此时，你可以考虑将着陆页投放到一些知名站点，再结合A/B测试，应该能产生积极的反馈。</p>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>为打造一个好的互联网产品，我们需要不断优化和迭代。那么，如何知道新版本对用户产生了怎样的影响？A/B测试或许是一个不错的选择。</p>
+<p>通过A/B测试，我们可以在对用户影响产生最小的情况下，完成正确的部分更新和版本迭代，在降低产品风险的同时，既留存了用户，也提升用户转化率。进一步而言，根据这些数据，我们也可以针对性（系统、地域、人群）的向不同人群发布不同版本。</p>
+<p>可以说，做到真正用数据说话，其实，A/B测试也是互联网产品不断调整发展方向的一个重要指标。</p>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

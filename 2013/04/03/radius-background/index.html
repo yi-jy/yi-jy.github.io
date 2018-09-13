@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="html自适应宽圆角背景 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="圆角背景自适应">
+  
+
+  
+
+  <title>html自适应宽圆角背景 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">html自适应宽圆角背景</h1>
+
+  <time class="post-time">2013-04-03</time>
+
+  <div class="post-content">
+    <p>圆角背景在各大网站经常看到，不过当列表的字数不定时，则会导致圆角标签的长度也不是定值。如果要做下面的效果图：</p>
+<a id="more"></a>
+<img src="/2013/04/03/radius-background/r_bg.jpg" title="圆角背景自适应图">
+<p>那么该如何去做呢？我们可以设想，要使得一个未知长度的标签具备圆角背景自适应的功能。用一个标签肯定无法达到的。于是我们可以考虑使用两个标签，这里我们采用的是a 标签里面套 span ，a标签占用的左边圆角背景，而span标签则占用右边圆角背景（当然这些都是在给对应标签加了左或右 padding的情况下，圆角背景才会正常）。</p>
+<p>下面是所用到的圆角背景：</p>
+<img src="/2013/04/03/radius-background/r_bg.png" title="圆角背景">
+<p>注意点：</p>
+<ol>
+<li><p>圆角背景一定要尽量长，否则当标签文字过长时，会出现左边圆角背景白色空隙的情况。</p>
+</li>
+<li><p>还有圆角背景的底色要与父级元素的背景色一致。如果圆角背景的底色是透明的，则右边圆角背景因此而呈现方形，从而无法达到圆角的效果。</p>
+</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css"><span class="selector-tag">em</span>&#123;<span class="attribute">font-style</span>:normal;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-tag">ul</span> <span class="selector-tag">li</span>&#123;<span class="attribute">list-style</span>:none;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.box</span>&#123;<span class="attribute">width</span>:<span class="number">200px</span>;<span class="attribute">margin</span>:<span class="number">30px</span> auto;<span class="attribute">padding</span>:<span class="number">10px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.box</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span>&#123;<span class="attribute">float</span>:left;<span class="attribute">margin</span>:<span class="number">5px</span>;<span class="attribute">word-break</span>:keep-all;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.box</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span> <span class="selector-tag">a</span>&#123;<span class="attribute">display</span>:inline-block;<span class="attribute">height</span>:<span class="number">25px</span>;<span class="attribute">line-height</span>:<span class="number">25px</span>;<span class="attribute">padding-left</span>:<span class="number">5px</span>;<span class="attribute">text-decoration</span>:none;<span class="attribute">color</span>:<span class="number">#000</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.box</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span> <span class="selector-tag">a</span><span class="selector-pseudo">:hover</span>&#123;<span class="attribute">background</span>:<span class="built_in">url</span>(r_bg.png) <span class="number">0</span> <span class="number">0</span> no-repeat;<span class="attribute">color</span>:<span class="number">#fff</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.box</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span> <span class="selector-tag">a</span> <span class="selector-tag">em</span>&#123;<span class="attribute">display</span>:inline-block;<span class="attribute">padding-right</span>:<span class="number">5px</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.box</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span> <span class="selector-class">.cur</span>&#123;<span class="attribute">background</span>:<span class="built_in">url</span>(r_bg.png) left <span class="number">0</span> no-repeat;<span class="attribute">color</span>:<span class="number">#fff</span>;&#125;</span></span><br><span class="line"><span class="css"><span class="selector-class">.box</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span> <span class="selector-class">.cur</span> <span class="selector-tag">em</span>,<span class="selector-class">.box</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span> <span class="selector-tag">a</span><span class="selector-pseudo">:hover</span> <span class="selector-tag">em</span>&#123;<span class="attribute">background</span>:<span class="built_in">url</span>(r_bg.png) right <span class="number">0</span> no-repeat;&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"cur"</span>&gt;</span><span class="tag">&lt;<span class="name">em</span>&gt;</span>测试<span class="tag">&lt;/<span class="name">em</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span>&gt;</span><span class="tag">&lt;<span class="name">em</span>&gt;</span>测试测试<span class="tag">&lt;/<span class="name">em</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span>&gt;</span><span class="tag">&lt;<span class="name">em</span>&gt;</span>测试,X<span class="tag">&lt;/<span class="name">em</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span>&gt;</span><span class="tag">&lt;<span class="name">em</span>&gt;</span>测试XXx<span class="tag">&lt;/<span class="name">em</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"cur"</span>&gt;</span><span class="tag">&lt;<span class="name">em</span>&gt;</span>测试测<span class="tag">&lt;/<span class="name">em</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span>&gt;</span><span class="tag">&lt;<span class="name">em</span>&gt;</span>测试测试测试<span class="tag">&lt;/<span class="name">em</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>

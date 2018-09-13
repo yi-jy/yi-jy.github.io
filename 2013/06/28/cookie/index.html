@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+  
+  <meta name="author" content="易建勇,YI_joy">
+  
+
+  
+  <meta name="description" content="cookie的介绍与使用 | 前端技术空间">
+  
+
+  
+  <meta name="keywords" content="浏览器存储 cookie">
+  
+
+  
+
+  <title>cookie的介绍与使用 | 前端技术空间</title>
+
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+
+<div class="blog">
+
+<div class="navigation">
+  <ul class="nav-list">
+    
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    
+      <li class="nav-item"><a class="nav-link" href="/archives">Archives</a></li>
+    
+  </ul>
+</div>
+
+<div class="post">
+
+  <h1 class="post-title">cookie的介绍与使用</h1>
+
+  <time class="post-time">2013-06-28</time>
+
+  <div class="post-content">
+    <p>cookie 是用来存储浏览者访问网页的一些操作或者某些变量的一种浏览器机制，一般是用来存储网站的用户名和密码等。如百度的记住登陆状态：</p>
+<a id="more"></a>
+<img src="/2013/06/28/cookie/cookie-remember.jpg" title="cookie–记住用户名">
+<p>cookie是document下的一个属性。它主要存在于浏览器客户端的文件夹里，所以懂相关技术的人员可以手动修改cookie，这也说明了cookie的不安全性。</p>
+<p>当我们在网站首页登录一个网站时，我们同样可以浏览这个网站的其他页面和版块而不需再次输入用户名和密码，所以一个网站的所有页面是共享一套cookie。</p>
+<p>关于cookie的大小，因为不同浏览器也相应不同。例如，ie6所能存储的cookie数是20个，大小为4095个字节。ie7和ie8是50个，大小为4095个字节。Opera是30个，大小为4096个字节。ff是50个，大小为4097个字节等。并且当浏览器的cookie数量达到最大存储数时，它们的处理方式也不同，一些浏览器是自动剔除最老的cookie，而有些是随机删除已有的cookie。</p>
+<p>cookie只能运行在服务器环境下，如果你非要在本地测试cookie，你可以在本地架一个服务器环境。当然你也可以用火狐浏览器，其效果与其他浏览器在服务器环境下的效果相同。</p>
+<p>最后需要提下，cookie与网页缓存无任何关系，cookie是完全通过javascript控制的。我们将cookie的特性总结下。</p>
+<h2 id="cookie的特性"><a href="#cookie的特性" class="headerlink" title="cookie的特性"></a>cookie的特性</h2><ol>
+<li><p>同一网站所有页面公用一套cookie。</p>
+</li>
+<li><p>数量和体积是有限的，不超过50个。</p>
+</li>
+<li><p>有过期时间，可以通过JS设置。如果不设置则默认关闭浏览器cookie自动删除。</p>
+</li>
+<li><p>cookie以一个文件的形式存在客户端的机器上，用户可更改，安全性较低。</p>
+</li>
+<li><p>cookie只能运行在服务器环境下，如果在本地测试的话你需要自己搭建服务器，或者你也可用firefox浏览器进行测试。</p>
+</li>
+<li><p>cookie无兼容性问题。</p>
+</li>
+</ol>
+<h2 id="cookie的操作"><a href="#cookie的操作" class="headerlink" title="cookie的操作"></a>cookie的操作</h2><p>cookie的操作主要分为cookie的设置，cookie的读取，以及cookie的删除三部分。</p>
+<h3 id="设置cookie"><a href="#设置cookie" class="headerlink" title="设置cookie"></a>设置cookie</h3><p>cookie的设置也是cookie的存储过程，cookie的格式一般为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">document</span>.cookie=name=value;expires=time;</span><br></pre></td></tr></table></figure>
+<p>另外设置过期时间，是通过日期对象的setDate方法，于是就有：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">setCookie</span>(<span class="params">name,value,iDay</span>)</span>&#123;</span><br><span class="line">　　<span class="keyword">var</span> oDate=<span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">　　oDate.setDate(oDate.getDate()+iDay);</span><br><span class="line">　　<span class="built_in">document</span>.cookie=name+<span class="string">"="</span>+value+<span class="string">";expires="</span>+oDate;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="读取cookie"><a href="#读取cookie" class="headerlink" title="读取cookie"></a>读取cookie</h3><p>那么如何检测cookie是否已经保存成功，我们可以通过重启浏览器打开网站看是否用户名等信息是否已经记录，或者再次刷新页面看之前执行的动作是否保存。当然在这之前我们必须读取已经保存的cookie，但是因为浏览器可能存在多条cookie，所以我们读取cookie必须进行document.cookie的name判断，但鉴于document.cookie=name+”=”+value+”;expires=”+oDate;是这种格式，那么便要对其进行拆分判断，直到得到我们需要的，于是就有：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readCookie</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">　　<span class="keyword">var</span> arr1=<span class="built_in">document</span>.cookie.split(<span class="string">"; "</span>);</span><br><span class="line">　　<span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>,len=arr1.length;i&lt;len;i++)&#123;</span><br><span class="line">　　　　<span class="keyword">var</span> arr2=arr1[i].split(<span class="string">"="</span>);</span><br><span class="line">　　　　　　<span class="keyword">if</span>(arr2[<span class="number">0</span>]==name)&#123;</span><br><span class="line">　　　　　　　　<span class="keyword">return</span> arr2[<span class="number">1</span>];</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　&#125;</span><br><span class="line">　　<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="删除cookie"><a href="#删除cookie" class="headerlink" title="删除cookie"></a>删除cookie</h3><p>所谓的删除cookie，也就是过期时间设置为过去的某个时刻，我们这里将过期时间设为-1，value的值可取任何值：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">removeCookie</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">　　setCookie(name,<span class="string">"-1"</span>,<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </div>
+
+</div>
+
+  <div class="footer">
+    <a href="http://www.yi-jy.com">前端技术空间--易建勇</a> /
+    <a href="http://www.beianbeian.com/search/yi-jy.com">Copyright © 2012-2018</a> /
+    <a href="https://github.com/joy-yi0905/hexo-theme-record">Record</a> /
+    <a href="http://yi-jy.com/atom.xml">Rss</a>
+  </div>
+
+</div>
+
+</body>
+
+
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7d5550c80ba3b42cfa5323fc0e92699f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+</html>
