@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+	<title>Document</title>
+
+	<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=83733af41b6dc17d9ff300031fea5a2c"></script> 
+	<link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+	
+	<style>
+		html ,body {
+			height: 100%;
+		}
+		#container {width:100%; height: 100%; }  
+	</style>
+</head>
+<body>
+	
+	<div id="container"></div>
+
+	<div class="info">
+    <h4 id='status'></h4><hr>
+    <p id='result'></p><hr>
+    <p >由于众多浏览器已不再支持非安全域的定位请求，为保位成功率和精度，请升级您的站点到HTTPS。</p>
+</div>
+
+	<script>
+		window.onload = function() {
+			var map = new AMap.Map('container', {
+				resizeEnable: true
+			})
+
+			AMap.plugin('AMap.Geolocation', function() {
+				var geolocation = new AMap.Geolocation({
+					// 是否使用高精度定位，默认：true
+					enableHighAccuracy: true,
+					// 设置定位超时时间，默认：无穷大
+					timeout: 10000,
+					// 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
+					buttonOffset: new AMap.Pixel(10, 20),
+					//  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+					zoomToAccuracy: true,     
+					//  定位按钮的排放位置,  RB表示右下
+					buttonPosition: 'RB',
+				})
+				map.addControl(geolocation);
+				geolocation.getCurrentPosition()
+				AMap.event.addListener(geolocation, 'complete', onComplete)
+				AMap.event.addListener(geolocation, 'error', onError)
+
+				//解析定位结果
+				function onComplete(data) {
+						console.log('data', data)
+						document.getElementById('status').innerHTML='定位成功'
+						var str = [];
+						str.push('定位结果：' + data.position);
+						str.push('定位类别：' + data.location_type);
+						if(data.accuracy){
+								str.push('精度：' + data.accuracy + ' 米');
+						}//如为IP精确定位结果则没有精度信息
+						str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
+						str.push('地址：' + data.formattedAddress);
+						document.getElementById('result').innerHTML = str.join('<br>');
+				}
+				//解析定位错误信息
+				function onError(data) {
+						document.getElementById('status').innerHTML='定位失败'
+						document.getElementById('result').innerHTML = '失败原因排查信息:'+data.message;
+				}
+			})
+		}
+	</script>
+</body>
+</html>
