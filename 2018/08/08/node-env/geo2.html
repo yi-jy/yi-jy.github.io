@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+	<title>Document</title>
+
+	<script src="https://mapapi.qq.com/web/mapComponents/geoLocation/v/geolocation.min.js"></script>
+    <script charset="utf-8" src="https://map.qq.com/api/gljs?v=2.exp&key=M2UBZ-5RAKU-2RBVX-24QFQ-6AHKJ-MPFCI&libraries=geometry"></script>
+</head>
+<body>
+	
+	<div id="container"></div>
+
+	<div class="info">
+    <h4 id='status'></h4><hr>
+    <p id='result'></p><hr>
+    <p >由于众多浏览器已不再支持非安全域的定位请求，为保位成功率和精度，请升级您的站点到HTTPS。</p>
+</div>
+
+	<script>
+		window.addEventListener('load', () => {
+      console.log('position page load')
+
+      window.addEventListener('message', (event) => {
+        console.log('event', event)
+        const {
+          data
+        } = event
+
+        try {
+          const dataObj = JSON.parse(data)
+          const messageData = {}
+
+          if (dataObj && dataObj.action) {
+            messageData.action = dataObj.action
+
+            if (dataObj.action === 'getPosition') {
+              getPosition(function(position) {
+                messageData.status = 'success'
+                messageData.position = position
+                postMessage(messageData, event)
+              }, function() {
+                messageData.status = 'fail'
+                postMessage(messageData, event)
+              })
+            }
+          }
+        } catch (error) {
+          console.log('error', error)
+        }
+
+      })
+
+      function postMessage(data, event) {
+        window.parent.postMessage(JSON.stringify(data), event.origin)
+      }
+
+      function getPosition(callback, errorCallback) {
+        const key = 'M2UBZ-5RAKU-2RBVX-24QFQ-6AHKJ-MPFCI'
+        const appName = 'teaching-research'
+        const geolocation = new qq.maps.Geolocation(key, appName)
+
+        geolocation.getLocation(
+          (position) => {
+            console.log('position', position)
+            callback(position)
+          },
+          (error) => {
+            console.log('error', error)
+            errorCallback()
+          },
+          {timeout: 10000}
+        )
+      }
+
+			getPosition((position) => {
+				var str = position.city + '-' + position.addr
+				document.getElementById('container').innerHTML = position.lat + '-' + position.lng + '\n\n\n' + str
+			}, () => {
+				document.getElementById('container').innerHTML = '失败'
+			})
+    })
+
+	
+	</script>
+</body>
+</html>
