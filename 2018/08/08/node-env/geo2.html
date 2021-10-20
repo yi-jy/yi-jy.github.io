@@ -77,8 +77,11 @@
       }
 
 			getPosition((position) => {
-				var str = position.city + '-' + position.addr
-				document.getElementById('container').innerHTML = position.lat + '-' + position.lng + '<br/><br/>' + str
+				var str1 = '经纬度: ' + position.lat + '-' + position.lng +  '<br/>'
+				var str2 = '位置: ' + position.city + '-' + position.addr +  '<br/>'
+				var str3 = '模块: ' + position.module +  '<br/>'
+				var str4 = 'type: ' + position.type +  '<br/>'
+				document.getElementById('container').innerHTML = str1 + str2 + str3 + str4
 			}, () => {
 				document.getElementById('container').innerHTML = '失败'
 			})
