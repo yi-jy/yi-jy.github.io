@@ -78,7 +78,7 @@
 
 			getPosition((position) => {
 				var str = position.city + '-' + position.addr
-				document.getElementById('container').innerHTML = position.lat + '-' + position.lng + '<br><br>' + str
+				document.getElementById('container').innerHTML = position.lat + '-' + position.lng + '<br/><br/>' + str
 			}, () => {
 				document.getElementById('container').innerHTML = '失败'
 			})
