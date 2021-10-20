@@ -24,39 +24,39 @@
 		window.addEventListener('load', () => {
       console.log('position page load')
 
-      window.addEventListener('message', (event) => {
-        console.log('event', event)
-        const {
-          data
-        } = event
+      // window.addEventListener('message', (event) => {
+      //   console.log('event', event)
+      //   const {
+      //     data
+      //   } = event
 
-        try {
-          const dataObj = JSON.parse(data)
-          const messageData = {}
+      //   try {
+      //     const dataObj = JSON.parse(data)
+      //     const messageData = {}
 
-          if (dataObj && dataObj.action) {
-            messageData.action = dataObj.action
+      //     if (dataObj && dataObj.action) {
+      //       messageData.action = dataObj.action
 
-            if (dataObj.action === 'getPosition') {
-              getPosition(function(position) {
-                messageData.status = 'success'
-                messageData.position = position
-                postMessage(messageData, event)
-              }, function() {
-                messageData.status = 'fail'
-                postMessage(messageData, event)
-              })
-            }
-          }
-        } catch (error) {
-          console.log('error', error)
-        }
+      //       if (dataObj.action === 'getPosition') {
+      //         getPosition(function(position) {
+      //           messageData.status = 'success'
+      //           messageData.position = position
+      //           postMessage(messageData, event)
+      //         }, function() {
+      //           messageData.status = 'fail'
+      //           postMessage(messageData, event)
+      //         })
+      //       }
+      //     }
+      //   } catch (error) {
+      //     console.log('error', error)
+      //   }
 
-      })
+      // })
 
-      function postMessage(data, event) {
-        window.parent.postMessage(JSON.stringify(data), event.origin)
-      }
+      // function postMessage(data, event) {
+      //   window.parent.postMessage(JSON.stringify(data), event.origin)
+      // }
 
       function getPosition(callback, errorCallback) {
         const key = 'M2UBZ-5RAKU-2RBVX-24QFQ-6AHKJ-MPFCI'
