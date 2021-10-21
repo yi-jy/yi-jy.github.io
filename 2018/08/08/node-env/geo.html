@@ -29,9 +29,9 @@
 
 	<script>
 		window.onload = function() {
-			var map = new AMap.Map('container', {
-				resizeEnable: true
-			})
+// 			var map = new AMap.Map('container', {
+// 				resizeEnable: true
+// 			})
 
 			AMap.plugin('AMap.Geolocation', function() {
 				var geolocation = new AMap.Geolocation({
@@ -46,7 +46,7 @@
 					//  定位按钮的排放位置,  RB表示右下
 					buttonPosition: 'RB',
 				})
-				map.addControl(geolocation);
+// 				map.addControl(geolocation);
 				geolocation.getCurrentPosition()
 				AMap.event.addListener(geolocation, 'complete', onComplete)
 				AMap.event.addListener(geolocation, 'error', onError)
