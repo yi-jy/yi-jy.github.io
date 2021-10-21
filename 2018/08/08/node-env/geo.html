@@ -73,6 +73,7 @@
 							document.getElementById('result').innerHTML = str.join('<br>');
 						
 						  const messageData = data
+						  messageData.action === 'success'
 						  postMessage(messageData, event)
 					}
 					//解析定位错误信息
@@ -81,6 +82,7 @@
 							document.getElementById('result').innerHTML = '失败原因排查信息:'+data.message;
 						  
 						  const messageData = data
+						  messageData.action === 'fail'
 						  postMessage(messageData, event)
 					}
 				})
