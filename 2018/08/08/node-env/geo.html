@@ -37,7 +37,7 @@
         window.parent.postMessage(JSON.stringify(data), event.origin)
       }
 			
-			window.addEventListener('message', (event) => {
+// 			window.addEventListener('message', (event) => {
 				console.log('child page message')
 				AMap.plugin('AMap.Geolocation', function() {
 					var geolocation = new AMap.Geolocation({
@@ -72,19 +72,19 @@
 							str.push('location_type：' + data.location_type);
 							document.getElementById('result').innerHTML = str.join('<br>');
 						
-						  data.action = 'success'
-						  postMessage(data, event)
+// 						  data.action = 'success'
+// 						  postMessage(data, event)
 					}
 					//解析定位错误信息
 					function onError(data) {
 							document.getElementById('status').innerHTML='定位失败'
 							document.getElementById('result').innerHTML = '失败原因排查信息:'+data.message;
 
-						  data.action = 'fail'
-						  postMessage(data, event)
+// 						  data.action = 'fail'
+// 						  postMessage(data, event)
 					}
 				})
-			})
+// 			})
 
 			
 		}
