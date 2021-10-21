@@ -72,18 +72,16 @@
 							str.push('location_type：' + data.location_type);
 							document.getElementById('result').innerHTML = str.join('<br>');
 						
-						  const messageData = data
-						  messageData.action = 'success'
-						  postMessage(messageData, event)
+						  data.action = 'success'
+						  postMessage(data, event)
 					}
 					//解析定位错误信息
 					function onError(data) {
 							document.getElementById('status').innerHTML='定位失败'
 							document.getElementById('result').innerHTML = '失败原因排查信息:'+data.message;
-						  
-						  const messageData = data
-						  messageData.action = 'fail'
-						  postMessage(messageData, event)
+
+						  data.action = 'fail'
+						  postMessage(data, event)
 					}
 				})
 			})
