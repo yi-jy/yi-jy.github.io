@@ -37,7 +37,7 @@
         window.parent.postMessage(JSON.stringify(data), event.origin)
       }
 			
-			window.addEventListener('message', (event) => {
+// 			window.addEventListener('message', (event) => {
 			
 				AMap.plugin('AMap.Geolocation', function() {
 					var geolocation = new AMap.Geolocation({
@@ -84,7 +84,7 @@
 						  postMessage(data, event)
 					}
 				})
-			})
+// 			})
 
 			
 		}
